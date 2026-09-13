@@ -30,45 +30,65 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     h1 {
       color: #8b0000;
       font-size: 46px;
       letter-spacing: 6px;
-      margin-bottom: 40px;
+      margin: 0 0 45px;
     }
 
-    .language-title {
-      font-size: 16px;
-      letter-spacing: 3px;
-      margin-bottom: 30px;
-      color: #aaa;
-    }
+    /* ΑΡΧΙΚΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
 
-    .language-button,
-    .start-button {
+    .language-button {
       width: 260px;
       max-width: 90%;
       margin: 8px;
       padding: 17px 20px;
-
       background: transparent;
-      color: white;
-
+      color: #fff;
       border: 1px solid #8b0000;
-
       font-size: 16px;
       letter-spacing: 2px;
-
       cursor: pointer;
     }
 
-    .language-button:active,
-    .start-button:active {
-      background: #8b0000;
+    .flag {
+      margin-right: 10px;
+      font-size: 21px;
     }
+
+    /* ΜΙΚΡΗ ΕΠΙΛΟΓΗ ΠΑΝΩ ΔΕΞΙΑ */
+
+    #languageSwitcher {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+      display: flex;
+      gap: 5px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+
+    #languageSwitcher button {
+      border: none;
+      background: transparent;
+      padding: 4px 6px;
+      font-size: 21px;
+      cursor: pointer;
+      opacity: 0.55;
+    }
+
+    #languageSwitcher button.active {
+      opacity: 1;
+    }
+
+    /* INTRO */
 
     .quote {
       max-width: 500px;
@@ -76,34 +96,60 @@
       line-height: 1.7;
       margin-bottom: 35px;
     }
+
+    .start-button {
+      width: 280px;
+      max-width: 90%;
+      padding: 17px 20px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid #8b0000;
+      font-size: 15px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    button:active {
+      background: #8b0000;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- LANGUAGE SELECTION -->
+  <!-- ΑΡΧΙΚΗ ΟΘΟΝΗ -->
 
   <div id="languageScreen" class="screen">
 
     <h1>OBSESSED</h1>
 
-    <div class="language-title">
-      ΕΠΙΛΕΞΤΕ ΓΛΩΣΣΑ<br><br>
-      SELECT LANGUAGE
-    </div>
-
-    <button class="language-button" onclick="selectLanguage('gr')">
-      ΕΛΛΗΝΙΚΑ
+    <button class="language-button" onclick="enterExperience('gr')">
+      <span class="flag">🇬🇷</span> ΕΛΛΗΝΙΚΑ
     </button>
 
-    <button class="language-button" onclick="selectLanguage('en')">
-      ENGLISH
+    <button class="language-button" onclick="enterExperience('en')">
+      <span class="flag">🇬🇧</span> ENGLISH
     </button>
 
   </div>
 
 
-  <!-- OBSESSED INTRO -->
+  <!-- ΜΟΝΙΜΗ ΑΛΛΑΓΗ ΓΛΩΣΣΑΣ -->
+
+  <div id="languageSwitcher" class="hidden">
+
+    <button id="grButton" onclick="changeLanguage('gr')">
+      🇬🇷
+    </button>
+
+    <button id="enButton" onclick="changeLanguage('en')">
+      🇬🇧
+    </button>
+
+  </div>
+
+
+  <!-- INTRO -->
 
   <div id="introScreen" class="screen hidden">
 
@@ -111,39 +157,88 @@
 
     <div id="introText" class="quote"></div>
 
-    <button id="startButton" class="start-button"></button>
+    <button id="startButton" class="start-button">
+    </button>
 
   </div>
 
 
   <script>
 
-    let selectedLanguage = "";
+    let selectedLanguage = "gr";
 
-    function selectLanguage(language) {
+
+    function enterExperience(language) {
 
       selectedLanguage = language;
 
-      document.getElementById("languageScreen").classList.add("hidden");
-      document.getElementById("introScreen").classList.remove("hidden");
+      document
+        .getElementById("languageScreen")
+        .classList.add("hidden");
 
-      if (language === "gr") {
+      document
+        .getElementById("introScreen")
+        .classList.remove("hidden");
 
-        document.getElementById("introText").innerText =
-        "Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται, η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.";
+      document
+        .getElementById("languageSwitcher")
+        .classList.remove("hidden");
 
-        document.getElementById("startButton").innerText =
-        "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
+      updateLanguage();
+    }
+
+
+    function changeLanguage(language) {
+
+      selectedLanguage = language;
+
+      updateLanguage();
+    }
+
+
+    function updateLanguage() {
+
+      const introText =
+        document.getElementById("introText");
+
+      const startButton =
+        document.getElementById("startButton");
+
+      const grButton =
+        document.getElementById("grButton");
+
+      const enButton =
+        document.getElementById("enButton");
+
+
+      if (selectedLanguage === "gr") {
+
+        document.documentElement.lang = "el";
+
+        introText.innerText =
+          "Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται, η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.";
+
+        startButton.innerText =
+          "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
+
+        grButton.classList.add("active");
+        enButton.classList.remove("active");
 
       }
 
-      if (language === "en") {
 
-        document.getElementById("introText").innerText =
-        "When love becomes an obsession and you cannot see the evil that is coming, the situation begins to become very dangerous.";
+      if (selectedLanguage === "en") {
 
-        document.getElementById("startButton").innerText =
-        "THE OBSESSION BEGINS";
+        document.documentElement.lang = "en";
+
+        introText.innerText =
+          "When love becomes an obsession and you cannot see the evil that is coming, the situation begins to become very dangerous.";
+
+        startButton.innerText =
+          "THE OBSESSION BEGINS";
+
+        enButton.classList.add("active");
+        grButton.classList.remove("active");
 
       }
 
