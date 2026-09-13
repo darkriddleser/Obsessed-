@@ -6,7 +6,7 @@
 <title>OBSESSED</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Special+Elite&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -14,266 +14,271 @@
 
 html, body {
   margin: 0;
+  width: 100%;
   min-height: 100%;
-  background: #030303;
-  color: #e8e5df;
+  background: #000;
+  color: #eee;
 }
 
 body {
-  font-family: "Cinzel", serif;
-  min-height: 100vh;
-  overflow-x: hidden;
+  font-family: "Cormorant Garamond", serif;
 }
-
-/* ΣΚΟΤΕΙΝΟ BACKGROUND */
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at center,
-      rgba(80,0,0,0.08) 0%,
-      rgba(0,0,0,0.55) 50%,
-      #000 100%);
-  z-index: 0;
-}
-
-/* ΟΘΟΝΕΣ */
 
 .screen {
   position: relative;
-  z-index: 1;
   width: 100%;
   min-height: 100vh;
-  padding: 35px 24px;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
+  padding: 30px 22px;
 }
 
 .hidden {
   display: none !important;
 }
 
+
+/* =========================
+   ΠΡΩΤΗ ΟΘΟΝΗ
+========================= */
+
+#languageScreen {
+  overflow: hidden;
+
+  background-image:
+    linear-gradient(
+      rgba(0,0,0,.18),
+      rgba(0,0,0,.30)
+    ),
+    url("file_00000000a95081f4ad0a889b8883d67c.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#languageScreen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 25%,
+      rgba(0,0,0,.25) 65%,
+      rgba(0,0,0,.72) 100%
+    );
+
+  pointer-events: none;
+}
+
+.language-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 430px;
+}
+
+
 /* OBSESSED */
 
 .logo {
-  margin: 0 0 45px;
-  color: #8d0000;
-  font-family: "Special Elite", serif;
-  font-size: clamp(42px, 13vw, 68px);
-  font-weight: normal;
-  letter-spacing: 7px;
-  text-shadow:
-    0 0 8px rgba(150,0,0,.35),
-    0 0 25px rgba(100,0,0,.15);
-
-  animation: breathe 4s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%,100% {
-    opacity: .82;
-    text-shadow: 0 0 8px rgba(150,0,0,.25);
-  }
-
-  50% {
-    opacity: 1;
-    text-shadow:
-      0 0 12px rgba(180,0,0,.45),
-      0 0 30px rgba(100,0,0,.25);
-  }
-}
-
-/* ΑΡΧΙΚΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
-
-.language-button {
-  width: 270px;
-  max-width: 90%;
-  margin: 8px;
-  padding: 17px;
-
-  background: rgba(10,10,10,.7);
-  color: #d8d5cf;
-
-  border: 1px solid #4d1111;
+  margin: 0 0 70px;
 
   font-family: "Cinzel", serif;
-  font-size: 14px;
+  font-size: clamp(52px, 15vw, 76px);
+  font-weight: 500;
+
+  letter-spacing: 3px;
+
+  color: #dedbd5;
+
+  text-shadow:
+    2px 2px 0 #470000,
+    -1px -1px 0 #300000,
+    0 0 12px rgba(130,0,0,.8),
+    0 0 30px rgba(80,0,0,.5);
+}
+
+
+/* LANGUAGE BUTTONS */
+
+.language-button {
+  width: 290px;
+  max-width: 90%;
+
+  margin: 8px 0;
+  padding: 17px 20px;
+
+  background: rgba(3,3,3,.76);
+
+  border: 1px solid rgba(130,20,20,.8);
+
+  color: #e3dfd8;
+
+  font-family: "Cinzel", serif;
+  font-size: 15px;
+  font-weight: 500;
+
   letter-spacing: 2px;
 
   cursor: pointer;
-  transition: .3s;
+
+  backdrop-filter: blur(3px);
+
+  transition:
+    background .25s,
+    border-color .25s,
+    transform .15s;
 }
 
-.language-button:hover,
 .language-button:active {
-  border-color: #9b0000;
-  background: rgba(90,0,0,.18);
+  transform: scale(.98);
+  background: rgba(80,0,0,.35);
+  border-color: #b32828;
 }
 
 .flag {
-  margin-right: 10px;
-  font-size: 20px;
+  margin-right: 13px;
+  font-size: 21px;
 }
 
-/* ΜΟΝΙΜΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
+
+/* =========================
+   LANGUAGE SWITCHER
+========================= */
 
 #languageSwitcher {
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 100;
+
+  z-index: 1000;
 
   display: flex;
   gap: 2px;
 
   padding: 4px;
 
-  background: rgba(0,0,0,.75);
-  border: 1px solid #272727;
+  background: rgba(0,0,0,.72);
+
+  border: 1px solid rgba(120,20,20,.4);
+
   border-radius: 4px;
 }
 
 #languageSwitcher button {
   border: 0;
   background: transparent;
-  font-size: 19px;
+
   padding: 4px 6px;
+
+  font-size: 19px;
+
   cursor: pointer;
-  opacity: .35;
+
+  opacity: .4;
 }
 
 #languageSwitcher button.active {
   opacity: 1;
 }
 
-/* VIDEO PLACEHOLDER */
+
+/* =========================
+   VIDEO / INTRO
+========================= */
+
+#videoScreen {
+  background:
+    radial-gradient(circle at center, #150707 0%, #050303 45%, #000 100%);
+}
 
 .video-frame {
   position: relative;
 
-  width: min(100%, 420px);
+  width: min(100%, 400px);
   aspect-ratio: 9 / 16;
 
-  max-height: 68vh;
+  max-height: 62vh;
 
-  background:
-    radial-gradient(circle at center,
-      #171010 0%,
-      #080606 45%,
-      #000 100%);
+  background: #050505;
 
-  border: 1px solid #301010;
+  border: 1px solid #351010;
+
   overflow: hidden;
 
   box-shadow:
-    0 0 40px rgba(80,0,0,.15),
-    inset 0 0 60px #000;
+    0 0 45px rgba(80,0,0,.18),
+    inset 0 0 50px #000;
 }
 
-.video-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(255,255,255,.018) 4px
-    );
-
-  pointer-events: none;
-}
-
-.placeholder-text {
+.placeholder {
   position: absolute;
   inset: 0;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  color: #6b6262;
-  letter-spacing: 3px;
+  font-family: "Cinzel", serif;
+
+  color: #5d5555;
+
   font-size: 12px;
+  letter-spacing: 4px;
 }
 
-.placeholder-symbol {
-  font-family: "Special Elite", serif;
-  font-size: 46px;
-  color: #620000;
-  margin-bottom: 18px;
-}
 
-/* INTRO TEXT */
+/* ΚΕΙΜΕΝΑ */
 
 .quote {
-  max-width: 550px;
-  margin: 30px auto;
+  max-width: 520px;
 
-  font-family: "Cinzel", serif;
-  font-size: 17px;
-  line-height: 1.8;
+  margin: 27px auto;
 
-  color: #d2cec7;
-
-  opacity: 0;
-  animation: fadeIn 2s forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-/* START BUTTON */
-
-.start-button {
-  width: 290px;
-  max-width: 90%;
-
-  padding: 17px 20px;
-
-  background: transparent;
   color: #ddd8d0;
 
-  border: 1px solid #650000;
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 20px;
+  font-weight: 500;
+
+  line-height: 1.55;
+
+  letter-spacing: .3px;
+}
+
+
+/* START */
+
+.start-button {
+  width: 300px;
+  max-width: 90%;
+
+  padding: 16px;
+
+  background: rgba(0,0,0,.5);
+
+  color: #ddd8d0;
+
+  border: 1px solid #651313;
 
   font-family: "Cinzel", serif;
+
   font-size: 13px;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 
   cursor: pointer;
-
-  transition: .35s;
 }
 
-.start-button:hover,
 .start-button:active {
-  background: rgba(110,0,0,.2);
-  border-color: #a00000;
-  box-shadow: 0 0 20px rgba(100,0,0,.15);
-}
-
-/* ΜΙΚΡΑ ΚΙΝΗΤΑ */
-
-@media (max-height: 700px) {
-  .video-frame {
-    max-height: 58vh;
-  }
-
-  .logo {
-    margin-bottom: 25px;
-  }
+  background: rgba(90,0,0,.3);
 }
 
 </style>
@@ -281,66 +286,83 @@ body::before {
 
 <body>
 
-<!-- ΑΡΧΙΚΗ ΟΘΟΝΗ -->
+
+<!-- ΠΡΩΤΗ ΟΘΟΝΗ -->
 
 <div id="languageScreen" class="screen">
 
-  <h1 class="logo">OBSESSED</h1>
+  <div class="language-content">
 
-  <button class="language-button"
-          onclick="enterExperience('gr')">
-    <span class="flag">🇬🇷</span>
-    ΕΛΛΗΝΙΚΑ
-  </button>
+    <h1 class="logo">
+      OBSESSED
+    </h1>
 
-  <button class="language-button"
-          onclick="enterExperience('en')">
-    <span class="flag">🇬🇧</span>
-    ENGLISH
-  </button>
+    <button
+      class="language-button"
+      onclick="enterExperience('gr')">
+
+      <span class="flag">🇬🇷</span>
+      ΕΛΛΗΝΙΚΑ
+
+    </button>
+
+    <br>
+
+    <button
+      class="language-button"
+      onclick="enterExperience('en')">
+
+      <span class="flag">🇬🇧</span>
+      ENGLISH
+
+    </button>
+
+  </div>
 
 </div>
 
 
-<!-- LANGUAGE SWITCHER -->
+<!-- ΜΟΝΙΜΗ ΑΛΛΑΓΗ ΓΛΩΣΣΑΣ -->
 
 <div id="languageSwitcher" class="hidden">
 
-  <button id="grButton"
-          onclick="changeLanguage('gr')">
+  <button
+    id="grButton"
+    onclick="changeLanguage('gr')">
     🇬🇷
   </button>
 
-  <button id="enButton"
-          onclick="changeLanguage('en')">
+  <button
+    id="enButton"
+    onclick="changeLanguage('en')">
     🇬🇧
   </button>
 
 </div>
 
 
-<!-- VIDEO SCREEN -->
+<!-- INTRO VIDEO -->
 
 <div id="videoScreen" class="screen hidden">
 
   <div class="video-frame">
 
-    <div class="placeholder-text">
-
-      <div class="placeholder-symbol">
-        OBSESSED
-      </div>
-
+    <div class="placeholder">
       INTRO VIDEO
-
     </div>
 
   </div>
 
-  <div id="introText" class="quote"></div>
 
-  <button id="startButton"
-          class="start-button">
+  <div
+    id="introText"
+    class="quote">
+  </div>
+
+
+  <button
+    id="startButton"
+    class="start-button">
   </button>
 
 </div>
