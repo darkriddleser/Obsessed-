@@ -182,21 +182,7 @@ body {
 #languageSwitcher button.active {
   opacity: 1;
 }
-/* =========================
-<!-- NAVIGATION ARROWS -->
-===========================*/
-  
-<div id="navigationArrows" class="hidden">
 
-  <button id="backArrow" onclick="previousScreen()">
-    ←
-  </button>
-
-  <button id="nextArrow" onclick="nextScreen()">
-    →
-  </button>
-
-</div>
 /* =========================
    VIDEO / INTRO
 ========================= */
@@ -300,7 +286,48 @@ body {
 .start-button:active {
   background: rgba(90,0,0,.3);
 }
+/* =========================
+   NAVIGATION ARROWS
+========================= */
 
+#navigationArrows {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+
+  display: flex;
+  gap: 8px;
+}
+
+#navigationArrows button {
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(120,20,20,.55);
+  border-radius: 4px;
+
+  background: rgba(0,0,0,.72);
+  color: #ddd8d0;
+
+  font-family: "Cinzel", serif;
+  font-size: 20px;
+
+  cursor: pointer;
+
+  opacity: .85;
+}
+
+#navigationArrows button:active {
+  background: rgba(90,0,0,.3);
+  border-color: #a00000;
+}
+
+#navigationArrows button:disabled {
+  opacity: .2;
+  cursor: default;
+}
+  
 </style>
 </head>
 
@@ -354,7 +381,19 @@ body {
 
 </div>
 
+<!-- NAVIGATION ARROWS -->
 
+<div id="navigationArrows" class="hidden">
+
+  <button id="backArrow" onclick="previousScreen()">
+    ←
+  </button>
+
+  <button id="nextArrow" onclick="nextScreen()">
+    →
+  </button>
+
+</div>
 <!-- INTRO VIDEO -->
 
 <div id="videoScreen" class="screen hidden">
@@ -403,10 +442,36 @@ function enterExperience(language) {
     .getElementById("languageSwitcher")
     .classList.remove("hidden");
 
+  document
+  .getElementById("navigationArrows")
+  .classList.remove("hidden");
+
   updateLanguage();
 }
 
+function previousScreen() {
 
+  document
+    .getElementById("videoScreen")
+    .classList.add("hidden");
+
+  document
+    .getElementById("languageSwitcher")
+    .classList.add("hidden");
+
+  document
+    .getElementById("navigationArrows")
+    .classList.add("hidden");
+
+  document
+    .getElementById("languageScreen")
+    .classList.remove("hidden");
+}
+
+
+function nextScreen() {
+  // Θα το ενεργοποιήσουμε όταν φτιάξουμε την επόμενη οθόνη
+}
 function changeLanguage(language) {
 
   selectedLanguage = language;
