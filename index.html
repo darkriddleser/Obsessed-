@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
+<title>OBSESSED</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Noto+Serif:wght@400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -21,7 +21,7 @@ html, body {
 }
 
 body {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Serif", serif;
 }
 
 .screen {
@@ -29,11 +29,14 @@ body {
   width: 100%;
   min-height: 100vh;
   min-height: 100svh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   text-align: center;
+
   padding: 30px 22px;
 }
 
@@ -52,7 +55,7 @@ body {
   background-image:
     linear-gradient(
       rgba(0,0,0,.18),
-      rgba(0,0,0,.30)
+      rgba(0,0,0,.32)
     ),
     url("file_00000000a95081f4ad0a889b8883d67c.png");
 
@@ -69,9 +72,9 @@ body {
   background:
     radial-gradient(
       ellipse at center,
-      transparent 25%,
-      rgba(0,0,0,.25) 65%,
-      rgba(0,0,0,.72) 100%
+      transparent 20%,
+      rgba(0,0,0,.22) 60%,
+      rgba(0,0,0,.75) 100%
     );
 
   pointer-events: none;
@@ -80,29 +83,13 @@ body {
 .language-content {
   position: relative;
   z-index: 2;
+
   width: 100%;
   max-width: 430px;
-}
 
-
-/* OBSESSED */
-
-.logo {
-  margin: 0 0 70px;
-
-  font-family: "Cinzel", serif;
-  font-size: clamp(52px, 15vw, 76px);
-  font-weight: 500;
-
-  letter-spacing: 3px;
-
-  color: #dedbd5;
-
-  text-shadow:
-    2px 2px 0 #470000,
-    -1px -1px 0 #300000,
-    0 0 12px rgba(130,0,0,.8),
-    0 0 30px rgba(80,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
@@ -139,7 +126,9 @@ body {
 
 .language-button:active {
   transform: scale(.98);
+
   background: rgba(80,0,0,.35);
+
   border-color: #b32828;
 }
 
@@ -155,12 +144,14 @@ body {
 
 #languageSwitcher {
   position: fixed;
+
   top: 14px;
   right: 14px;
 
   z-index: 1000;
 
   display: flex;
+
   gap: 2px;
 
   padding: 4px;
@@ -174,6 +165,7 @@ body {
 
 #languageSwitcher button {
   border: 0;
+
   background: transparent;
 
   padding: 4px 6px;
@@ -196,13 +188,19 @@ body {
 
 #videoScreen {
   background:
-    radial-gradient(circle at center, #150707 0%, #050303 45%, #000 100%);
+    radial-gradient(
+      circle at center,
+      #140707 0%,
+      #050303 45%,
+      #000 100%
+    );
 }
 
 .video-frame {
   position: relative;
 
   width: min(100%, 400px);
+
   aspect-ratio: 9 / 16;
 
   max-height: 62vh;
@@ -231,34 +229,39 @@ body {
   color: #5d5555;
 
   font-size: 12px;
+
   letter-spacing: 4px;
 }
 
 
-/* ΚΕΙΜΕΝΑ */
+/* ΚΕΙΜΕΝΟ ΔΕΥΤΕΡΗΣ ΟΘΟΝΗΣ */
 
 .quote {
   max-width: 520px;
 
-  margin: 27px auto;
+  margin: 30px auto;
 
-  color: #ddd8d0;
+  color: #e0dcd5;
 
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Noto Serif", serif;
 
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 19px;
+  font-weight: 400;
 
-  line-height: 1.55;
+  line-height: 1.75;
 
-  letter-spacing: .3px;
+  letter-spacing: .2px;
+
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.8);
 }
 
 
-/* START */
+/* START BUTTON */
 
 .start-button {
   width: 300px;
+
   max-width: 90%;
 
   padding: 16px;
@@ -272,6 +275,7 @@ body {
   font-family: "Cinzel", serif;
 
   font-size: 13px;
+
   letter-spacing: 1.5px;
 
   cursor: pointer;
@@ -293,10 +297,6 @@ body {
 
   <div class="language-content">
 
-    <h1 class="logo">
-      OBSESSED
-    </h1>
-
     <button
       class="language-button"
       onclick="enterExperience('gr')">
@@ -305,8 +305,6 @@ body {
       ΕΛΛΗΝΙΚΑ
 
     </button>
-
-    <br>
 
     <button
       class="language-button"
@@ -427,6 +425,7 @@ function updateLanguage() {
       "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
 
     grButton.classList.add("active");
+
     enButton.classList.remove("active");
 
   }
@@ -443,6 +442,7 @@ function updateLanguage() {
       "THE OBSESSION BEGINS";
 
     enButton.classList.add("active");
+
     grButton.classList.remove("active");
 
   }
