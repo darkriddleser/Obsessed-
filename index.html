@@ -304,20 +304,27 @@ body {
   width: 42px;
   height: 42px;
 
-  border: 1px solid rgba(120,20,20,.55);
-  border-radius: 4px;
-
-  background: rgba(0,0,0,.72);
+  border: none;
+  background: transparent;
   color: #ddd8d0;
 
   font-family: "Cinzel", serif;
-  font-size: 20px;
+  font-size: 25px;
 
   cursor: pointer;
-
-  opacity: .85;
+  opacity: .75;
 }
 
+#navigationArrows button:active {
+  background: transparent;
+  color: #ffffff;
+  opacity: 1;
+}
+
+#navigationArrows button:disabled {
+  opacity: .2;
+  cursor: default;
+}
 #navigationArrows button:active {
   background: rgba(90,0,0,.3);
   border-color: #a00000;
