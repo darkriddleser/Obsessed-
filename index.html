@@ -419,15 +419,21 @@ body {
     class="quote">
   </div>
 
-
-  <button
-    id="startButton"
-    class="start-button">
-  </button>
+<button
+  id="startButton"
+  class="start-button"
+  onclick="nextScreen()">
+</button>
 
 </div>
 
+<!-- ΠΡΩΤΗ ΔΙΑΔΡΑΣΤΙΚΗ ΟΘΟΝΗ -->
 
+<div id="storyScreen1" class="screen hidden">
+
+  <div id="storyText1" class="quote"></div>
+
+</div>
 <script>
 
 let selectedLanguage = "gr";
@@ -458,27 +464,60 @@ function enterExperience(language) {
 
 function previousScreen() {
 
+  const storyScreen1 =
+    document.getElementById("storyScreen1");
+
+  const videoScreen =
+    document.getElementById("videoScreen");
+
+  const languageScreen =
+    document.getElementById("languageScreen");
+
+
+  // Αν είμαστε στην 3η οθόνη → επιστροφή στο Intro
+  if (!storyScreen1.classList.contains("hidden")) {
+
+    storyScreen1.classList.add("hidden");
+    videoScreen.classList.remove("hidden");
+
+    return;
+  }
+
+
+  // Αν είμαστε στο Intro → επιστροφή στην επιλογή γλώσσας
+  if (!videoScreen.classList.contains("hidden")) {
+
+    videoScreen.classList.add("hidden");
+
+    document
+      .getElementById("languageSwitcher")
+      .classList.add("hidden");
+
+    document
+      .getElementById("navigationArrows")
+      .classList.add("hidden");
+
+    languageScreen.classList.remove("hidden");
+
+    return;
+  }
+
+}
+
+
+function nextScreen() {
+
   document
     .getElementById("videoScreen")
     .classList.add("hidden");
 
   document
-    .getElementById("languageSwitcher")
-    .classList.add("hidden");
-
-  document
-    .getElementById("navigationArrows")
-    .classList.add("hidden");
-
-  document
-    .getElementById("languageScreen")
+    .getElementById("storyScreen1")
     .classList.remove("hidden");
-}
 
-
-function nextScreen() {
-  // Θα το ενεργοποιήσουμε όταν φτιάξουμε την επόμενη οθόνη
+  updateLanguage();
 }
+  
 function changeLanguage(language) {
 
   selectedLanguage = language;
@@ -494,6 +533,9 @@ function updateLanguage() {
 
   const startButton =
     document.getElementById("startButton");
+
+  const storyText1 =
+  document.getElementById("storyText1");
 
   const grButton =
     document.getElementById("grButton");
@@ -512,6 +554,9 @@ function updateLanguage() {
     startButton.innerText =
       "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
 
+    storyText1.innerText =
+  "Κάποιες ιστορίες δεν ξεκινούν όταν συμβαίνει κάτι τρομακτικό. Ξεκινούν πολύ νωρίτερα... όταν κάτι που μοιάζει με αγάπη αρχίζει να αλλάζει.";
+
     grButton.classList.add("active");
 
     enButton.classList.remove("active");
@@ -528,6 +573,9 @@ function updateLanguage() {
 
     startButton.innerText =
       "THE OBSESSION BEGINS";
+
+    storyText1.innerText =
+  "Some stories do not begin when something frightening happens. They begin much earlier... when something that looks like love starts to change.";
 
     enButton.classList.add("active");
 
