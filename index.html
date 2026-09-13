@@ -1,250 +1,433 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OBSESSED</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBSESSED</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Special+Elite&display=swap');
 
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .screen {
-      min-height: 100vh;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px;
-    }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #030303;
+  color: #e8e5df;
+}
 
-    .hidden {
-      display: none !important;
-    }
+body {
+  font-family: "Cinzel", serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-    h1 {
-      color: #8b0000;
-      font-size: 46px;
-      letter-spacing: 6px;
-      margin: 0 0 45px;
-    }
+/* ΣΚΟΤΕΙΝΟ BACKGROUND */
 
-    /* ΑΡΧΙΚΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center,
+      rgba(80,0,0,0.08) 0%,
+      rgba(0,0,0,0.55) 50%,
+      #000 100%);
+  z-index: 0;
+}
 
-    .language-button {
-      width: 260px;
-      max-width: 90%;
-      margin: 8px;
-      padding: 17px 20px;
-      background: transparent;
-      color: #fff;
-      border: 1px solid #8b0000;
-      font-size: 16px;
-      letter-spacing: 2px;
-      cursor: pointer;
-    }
+/* ΟΘΟΝΕΣ */
 
-    .flag {
-      margin-right: 10px;
-      font-size: 21px;
-    }
+.screen {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  padding: 35px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
-    /* ΜΙΚΡΗ ΕΠΙΛΟΓΗ ΠΑΝΩ ΔΕΞΙΑ */
+.hidden {
+  display: none !important;
+}
 
-    #languageSwitcher {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      z-index: 1000;
-      display: flex;
-      gap: 5px;
-      padding: 5px;
-      background: rgba(0, 0, 0, 0.75);
-      border: 1px solid #333;
-      border-radius: 5px;
-    }
+/* OBSESSED */
 
-    #languageSwitcher button {
-      border: none;
-      background: transparent;
-      padding: 4px 6px;
-      font-size: 21px;
-      cursor: pointer;
-      opacity: 0.55;
-    }
+.logo {
+  margin: 0 0 45px;
+  color: #8d0000;
+  font-family: "Special Elite", serif;
+  font-size: clamp(42px, 13vw, 68px);
+  font-weight: normal;
+  letter-spacing: 7px;
+  text-shadow:
+    0 0 8px rgba(150,0,0,.35),
+    0 0 25px rgba(100,0,0,.15);
 
-    #languageSwitcher button.active {
-      opacity: 1;
-    }
+  animation: breathe 4s ease-in-out infinite;
+}
 
-    /* INTRO */
+@keyframes breathe {
+  0%,100% {
+    opacity: .82;
+    text-shadow: 0 0 8px rgba(150,0,0,.25);
+  }
 
-    .quote {
-      max-width: 500px;
-      font-size: 19px;
-      line-height: 1.7;
-      margin-bottom: 35px;
-    }
+  50% {
+    opacity: 1;
+    text-shadow:
+      0 0 12px rgba(180,0,0,.45),
+      0 0 30px rgba(100,0,0,.25);
+  }
+}
 
-    .start-button {
-      width: 280px;
-      max-width: 90%;
-      padding: 17px 20px;
-      background: transparent;
-      color: #fff;
-      border: 1px solid #8b0000;
-      font-size: 15px;
-      letter-spacing: 2px;
-      cursor: pointer;
-    }
+/* ΑΡΧΙΚΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
 
-    button:active {
-      background: #8b0000;
-    }
-  </style>
+.language-button {
+  width: 270px;
+  max-width: 90%;
+  margin: 8px;
+  padding: 17px;
+
+  background: rgba(10,10,10,.7);
+  color: #d8d5cf;
+
+  border: 1px solid #4d1111;
+
+  font-family: "Cinzel", serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+
+  cursor: pointer;
+  transition: .3s;
+}
+
+.language-button:hover,
+.language-button:active {
+  border-color: #9b0000;
+  background: rgba(90,0,0,.18);
+}
+
+.flag {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+/* ΜΟΝΙΜΗ ΕΠΙΛΟΓΗ ΓΛΩΣΣΑΣ */
+
+#languageSwitcher {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+
+  display: flex;
+  gap: 2px;
+
+  padding: 4px;
+
+  background: rgba(0,0,0,.75);
+  border: 1px solid #272727;
+  border-radius: 4px;
+}
+
+#languageSwitcher button {
+  border: 0;
+  background: transparent;
+  font-size: 19px;
+  padding: 4px 6px;
+  cursor: pointer;
+  opacity: .35;
+}
+
+#languageSwitcher button.active {
+  opacity: 1;
+}
+
+/* VIDEO PLACEHOLDER */
+
+.video-frame {
+  position: relative;
+
+  width: min(100%, 420px);
+  aspect-ratio: 9 / 16;
+
+  max-height: 68vh;
+
+  background:
+    radial-gradient(circle at center,
+      #171010 0%,
+      #080606 45%,
+      #000 100%);
+
+  border: 1px solid #301010;
+  overflow: hidden;
+
+  box-shadow:
+    0 0 40px rgba(80,0,0,.15),
+    inset 0 0 60px #000;
+}
+
+.video-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,.018) 4px
+    );
+
+  pointer-events: none;
+}
+
+.placeholder-text {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b6262;
+  letter-spacing: 3px;
+  font-size: 12px;
+}
+
+.placeholder-symbol {
+  font-family: "Special Elite", serif;
+  font-size: 46px;
+  color: #620000;
+  margin-bottom: 18px;
+}
+
+/* INTRO TEXT */
+
+.quote {
+  max-width: 550px;
+  margin: 30px auto;
+
+  font-family: "Cinzel", serif;
+  font-size: 17px;
+  line-height: 1.8;
+
+  color: #d2cec7;
+
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* START BUTTON */
+
+.start-button {
+  width: 290px;
+  max-width: 90%;
+
+  padding: 17px 20px;
+
+  background: transparent;
+  color: #ddd8d0;
+
+  border: 1px solid #650000;
+
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+
+  cursor: pointer;
+
+  transition: .35s;
+}
+
+.start-button:hover,
+.start-button:active {
+  background: rgba(110,0,0,.2);
+  border-color: #a00000;
+  box-shadow: 0 0 20px rgba(100,0,0,.15);
+}
+
+/* ΜΙΚΡΑ ΚΙΝΗΤΑ */
+
+@media (max-height: 700px) {
+  .video-frame {
+    max-height: 58vh;
+  }
+
+  .logo {
+    margin-bottom: 25px;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-  <!-- ΑΡΧΙΚΗ ΟΘΟΝΗ -->
+<!-- ΑΡΧΙΚΗ ΟΘΟΝΗ -->
 
-  <div id="languageScreen" class="screen">
+<div id="languageScreen" class="screen">
 
-    <h1>OBSESSED</h1>
+  <h1 class="logo">OBSESSED</h1>
 
-    <button class="language-button" onclick="enterExperience('gr')">
-      <span class="flag">🇬🇷</span> ΕΛΛΗΝΙΚΑ
-    </button>
+  <button class="language-button"
+          onclick="enterExperience('gr')">
+    <span class="flag">🇬🇷</span>
+    ΕΛΛΗΝΙΚΑ
+  </button>
 
-    <button class="language-button" onclick="enterExperience('en')">
-      <span class="flag">🇬🇧</span> ENGLISH
-    </button>
+  <button class="language-button"
+          onclick="enterExperience('en')">
+    <span class="flag">🇬🇧</span>
+    ENGLISH
+  </button>
+
+</div>
+
+
+<!-- LANGUAGE SWITCHER -->
+
+<div id="languageSwitcher" class="hidden">
+
+  <button id="grButton"
+          onclick="changeLanguage('gr')">
+    🇬🇷
+  </button>
+
+  <button id="enButton"
+          onclick="changeLanguage('en')">
+    🇬🇧
+  </button>
+
+</div>
+
+
+<!-- VIDEO SCREEN -->
+
+<div id="videoScreen" class="screen hidden">
+
+  <div class="video-frame">
+
+    <div class="placeholder-text">
+
+      <div class="placeholder-symbol">
+        OBSESSED
+      </div>
+
+      INTRO VIDEO
+
+    </div>
 
   </div>
 
+  <div id="introText" class="quote"></div>
 
-  <!-- ΜΟΝΙΜΗ ΑΛΛΑΓΗ ΓΛΩΣΣΑΣ -->
+  <button id="startButton"
+          class="start-button">
+  </button>
 
-  <div id="languageSwitcher" class="hidden">
-
-    <button id="grButton" onclick="changeLanguage('gr')">
-      🇬🇷
-    </button>
-
-    <button id="enButton" onclick="changeLanguage('en')">
-      🇬🇧
-    </button>
-
-  </div>
+</div>
 
 
-  <!-- INTRO -->
+<script>
 
-  <div id="introScreen" class="screen hidden">
-
-    <h1>OBSESSED</h1>
-
-    <div id="introText" class="quote"></div>
-
-    <button id="startButton" class="start-button">
-    </button>
-
-  </div>
+let selectedLanguage = "gr";
 
 
-  <script>
+function enterExperience(language) {
 
-    let selectedLanguage = "gr";
+  selectedLanguage = language;
 
+  document
+    .getElementById("languageScreen")
+    .classList.add("hidden");
 
-    function enterExperience(language) {
+  document
+    .getElementById("videoScreen")
+    .classList.remove("hidden");
 
-      selectedLanguage = language;
+  document
+    .getElementById("languageSwitcher")
+    .classList.remove("hidden");
 
-      document
-        .getElementById("languageScreen")
-        .classList.add("hidden");
-
-      document
-        .getElementById("introScreen")
-        .classList.remove("hidden");
-
-      document
-        .getElementById("languageSwitcher")
-        .classList.remove("hidden");
-
-      updateLanguage();
-    }
+  updateLanguage();
+}
 
 
-    function changeLanguage(language) {
+function changeLanguage(language) {
 
-      selectedLanguage = language;
+  selectedLanguage = language;
 
-      updateLanguage();
-    }
-
-
-    function updateLanguage() {
-
-      const introText =
-        document.getElementById("introText");
-
-      const startButton =
-        document.getElementById("startButton");
-
-      const grButton =
-        document.getElementById("grButton");
-
-      const enButton =
-        document.getElementById("enButton");
+  updateLanguage();
+}
 
 
-      if (selectedLanguage === "gr") {
+function updateLanguage() {
 
-        document.documentElement.lang = "el";
+  const introText =
+    document.getElementById("introText");
 
-        introText.innerText =
-          "Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται, η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.";
+  const startButton =
+    document.getElementById("startButton");
 
-        startButton.innerText =
-          "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
+  const grButton =
+    document.getElementById("grButton");
 
-        grButton.classList.add("active");
-        enButton.classList.remove("active");
-
-      }
+  const enButton =
+    document.getElementById("enButton");
 
 
-      if (selectedLanguage === "en") {
+  if (selectedLanguage === "gr") {
 
-        document.documentElement.lang = "en";
+    document.documentElement.lang = "el";
 
-        introText.innerText =
-          "When love becomes an obsession and you cannot see the evil that is coming, the situation begins to become very dangerous.";
+    introText.innerText =
+      "Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται, η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.";
 
-        startButton.innerText =
-          "THE OBSESSION BEGINS";
+    startButton.innerText =
+      "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
 
-        enButton.classList.add("active");
-        grButton.classList.remove("active");
+    grButton.classList.add("active");
+    enButton.classList.remove("active");
 
-      }
+  }
 
-    }
 
-  </script>
+  if (selectedLanguage === "en") {
+
+    document.documentElement.lang = "en";
+
+    introText.innerText =
+      "When love becomes an obsession and you cannot see the evil that is coming, the situation begins to become very dangerous.";
+
+    startButton.innerText =
+      "THE OBSESSION BEGINS";
+
+    enButton.classList.add("active");
+    grButton.classList.remove("active");
+
+  }
+
+}
+
+</script>
 
 </body>
 </html>
