@@ -6,27 +6,71 @@
   <title>OBSESSED</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background: #000;
       color: #fff;
       font-family: Arial, sans-serif;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
+      padding: 24px;
+    }
+
+    .screen {
+      max-width: 500px;
+      width: 100%;
     }
 
     h1 {
+      margin: 0 0 30px;
       color: #8b0000;
       font-size: 48px;
       letter-spacing: 6px;
+    }
+
+    p {
+      font-size: 20px;
+      line-height: 1.6;
+      margin-bottom: 35px;
+    }
+
+    button {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #8b0000;
+      padding: 16px 24px;
+      font-size: 16px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    button:active {
+      background: #8b0000;
     }
   </style>
 </head>
 
 <body>
-  <h1>OBSESSED</h1>
+
+  <div class="screen">
+    <h1>OBSESSED</h1>
+
+    <p>
+      Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται,
+      η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.
+    </p>
+
+    <button>
+      Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ
+    </button>
+  </div>
+
 </body>
 </html>
