@@ -230,6 +230,124 @@ body {
   flex-shrink: 1;
 }
 
+  /* ===== STORY CHAPTER 01 ===== */
+
+.story-chapter {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.chapter-number {
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #7d1b1b;
+  margin-bottom: 6px;
+}
+
+.story-title {
+  font-family: "Cinzel", serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  margin: 0 0 20px;
+  color: #eee9e2;
+}
+
+.memory-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #080808;
+  border: 1px solid #281010;
+  overflow: hidden;
+  margin-bottom: 22px;
+  box-shadow: 0 0 35px rgba(70, 0, 0, .15);
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #4b4545;
+}
+
+.story-text {
+  font-family: "GFS Didot", serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: #d8d3cc;
+  margin-bottom: 25px;
+}
+
+.riddle-box {
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid #301010;
+}
+
+.riddle-text {
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #c9c3bc;
+  margin-bottom: 18px;
+}
+
+.riddle-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  background: rgba(0, 0, 0, .55);
+  border: 1px solid #4a1818;
+
+  color: #eee9e2;
+  text-align: center;
+
+  font-family: "GFS Didot", serif;
+  font-size: 17px;
+
+  outline: none;
+}
+
+.riddle-input:focus {
+  border-color: #8b2525;
+}
+
+.riddle-button {
+  margin-top: 12px;
+  padding: 11px 24px;
+
+  border: 1px solid #651c1c;
+  background: transparent;
+
+  color: #ddd8d0;
+
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+
+  cursor: pointer;
+}
+
+.riddle-message {
+  min-height: 22px;
+  margin-top: 12px;
+
+  font-family: "GFS Didot", serif;
+  font-size: 15px;
+}
+  
   @media (min-width: 768px) {
 
   .video-frame {
@@ -483,7 +601,46 @@ body {
 
 <div id="storyScreen1" class="screen hidden">
 
-  <div id="storyText1" class="quote"></div>
+  <div class="story-chapter">
+
+    <div class="chapter-number">01</div>
+
+    <h2 id="storyTitle1" class="story-title">
+      ΠΡΙΝ ΑΠΟ ΟΛΑ
+    </h2>
+
+    <div class="memory-photo">
+      <div class="photo-placeholder">
+        THEIR LAST HAPPY MEMORY
+      </div>
+    </div>
+
+    <div id="storyText1" class="story-text"></div>
+
+    <div class="riddle-box">
+
+      <div id="riddleText1" class="riddle-text"></div>
+
+      <input
+        id="riddleAnswer1"
+        class="riddle-input"
+        type="text"
+        autocomplete="off"
+        placeholder="..."
+      >
+
+      <button
+        id="riddleButton1"
+        class="riddle-button"
+        onclick="checkRiddle1()">
+        ΑΠΑΝΤΗΣΗ
+      </button>
+
+      <div id="riddleMessage1" class="riddle-message"></div>
+
+    </div>
+
+  </div>
 
 </div>
 <script>
@@ -589,6 +746,11 @@ function updateLanguage() {
   const storyText1 =
   document.getElementById("storyText1");
 
+const storyTitle1 = document.getElementById("storyTitle1");
+const riddleText1 = document.getElementById("riddleText1");
+const riddleButton1 = document.getElementById("riddleButton1");
+const riddleAnswer1 = document.getElementById("riddleAnswer1");
+
   const grButton =
     document.getElementById("grButton");
 
@@ -606,8 +768,9 @@ function updateLanguage() {
     startButton.innerText =
       "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
 
-    storyText1.innerText =
-  "Κάποιες ιστορίες δεν ξεκινούν όταν συμβαίνει κάτι τρομακτικό. Ξεκινούν πολύ νωρίτερα... από κάτι που μοιάζει με αγάπη.";
+    storyText1.innerHTML =
+  "Ήταν από εκείνες τις μέρες που αργότερα θα ευχόταν να μπορούσε να ζήσει ξανά.<br><br>" +
+  "Εκείνη χαμογελούσε περισσότερο τελευταία. Σε λίγους μήνες θα γίνονταν τρεις.";
 
     grButton.classList.add("active");
 
