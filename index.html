@@ -151,9 +151,10 @@ body {
 #languageSwitcher {
   position: fixed;
 
-  top: max(12px, env(safe-area-inset-top));
+  top: 0;
   left: 0;
   right: 0;
+  box-sizing: border-box;
 
   height: 55px;
 
@@ -239,7 +240,11 @@ body {
   .quote {
     max-width: 650px;
   }
-
+#languageScreen {
+  background-size: auto 100%;
+  background-position: center;
+  background-color: #000;
+}
 }
 
 .placeholder {
