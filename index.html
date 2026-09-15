@@ -612,10 +612,6 @@ body {
     ←
   </button>
 
-  <button id="nextArrow" onclick="nextScreen()">
-    →
-  </button>
-
 </div>
 <!-- INTRO VIDEO -->
 
@@ -769,6 +765,42 @@ function previousScreen() {
 
 }
 
+function checkRiddle1() {
+
+  const input = document.getElementById("riddleAnswer1");
+  const message = document.getElementById("riddleMessage1");
+
+  const answer = input.value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "")
+    .toLowerCase();
+
+  if (
+  answer === "κοκκινηγαρδενια" ||
+  answer === "redgardenia"
+) {
+
+    input.style.borderColor = "#2f7d45";
+    message.style.color = "#5fa873";
+
+    message.textContent =
+      selectedLanguage === "gr"
+        ? "Σωστά."
+        : "Correct.";
+
+  } else {
+
+    input.style.borderColor = "#9b1c1c";
+    message.style.color = "#b83232";
+
+    message.textContent =
+      selectedLanguage === "gr"
+        ? "Λάθος απάντηση."
+        : "Wrong answer.";
+  }
+}
+  
   function flipMemoryPhoto() {
   const card = document.getElementById("memoryCard");
 
@@ -836,6 +868,13 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
   "Ήταν από εκείνες τις μέρες που αργότερα θα ευχόταν να μπορούσε να ζήσει ξανά.<br><br>" +
   "Εκείνη χαμογελούσε περισσότερο τελευταία. Σε λίγους μήνες θα γίνονταν τρεις.";
 
+    riddleText1.innerHTML =
+  "Κοίταξε προσεκτικά τη φωτογραφία και όσα άφησε πίσω της.<br><br>" +
+  "<strong>Ποιο ήταν το αγαπημένο λουλούδι της Κάρεν;</strong>";
+
+riddleButton1.textContent = "ΑΠΑΝΤΗΣΗ";
+riddleAnswer1.placeholder = "Γράψε την απάντηση...";
+
     grButton.classList.add("active");
 
     enButton.classList.remove("active");
@@ -854,8 +893,16 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
     startButton.innerText =
       "THE OBSESSION BEGINS";
 
-    storyText1.innerText =
-  "Some stories do not begin when something frightening happens. They begin much earlier... when something looks like love.";
+   storyText1.innerHTML =
+  "It was one of those days he would later wish he could live all over again.<br><br>" +
+  "She had been smiling more lately. In a few months, there would be three of them.";
+
+    riddleText1.innerHTML =
+  "Look carefully at the photograph and what was left behind.<br><br>" +
+  "<strong>What was Karen's favorite flower?</strong>";
+
+riddleButton1.textContent = "ANSWER";
+riddleAnswer1.placeholder = "Enter your answer...";
 
     enButton.classList.add("active");
 
