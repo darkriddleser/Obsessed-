@@ -257,12 +257,58 @@ body {
 
 .memory-photo {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  background: #080808;
-  border: 1px solid #281010;
-  overflow: hidden;
+  aspect-ratio: 2 / 3;
+
   margin-bottom: 22px;
-  box-shadow: 0 0 35px rgba(70, 0, 0, .15);
+
+  perspective: 1200px;
+  cursor: pointer;
+
+  background: transparent;
+  border: none;
+  overflow: visible;
+}
+
+.memory-card {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  transform-style: preserve-3d;
+}
+
+.memory-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.memory-card-face {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.memory-card-back {
+  transform: rotateY(180deg);
+}
+
+.memory-card-face img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .photo-placeholder {
@@ -609,11 +655,21 @@ body {
       ΠΡΙΝ ΑΠΟ ΟΛΑ
     </h2>
 
-    <div class="memory-photo">
-      <div class="photo-placeholder">
-        THEIR LAST HAPPY MEMORY
-      </div>
+<div class="memory-photo" onclick="flipMemoryPhoto()">
+
+  <div id="memoryCard" class="memory-card">
+
+    <div class="memory-card-face memory-card-front">
+      <img src="front.png" alt="Karen and Henry">
     </div>
+
+    <div class="memory-card-face memory-card-back">
+      <img id="memoryBackImage" src="back1.png" alt="Henry's note">
+    </div>
+
+  </div>
+
+</div>
 
     <div id="storyText1" class="story-text"></div>
 
@@ -713,6 +769,13 @@ function previousScreen() {
 
 }
 
+  function flipMemoryPhoto() {
+  const card = document.getElementById("memoryCard");
+
+  if (card) {
+    card.classList.toggle("flipped");
+  }
+}
 
 function nextScreen() {
 
@@ -761,6 +824,7 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
   if (selectedLanguage === "gr") {
 
     document.documentElement.lang = "el";
+    document.getElementById("memoryBackImage").src = "back1.png";
 
     introText.innerText =
       "Όταν η αγάπη γίνεται εμμονή και δεν βλέπεις το κακό που έρχεται, η κατάσταση αρχίζει να γίνεται πολύ επικίνδυνη.";
@@ -782,6 +846,7 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
   if (selectedLanguage === "en") {
 
     document.documentElement.lang = "en";
+    document.getElementById("memoryBackImage").src = "back2.png";
 
     introText.innerText =
       "When love becomes an obsession and you cannot see the evil that is coming, the situation begins to become very dangerous.";
