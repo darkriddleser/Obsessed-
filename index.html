@@ -24,7 +24,7 @@ body {
   font-family: "Noto Serif", serif;
 }
 
-.screen {
+.scre {
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -32,19 +32,19 @@ body {
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: cter;
+  justify-contt: cter;
 
-  text-align: center;
+  text-align: cter;
 
   /* Χώρος επάνω για τις σημαίες
      και κάτω για τα βελάκια */
   padding: 80px 24px 90px;
 
-  overflow-x: hidden;
+  overflow-x: hidd;
 }
 
-.hidden {
+.hidd {
   display: none !important;
 }
 
@@ -53,38 +53,38 @@ body {
    ΠΡΩΤΗ ΟΘΟΝΗ
 ========================= */
 
-#languageScreen {
-  overflow: hidden;
+#languageScre {
+  overflow: hidd;
 
   background-image:
-    linear-gradient(
+    linear-gradit(
       rgba(0,0,0,.18),
       rgba(0,0,0,.32)
     ),
     url("file_00000000a95081f4ad0a889b8883d67c.png");
 
   background-size: cover;
-  background-position: center;
+  background-position: cter;
   background-repeat: no-repeat;
 }
 
-#languageScreen::after {
-  content: "";
+#languageScre::after {
+  contt: "";
   position: absolute;
   inset: 0;
 
   background:
-    radial-gradient(
-      ellipse at center,
-      transparent 20%,
+    radial-gradit(
+      ellipse at cter,
+      transpart 20%,
       rgba(0,0,0,.22) 60%,
       rgba(0,0,0,.75) 100%
     );
 
-  pointer-events: none;
+  pointer-evts: none;
 }
 
-.language-content {
+.language-contt {
   position: relative;
   z-index: 2;
 
@@ -93,7 +93,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: cter;
 
   transform: translateY(90px);
 }
@@ -161,25 +161,25 @@ body {
   z-index: 1000;
 
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  align-items: cter;
+  justify-contt: flex-d;
   gap: 3px;
 
   padding: 0 18px;
 
-  background: linear-gradient(
+  background: linear-gradit(
     to bottom,
     rgba(0,0,0,.95),
     rgba(0,0,0,.70),
-    transparent
+    transpart
   );
 
-  pointer-events: none;
+  pointer-evts: none;
 }
 
 #languageSwitcher button {
   border: 0;
-  background: transparent;
+  background: transpart;
 
   padding: 5px 6px;
 
@@ -188,7 +188,7 @@ body {
 
   opacity: .4;
 
-  pointer-events: auto;
+  pointer-evts: auto;
 }
 
 #languageSwitcher button.active {
@@ -199,17 +199,17 @@ body {
    VIDEO / INTRO
 ========================= */
 
-#videoScreen {
+#videoScre {
   background:
-    radial-gradient(
-      circle at center,
+    radial-gradit(
+      circle at cter,
       #140707 0%,
       #050303 45%,
       #000 100%
     );
   padding-top: 35px;
 padding-bottom: 100px;
-justify-content: flex-start;
+justify-contt: flex-start;
 }
 
 .video-frame {
@@ -224,7 +224,7 @@ justify-content: flex-start;
   background: #050505;
   border: 1px solid #351010;
 
-  overflow: hidden;
+  overflow: hidd;
 
   box-shadow:
     0 0 45px rgba(80,0,0,.18),
@@ -266,7 +266,7 @@ justify-content: flex-start;
   perspective: 1200px;
   cursor: pointer;
 
-  background: transparent;
+  background: transpart;
   border: none;
   overflow: visible;
 }
@@ -289,11 +289,11 @@ justify-content: flex-start;
   inset: 0;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: cter;
+  justify-contt: cter;
 
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: hidd;
+  -webkit-backface-visibility: hidd;
 }
 
 .memory-card-back {
@@ -316,8 +316,8 @@ justify-content: flex-start;
   height: 100%;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: cter;
+  justify-contt: cter;
 
   font-family: "Cinzel", serif;
   font-size: 10px;
@@ -358,7 +358,7 @@ justify-content: flex-start;
   border: 1px solid #4a1818;
 
   color: #eee9e2;
-  text-align: center;
+  text-align: cter;
 
   font-family: "GFS Didot", serif;
   font-size: 17px;
@@ -375,7 +375,7 @@ justify-content: flex-start;
   padding: 11px 24px;
 
   border: 1px solid #651c1c;
-  background: transparent;
+  background: transpart;
 
   color: #ddd8d0;
 
@@ -404,9 +404,9 @@ justify-content: flex-start;
   .quote {
     max-width: 650px;
   }
-#languageScreen {
+#languageScre {
   background-size: auto 100%;
-  background-position: center;
+  background-position: cter;
   background-color: #000;
 }
 }
@@ -416,8 +416,8 @@ justify-content: flex-start;
   inset: 0;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: cter;
+  justify-contt: cter;
 
   font-family: "Cinzel", serif;
 
@@ -833,6 +833,8 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
     startButton.innerText =
       "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ";
 
+    storyTitle1.textContent = "ΠΡΙΝ ΑΠΟ ΟΛΑ";
+
     storyText1.innerHTML =
   "Ήταν από εκείνες τις μέρες που αργότερα θα ευχόταν να μπορούσε να ζήσει ξανά.<br><br>" +
   "Εκείνη χαμογελούσε περισσότερο τελευταία. Σε λίγους μήνες θα γίνονταν τρεις.";
@@ -857,6 +859,8 @@ riddleAnswer1.placeholder = "Γράψε την απάντηση...";
 
     startButton.innerText =
       "THE OBSESSION BEGINS";
+
+    storyTitle1.textContent = "BEFORE EVERYTHING";
 
    storyText1.innerHTML =
   "She had been smiling more lately. In a few months, there would be three of them.";
