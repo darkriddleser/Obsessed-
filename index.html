@@ -272,7 +272,7 @@ justify-content: flex-start;
   overflow: visible;
 }
 
-.memory-card {
+.memory- {
   position: relative;
 
   width: 100%;
@@ -282,11 +282,11 @@ justify-content: flex-start;
   transform-style: preserve-3d;
 }
 
-.memory-card.flipped {
+.memory-.flipped {
   transform: rotateY(180deg);
 }
 
-.memory-card-face {
+.memory--face {
   position: absolute;
   inset: 0;
 
@@ -313,6 +313,11 @@ justify-content: flex-start;
 
   user-select: none;
   -webkit-user-drag: none;
+}
+.memory-card-back img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 }
 
 .photo-placeholder {
