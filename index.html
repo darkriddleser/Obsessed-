@@ -207,6 +207,9 @@ body {
       #050303 45%,
       #000 100%
     );
+  padding-top: 35px;
+padding-bottom: 100px;
+justify-content: flex-start;
 }
 
 .video-frame {
@@ -216,7 +219,7 @@ body {
   aspect-ratio: 9 / 16;
 
   /* Δεν αφήνουμε το video να ξεφεύγει σε laptop */
-  max-height: 58vh;
+  max-height: 48vh;
 
   background: #050505;
   border: 1px solid #351010;
@@ -586,24 +589,6 @@ body {
 </div>
 
 
-<!-- ΜΟΝΙΜΗ ΑΛΛΑΓΗ ΓΛΩΣΣΑΣ -->
-
-<div id="languageSwitcher" class="hidden">
-
-  <button
-    id="grButton"
-    onclick="changeLanguage('gr')">
-    🇬🇷
-  </button>
-
-  <button
-    id="enButton"
-    onclick="changeLanguage('en')">
-    🇬🇧
-  </button>
-
-</div>
-
 <!-- NAVIGATION ARROWS -->
 
 <div id="navigationArrows" class="hidden">
@@ -713,12 +698,8 @@ function enterExperience(language) {
     .classList.remove("hidden");
 
   document
-    .getElementById("languageSwitcher")
+    .getElementById("navigationArrows")
     .classList.remove("hidden");
-
-  document
-  .getElementById("navigationArrows")
-  .classList.remove("hidden");
 
   updateLanguage();
 }
@@ -749,10 +730,6 @@ function previousScreen() {
   if (!videoScreen.classList.contains("hidden")) {
 
     videoScreen.classList.add("hidden");
-
-    document
-      .getElementById("languageSwitcher")
-      .classList.add("hidden");
 
     document
       .getElementById("navigationArrows")
@@ -846,13 +823,6 @@ const riddleText1 = document.getElementById("riddleText1");
 const riddleButton1 = document.getElementById("riddleButton1");
 const riddleAnswer1 = document.getElementById("riddleAnswer1");
 
-  const grButton =
-    document.getElementById("grButton");
-
-  const enButton =
-    document.getElementById("enButton");
-
-
   if (selectedLanguage === "gr") {
 
     document.documentElement.lang = "el";
@@ -874,9 +844,6 @@ const riddleAnswer1 = document.getElementById("riddleAnswer1");
 riddleButton1.textContent = "ΑΠΑΝΤΗΣΗ";
 riddleAnswer1.placeholder = "Γράψε την απάντηση...";
 
-    grButton.classList.add("active");
-
-    enButton.classList.remove("active");
 
   }
 
@@ -901,9 +868,6 @@ riddleAnswer1.placeholder = "Γράψε την απάντηση...";
 riddleButton1.textContent = "ANSWER";
 riddleAnswer1.placeholder = "Enter your answer...";
 
-    enButton.classList.add("active");
-
-    grButton.classList.remove("active");
 
   }
 
