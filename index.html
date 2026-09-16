@@ -24,7 +24,7 @@ body {
   font-family: "Noto Serif", serif;
 }
 
-.scre {
+.screen {
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -32,19 +32,17 @@ body {
 
   display: flex;
   flex-direction: column;
-  align-items: cter;
-  justify-contt: cter;
+  align-items: center;
+  justify-content: center;
 
-  text-align: cter;
+  text-align: center;
 
-  /* Χώρος επάνω για τις σημαίες
-     και κάτω για τα βελάκια */
   padding: 80px 24px 90px;
 
-  overflow-x: hidd;
+  overflow-x: hidden;
 }
 
-.hidd {
+.hidden {
   display: none !important;
 }
 
@@ -53,38 +51,38 @@ body {
    ΠΡΩΤΗ ΟΘΟΝΗ
 ========================= */
 
-#languageScre {
-  overflow: hidd;
+#languageScreen {
+  overflow: hidden;
 
   background-image:
-    linear-gradit(
+    linear-gradient(
       rgba(0,0,0,.18),
       rgba(0,0,0,.32)
     ),
     url("file_00000000a95081f4ad0a889b8883d67c.png");
 
   background-size: cover;
-  background-position: cter;
+  background-position: center;
   background-repeat: no-repeat;
 }
 
-#languageScre::after {
-  contt: "";
+#languageScreen::after {
+  content: "";
   position: absolute;
   inset: 0;
 
   background:
-    radial-gradit(
-      ellipse at cter,
-      transpart 20%,
+    radial-gradient(
+      ellipse at center,
+      transparent 20%,
       rgba(0,0,0,.22) 60%,
       rgba(0,0,0,.75) 100%
     );
 
-  pointer-evts: none;
+  pointer-events: none;
 }
 
-.language-contt {
+.language-content {
   position: relative;
   z-index: 2;
 
@@ -93,7 +91,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  align-items: cter;
+  align-items: center;
 
   transform: translateY(90px);
 }
@@ -109,7 +107,6 @@ body {
   padding: 17px 20px;
 
   background: rgba(3,3,3,.76);
-
   border: 1px solid rgba(130,20,20,.8);
 
   color: #e3dfd8;
@@ -117,7 +114,6 @@ body {
   font-family: "Cinzel", serif;
   font-size: 15px;
   font-weight: 500;
-
   letter-spacing: 2px;
 
   cursor: pointer;
@@ -132,9 +128,7 @@ body {
 
 .language-button:active {
   transform: scale(.98);
-
   background: rgba(80,0,0,.35);
-
   border-color: #b32828;
 }
 
@@ -161,25 +155,25 @@ body {
   z-index: 1000;
 
   display: flex;
-  align-items: cter;
-  justify-contt: flex-d;
+  align-items: center;
+  justify-content: flex-end;
   gap: 3px;
 
   padding: 0 18px;
 
-  background: linear-gradit(
+  background: linear-gradient(
     to bottom,
     rgba(0,0,0,.95),
     rgba(0,0,0,.70),
-    transpart
+    transparent
   );
 
-  pointer-evts: none;
+  pointer-events: none;
 }
 
 #languageSwitcher button {
   border: 0;
-  background: transpart;
+  background: transparent;
 
   padding: 5px 6px;
 
@@ -188,28 +182,30 @@ body {
 
   opacity: .4;
 
-  pointer-evts: auto;
+  pointer-events: auto;
 }
 
 #languageSwitcher button.active {
   opacity: 1;
 }
 
+
 /* =========================
    VIDEO / INTRO
 ========================= */
 
-#videoScre {
+#videoScreen {
   background:
-    radial-gradit(
-      circle at cter,
+    radial-gradient(
+      circle at center,
       #140707 0%,
       #050303 45%,
       #000 100%
     );
+
   padding-top: 35px;
-padding-bottom: 100px;
-justify-contt: flex-start;
+  padding-bottom: 100px;
+  justify-content: flex-start;
 }
 
 .video-frame {
@@ -217,14 +213,12 @@ justify-contt: flex-start;
 
   width: min(100%, 360px);
   aspect-ratio: 9 / 16;
-
-  /* Δεν αφήνουμε το video να ξεφεύγει σε laptop */
   max-height: 48vh;
 
   background: #050505;
   border: 1px solid #351010;
 
-  overflow: hidd;
+  overflow: hidden;
 
   box-shadow:
     0 0 45px rgba(80,0,0,.18),
@@ -233,7 +227,10 @@ justify-contt: flex-start;
   flex-shrink: 1;
 }
 
-  /* ===== STORY CHAPTER 01 ===== */
+
+/* =========================
+   STORY CHAPTER 01
+========================= */
 
 .story-chapter {
   width: 100%;
@@ -258,6 +255,9 @@ justify-contt: flex-start;
   color: #eee9e2;
 }
 
+
+/* FLIP PHOTO */
+
 .memory-photo {
   width: 100%;
   aspect-ratio: 2 / 3;
@@ -266,7 +266,7 @@ justify-contt: flex-start;
   perspective: 1200px;
   cursor: pointer;
 
-  background: transpart;
+  background: transparent;
   border: none;
   overflow: visible;
 }
@@ -289,11 +289,11 @@ justify-contt: flex-start;
   inset: 0;
 
   display: flex;
-  align-items: cter;
-  justify-contt: cter;
+  align-items: center;
+  justify-content: center;
 
-  backface-visibility: hidd;
-  -webkit-backface-visibility: hidd;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .memory-card-back {
@@ -311,19 +311,8 @@ justify-contt: flex-start;
   -webkit-user-drag: none;
 }
 
-.photo-placeholder {
-  width: 100%;
-  height: 100%;
 
-  display: flex;
-  align-items: cter;
-  justify-contt: cter;
-
-  font-family: "Cinzel", serif;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: #4b4545;
-}
+/* STORY TEXT */
 
 .story-text {
   font-family: "GFS Didot", serif;
@@ -332,6 +321,9 @@ justify-contt: flex-start;
   color: #d8d3cc;
   margin-bottom: 25px;
 }
+
+
+/* RIDDLE */
 
 .riddle-box {
   width: 100%;
@@ -354,11 +346,11 @@ justify-contt: flex-start;
 
   padding: 13px 14px;
 
-  background: rgba(0, 0, 0, .55);
+  background: rgba(0,0,0,.55);
   border: 1px solid #4a1818;
 
   color: #eee9e2;
-  text-align: cter;
+  text-align: center;
 
   font-family: "GFS Didot", serif;
   font-size: 17px;
@@ -375,7 +367,7 @@ justify-contt: flex-start;
   padding: 11px 24px;
 
   border: 1px solid #651c1c;
-  background: transpart;
+  background: transparent;
 
   color: #ddd8d0;
 
@@ -393,43 +385,26 @@ justify-contt: flex-start;
   font-family: "GFS Didot", serif;
   font-size: 15px;
 }
-  
-  @media (min-width: 768px) {
 
-  .video-frame {
-    width: 280px;
-    max-height: 52vh;
-  }
 
-  .quote {
-    max-width: 650px;
-  }
-#languageScre {
-  background-size: auto 100%;
-  background-position: cter;
-  background-color: #000;
-}
-}
+/* =========================
+   INTRO TEXT
+========================= */
 
 .placeholder {
   position: absolute;
   inset: 0;
 
   display: flex;
-  align-items: cter;
-  justify-contt: cter;
+  align-items: center;
+  justify-content: center;
 
   font-family: "Cinzel", serif;
-
   color: #5d5555;
 
   font-size: 12px;
-
   letter-spacing: 4px;
 }
-
-
-/* ΚΕΙΜΕΝΟ ΔΕΥΤΕΡΗΣ ΟΘΟΝΗΣ */
 
 .quote {
   max-width: 520px;
@@ -439,13 +414,11 @@ justify-contt: flex-start;
   color: #e0dcd5;
 
   font-family: "GFS Didot", serif;
-
   font-size: 19px;
   font-weight: 400;
   font-style: italic;
 
   line-height: 1.75;
-
   letter-spacing: .2px;
 
   text-shadow:
@@ -457,7 +430,6 @@ justify-contt: flex-start;
 
 .start-button {
   width: 300px;
-
   max-width: 90%;
 
   padding: 16px;
@@ -469,9 +441,7 @@ justify-contt: flex-start;
   border: 1px solid #651313;
 
   font-family: "Cinzel", serif;
-
   font-size: 13px;
-
   letter-spacing: 1.5px;
 
   cursor: pointer;
@@ -480,6 +450,8 @@ justify-contt: flex-start;
 .start-button:active {
   background: rgba(90,0,0,.3);
 }
+
+
 /* =========================
    NAVIGATION ARROWS
 ========================= */
@@ -541,16 +513,30 @@ justify-contt: flex-start;
   opacity: .2;
   cursor: default;
 }
-#navigationArrows button:active {
-  background: rgba(90,0,0,.3);
-  border-color: #a00000;
+
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 768px) {
+
+  .video-frame {
+    width: 280px;
+    max-height: 52vh;
+  }
+
+  .quote {
+    max-width: 650px;
+  }
+
+  #languageScreen {
+    background-size: auto 100%;
+    background-position: center;
+    background-color: #000;
+  }
 }
 
-#navigationArrows button:disabled {
-  opacity: .2;
-  cursor: default;
-}
-  
 </style>
 </head>
 
