@@ -571,7 +571,23 @@ body {
 
 </div>
 
+<!-- ΔΕΥΤΕΡΟ ΓΕΓΟΝΟΣ -->
 
+<div id="storyScreen2" class="screen hidden">
+
+  <div class="story-chapter">
+
+    <div class="chapter-number">02</div>
+
+    <h2 id="storyTitle2" class="story-title">
+      Η ΜΕΡΑ ΠΟΥ ΕΣΒΗΣΑΝ ΟΛΑ
+    </h2>
+
+    <div id="storyText2" class="story-text"></div>
+
+  </div>
+
+</div>
 <!-- NAVIGATION ARROWS -->
 
 <div id="navigationArrows" class="hidden">
@@ -750,6 +766,9 @@ if (
       selectedLanguage === "gr"
         ? "Σωστά."
         : "Correct.";
+  setTimeout(() => {
+  nextEvent();
+}, 1200);
 
   } else {
 
@@ -779,6 +798,19 @@ function nextScreen() {
 
   document
     .getElementById("storyScreen1")
+    .classList.remove("hidden");
+
+  updateLanguage();
+}
+
+function nextEvent() {
+
+  document
+    .getElementById("storyScreen1")
+    .classList.add("hidden");
+
+  document
+    .getElementById("storyScreen2")
     .classList.remove("hidden");
 
   updateLanguage();
