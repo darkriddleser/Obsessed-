@@ -868,6 +868,15 @@ if (
   answer === "redroses"
 ) {
 
+  const babyCry = document.getElementById("babyCry");
+
+if (babyCry) {
+  babyCry.play().then(() => {
+    babyCry.pause();
+    babyCry.currentTime = 0;
+  }).catch(() => {});
+}
+
     input.style.borderColor = "#2f7d45";
     message.style.color = "#5fa873";
 
@@ -914,13 +923,11 @@ function nextScreen() {
   }
 
   // EVENT 01 → EVENT 02
-  else if (!storyScreen1.classList.contains("hidden")) {
+else if (!storyScreen1.classList.contains("hidden")) {
 
-    storyScreen1.classList.add("hidden");
-    storyScreen2.classList.remove("hidden");
+  nextEvent();
 
-    updateLanguage();
-  }
+}
 }
 
 function nextEvent() {
