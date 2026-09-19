@@ -554,7 +554,7 @@ body {
   }
 
   to {
-    transform: translateX(-66.666%);
+    transform: translateX(-60%);
   }
 }
 
@@ -671,6 +671,8 @@ body {
   <button id="backArrow" onclick="previousScreen()">
     ←
   </button>
+  
+  <button class="nav-arrow" onclick="nextScreen()">→</button>
 
 </div>
 <!-- INTRO VIDEO -->
@@ -868,15 +870,26 @@ if (
 
 function nextScreen() {
 
-  document
-    .getElementById("videoScreen")
-    .classList.add("hidden");
+  const videoScreen = document.getElementById("videoScreen");
+  const storyScreen1 = document.getElementById("storyScreen1");
+  const storyScreen2 = document.getElementById("storyScreen2");
 
-  document
-    .getElementById("storyScreen1")
-    .classList.remove("hidden");
+  // VIDEO → EVENT 01
+  if (!videoScreen.classList.contains("hidden")) {
 
-  updateLanguage();
+    videoScreen.classList.add("hidden");
+    storyScreen1.classList.remove("hidden");
+
+  }
+
+  // EVENT 01 → EVENT 02
+  else if (!storyScreen1.classList.contains("hidden")) {
+
+    storyScreen1.classList.add("hidden");
+    storyScreen2.classList.remove("hidden");
+
+    updateLanguage();
+  }
 }
 
 function nextEvent() {
