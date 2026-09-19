@@ -581,6 +581,8 @@ body {
   }
 }
 .hospital-document {
+  opacity: 0;
+transition: opacity 3s ease;
   width: 100%;
   max-width: 390px;
   margin: 25px auto 40px;
@@ -609,7 +611,9 @@ body {
 
   transform: rotate(-0.4deg);
 }
-
+.hospital-document.show {
+  opacity: 1;
+}
 #hospitalName {
   text-align: center;
   font-weight: bold;
@@ -1098,8 +1102,13 @@ setTimeout(() => {
   const babyCry = document.getElementById("babyCry");
 
   if (babyCry) {
-    babyCry.currentTime = 0;
-    babyCry.play().catch(() => {});
+babyCry.currentTime = 0;
+babyCry.play().catch(() => {});
+
+setTimeout(() => {
+  babyCry.pause();
+  babyCry.currentTime = 0;
+}, 3000);
   }
 
 }, 1000);
@@ -1111,6 +1120,10 @@ setTimeout(() => {
 
   if (hospitalDocument) {
     hospitalDocument.classList.remove("hidden");
+
+setTimeout(() => {
+  hospitalDocument.classList.add("show");
+}, 50);
   }
 
 }, 17000);
