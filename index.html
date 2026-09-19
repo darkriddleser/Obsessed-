@@ -580,7 +580,107 @@ body {
     background-color: #000;
   }
 }
+.hospital-document {
+  width: 100%;
+  max-width: 390px;
+  margin: 25px auto 40px;
+  padding: 28px 24px;
 
+  background:
+    linear-gradient(
+      rgba(255,255,255,.04),
+      rgba(0,0,0,.05)
+    ),
+    #d8d0ba;
+
+  color: #171512;
+
+  text-align: left;
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+
+  border: 1px solid #8e8775;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.8),
+    inset 0 0 35px rgba(70,55,30,.12);
+
+  transform: rotate(-0.4deg);
+}
+
+#hospitalName {
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+#hospitalRecordTitle {
+  text-align: center;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 5px;
+  letter-spacing: .8px;
+}
+
+.hospital-document hr {
+  border: 0;
+  border-top: 1px solid rgba(30,25,20,.45);
+  margin: 17px 0;
+}
+
+#hospitalTimeline {
+  line-height: 1.8;
+}
+
+#hospitalMotherStatus {
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+#hospitalClue {
+  margin: 22px 0 15px;
+  padding: 12px 8px;
+
+  border-top: 1px dashed #706958;
+  border-bottom: 1px dashed #706958;
+
+  font-family: "GFS Didot", serif;
+  font-size: 16px;
+  font-style: italic;
+  text-align: center;
+}
+
+#incidentTimeInput {
+  width: 55%;
+  padding: 10px;
+
+  background: rgba(255,255,255,.35);
+  border: 1px solid #625c50;
+
+  color: #171512;
+  text-align: center;
+
+  font-family: "Courier New", monospace;
+  font-size: 16px;
+}
+
+#incidentTimeButton {
+  width: 43%;
+  padding: 10px 4px;
+
+  background: #24211c;
+  border: 1px solid #24211c;
+
+  color: #ddd5c1;
+
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+
+  cursor: pointer;
+}
 </style>
 </head>
 
