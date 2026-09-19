@@ -622,14 +622,15 @@ body {
       Η ΜΕΡΑ ΠΟΥ ΕΣΒΗΣΑΝ ΟΛΑ
     </h2>
 
-    <div id="storyText2" class="story-text"></div>
+    <div id="storyText2" class="story-text hidden"></div>
 
-    <div class="heart-monitor">
+    <div id="heartMonitor" class="heart-monitor">
 
   <div class="monitor-line">
     <svg viewBox="0 0 600 120" preserveAspectRatio="none">
-      <polyline
-        class="ecg-line"
+    <polyline
+  id="ecgLine"
+  class="ecg-line"
         points="
         0,60 60,60
         75,60 85,50 95,70 108,15 120,100 135,60
@@ -875,6 +876,18 @@ function nextEvent() {
     .classList.remove("hidden");
 
   updateLanguage();
+
+  // Μετά από 5 δευτερόλεπτα το καρδιογράφημα γίνεται flatline
+  setTimeout(() => {
+
+    const ecg = document.getElementById("ecgLine");
+
+    ecg.setAttribute(
+      "points",
+      "0,60 100,60 200,60 300,60 400,60 500,60 600,60"
+    );
+
+  }, 5000);
 }
   
 function changeLanguage(language) {
