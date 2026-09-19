@@ -649,19 +649,6 @@ transition: opacity 3s ease;
   font-weight: bold;
 }
 
-#hospitalClue {
-  margin: 22px 0 15px;
-  padding: 12px 8px;
-
-  border-top: 1px dashed #706958;
-  border-bottom: 1px dashed #706958;
-
-  font-family: "GFS Didot", serif;
-  font-size: 16px;
-  font-style: italic;
-  text-align: center;
-}
-
 #incidentTimeInput {
   width: 55%;
   padding: 10px;
@@ -806,8 +793,6 @@ transition: opacity 3s ease;
   <hr>
 
   <div id="hospitalMotherStatus"></div>
-
-  <div id="hospitalClue"></div>
 
   <input
     id="incidentTimeInput"
@@ -1087,9 +1072,13 @@ setTimeout(() => {
 
   const monitor = document.getElementById("heartMonitor");
 
-  if (monitor) {
-    monitor.classList.add("fade-out");
-  }
+if (monitor) {
+  monitor.classList.add("fade-out");
+
+  setTimeout(() => {
+    monitor.classList.add("hidden");
+  }, 2000);
+}
 
 }, 10000);
 
@@ -1175,7 +1164,7 @@ document.getElementById("hospitalMotherStatus").textContent =
   "ΚΑΤΑΣΤΑΣΗ ΜΗΤΕΡΑΣ: █████████";
 
 document.getElementById("hospitalClue").textContent =
-  "Όταν ακούστηκε το πρώτο κλάμα, όλα είχαν ήδη αλλάξει.";
+  "";
 
 document.getElementById("incidentTimeButton").textContent =
   "ΕΠΙΒΕΒΑΙΩΣΗ";
@@ -1277,7 +1266,7 @@ document.getElementById("hospitalMotherStatus").textContent =
   "MOTHER STATUS: █████████";
 
 document.getElementById("hospitalClue").textContent =
-  "When the first cry was heard, everything had already changed.";
+  "";
 
 document.getElementById("incidentTimeButton").textContent =
   "CONFIRM";
