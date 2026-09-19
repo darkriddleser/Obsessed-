@@ -678,7 +678,44 @@ body {
   </div>
 
 </div>
+    
+<div id="hospitalDocument" class="hospital-document hidden">
 
+  <div id="hospitalName"></div>
+  <div id="hospitalRecordTitle"></div>
+
+  <hr>
+
+  <div id="hospitalPatient"></div>
+  <div id="hospitalWard"></div>
+  <div id="hospitalRoom"></div>
+
+  <hr>
+
+  <div id="hospitalTimeline"></div>
+
+  <hr>
+
+  <div id="hospitalMotherStatus"></div>
+
+  <div id="hospitalClue"></div>
+
+  <input
+    id="incidentTimeInput"
+    type="text"
+    placeholder="__:__"
+    maxlength="5"
+    autocomplete="off"
+  >
+
+  <button id="incidentTimeButton">
+    ΕΠΙΒΕΒΑΙΩΣΗ
+  </button>
+
+  <div id="incidentTimeMessage"></div>
+
+</div>
+    
   </div>
 
 </div>
@@ -991,6 +1028,37 @@ function updateLanguage() {
 const storyTitle1 = document.getElementById("storyTitle1");
 const storyTitle2 = document.getElementById("storyTitle2");
 const storyText2 = document.getElementById("storyText2");
+document.getElementById("hospitalName").textContent =
+  "ST. MARY'S HOSPITAL";
+
+document.getElementById("hospitalRecordTitle").textContent =
+  "ΔΕΛΤΙΟ ΤΟΚΕΤΟΥ / ΕΠΕΙΓΟΝΤΟΣ";
+
+document.getElementById("hospitalPatient").textContent =
+  "ΑΣΘΕΝΗΣ: ΚΑΡΕΝ ΤΖΕΦΕΡΣΟΝ";
+
+document.getElementById("hospitalWard").textContent =
+  "ΤΜΗΜΑ: ΜΑΙΕΥΤΙΚΗ";
+
+document.getElementById("hospitalRoom").textContent =
+  "ΔΩΜΑΤΙΟ: 214";
+
+document.getElementById("hospitalTimeline").innerHTML =
+  "02:14 — Ασθενής σταθερή<br>" +
+  "02:16 — Εμβρυϊκή δυσχέρεια<br>" +
+  "02:17 — Τοκετός<br>" +
+  "02:18 — Κλάμα νεογνού / σταθερό<br>" +
+  "02:21 — Καρδιακή ανακοπή μητέρας<br>" +
+  "02:24 — Ανεπιτυχής ανάνηψη";
+
+document.getElementById("hospitalMotherStatus").textContent =
+  "ΚΑΤΑΣΤΑΣΗ ΜΗΤΕΡΑΣ: █████████";
+
+document.getElementById("hospitalClue").textContent =
+  "Όταν ακούστηκε το πρώτο κλάμα, όλα είχαν ήδη αλλάξει.";
+
+document.getElementById("incidentTimeButton").textContent =
+  "ΕΠΙΒΕΒΑΙΩΣΗ";
 const riddleText1 = document.getElementById("riddleText1");
 const riddleButton1 = document.getElementById("riddleButton1");
 const riddleAnswer1 = document.getElementById("riddleAnswer1");
