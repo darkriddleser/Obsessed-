@@ -631,6 +631,10 @@ body {
 
     <div id="heartMonitor" class="heart-monitor">
 
+    <audio id="babyCry" preload="auto">
+  <source src="babycry.mp3" type="audio/mpeg">
+</audio>
+
   <div class="monitor-line">
 <svg viewBox="0 0 2400 120" preserveAspectRatio="none">
 
@@ -977,6 +981,18 @@ setTimeout(() => {
   }
 
 }, 10000);
+
+  // Μετά το σκοτάδι ακούγεται το κλάμα του νεογέννητου
+setTimeout(() => {
+
+  const babyCry = document.getElementById("babyCry");
+
+  if (babyCry) {
+    babyCry.currentTime = 0;
+    babyCry.play().catch(() => {});
+  }
+
+}, 12000);
 
 }
   
