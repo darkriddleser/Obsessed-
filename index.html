@@ -528,6 +528,11 @@ body {
   box-shadow: inset 0 0 30px rgba(0, 255, 100, 0.05);
 }
 
+  .heart-monitor.fade-out {
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
 .monitor-line {
   width: 100%;
   height: 120px;
@@ -961,6 +966,17 @@ function nextEvent() {
     );
 
   }, 7000);
+
+  // Λίγο μετά το τέλος του ECG, το monitor χάνεται στο σκοτάδι
+setTimeout(() => {
+
+  const monitor = document.getElementById("heartMonitor");
+
+  if (monitor) {
+    monitor.classList.add("fade-out");
+  }
+
+}, 10000);
 
 }
   
