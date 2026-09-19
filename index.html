@@ -651,8 +651,17 @@ body {
     1220,60 1235,57 1245,63 1255,52 1265,68 1280,60
     1320,60 1335,59 1345,61 1355,56 1365,64 1380,60
 
-    1420,60 1460,60 1500,60 1540,60
-    1580,60 1620,60 1660,60 1700,60 1750,60 1800,60
+   1420,60
+1500,60
+1600,60
+1700,60
+1800,60
+1900,60
+2000,60
+2100,60
+2200,60
+2300,60
+2400,60
     "
   />
 
@@ -783,6 +792,9 @@ function enterExperience(language) {
 
 function previousScreen() {
 
+  const storyScreen2 =
+    document.getElementById("storyScreen2");
+
   const storyScreen1 =
     document.getElementById("storyScreen1");
 
@@ -793,7 +805,17 @@ function previousScreen() {
     document.getElementById("languageScreen");
 
 
-  // Αν είμαστε στην 3η οθόνη → επιστροφή στο Intro
+  // EVENT 02 → EVENT 01
+  if (!storyScreen2.classList.contains("hidden")) {
+
+    storyScreen2.classList.add("hidden");
+    storyScreen1.classList.remove("hidden");
+
+    return;
+  }
+
+
+  // EVENT 01 → INTRO
   if (!storyScreen1.classList.contains("hidden")) {
 
     storyScreen1.classList.add("hidden");
@@ -803,7 +825,7 @@ function previousScreen() {
   }
 
 
-  // Αν είμαστε στο Intro → επιστροφή στην επιλογή γλώσσας
+  // INTRO → LANGUAGE
   if (!videoScreen.classList.contains("hidden")) {
 
     videoScreen.classList.add("hidden");
@@ -904,7 +926,7 @@ function nextEvent() {
 
   updateLanguage();
 
-  const ecg = document.getElementById("ecgLine");
+  const ecg = document.getElementById("");
 
   // 1. Φυσιολογικός παλμός για 3 sec
 
