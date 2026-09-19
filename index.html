@@ -998,8 +998,6 @@ if (
   answer === "redrose" ||
   answer === "redroses"
 ) {
-
-
     input.style.borderColor = "#2f7d45";
     message.style.color = "#5fa873";
 
@@ -1021,6 +1019,14 @@ if (
         ? "Λάθος απάντηση."
         : "Wrong answer.";
   }
+  const babyCry = document.getElementById("babyCry");
+
+if (babyCry) {
+  babyCry.volume = 0;
+  babyCry.loop = true;
+  babyCry.currentTime = 0;
+  babyCry.play().catch(() => {});
+}
 }
   
   function flipMemoryPhoto() {
@@ -1087,15 +1093,16 @@ setTimeout(() => {
 
   const babyCry = document.getElementById("babyCry");
 
-  if (babyCry) {
-babyCry.currentTime = 0;
-babyCry.play().catch(() => {});
-
-setTimeout(() => {
-  babyCry.pause();
+if (babyCry) {
   babyCry.currentTime = 0;
-}, 3000);
-  }
+  babyCry.loop = false;
+  babyCry.volume = 1;
+
+  setTimeout(() => {
+    babyCry.pause();
+    babyCry.currentTime = 0;
+  }, 3000);
+}
 
 }, 1000);
 // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
