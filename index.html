@@ -1003,7 +1003,17 @@ setTimeout(() => {
   }
 
 }, 12000);
+// Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
+setTimeout(() => {
 
+  const hospitalDocument =
+    document.getElementById("hospitalDocument");
+
+  if (hospitalDocument) {
+    hospitalDocument.classList.remove("hidden");
+  }
+
+}, 17000);
 }
   
 function changeLanguage(language) {
