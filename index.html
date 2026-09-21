@@ -702,6 +702,18 @@ transition: opacity 3s ease;
 .henry-line.show {
   opacity: 1;
 }
+  #storyScreen3 {
+  justify-content: flex-start;
+  padding-top: 35px;
+}
+
+#storyScreen3 .story-chapter {
+  width: 100%;
+}
+
+#storyScreen3 .henry-anger {
+  margin-top: 22vh;
+}
   
 </style>
 </head>
@@ -988,7 +1000,15 @@ function previousScreen() {
 
   const languageScreen =
     document.getElementById("languageScreen");
+  
+// EVENT 03 → Πίσω στο EVENT 02
+if (!document.getElementById("storyScreen3").classList.contains("hidden")) {
 
+  document.getElementById("storyScreen3").classList.add("hidden");
+  document.getElementById("storyScreen2").classList.remove("hidden");
+
+  return;
+}
 
   // EVENT 02 → EVENT 01
   if (!storyScreen2.classList.contains("hidden")) {
@@ -1123,16 +1143,14 @@ lines.forEach((line, index) => {
 
   setTimeout(() => {
 
-    container.innerHTML = `
-      <div class="henry-line">${line}</div>
-    `;
+    const newLine = document.createElement("div");
+    newLine.className = "henry-line";
+    newLine.textContent = line;
+
+    container.appendChild(newLine);
 
     setTimeout(() => {
-      const currentLine = container.querySelector(".henry-line");
-
-      if (currentLine) {
-        currentLine.classList.add("show");
-      }
+      newLine.classList.add("show");
     }, 50);
 
   }, index * 3000);
