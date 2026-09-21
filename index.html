@@ -686,6 +686,23 @@ transition: opacity 3s ease;
 
   cursor: pointer;
 }
+.henry-anger {
+  min-height: 90px;
+  margin-top: 35px;
+  text-align: center;
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+.henry-line {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.henry-line.show {
+  opacity: 1;
+}
+  
 </style>
 </head>
 
@@ -835,7 +852,7 @@ transition: opacity 3s ease;
       ΚΑΠΟΙΟΣ ΕΠΡΕΠΕ ΝΑ ΦΤΑΙΕΙ
     </h2>
 
-    <div id="storyText3" class="story-text"></div>
+    <div id="storyText3" class="story-text henry-anger"></div>
 
   </div>
 
@@ -1079,7 +1096,50 @@ else if (!storyScreen1.classList.contains("hidden")) {
 
 }
 }
+function playHenryAnger() {
 
+  const container = document.getElementById("storyText3");
+
+  const lines = selectedLanguage === "gr"
+    ? [
+        "Τη σκότωσες.",
+        "Αν δεν υπήρχες εσύ, θα ήταν ακόμα εδώ.",
+        "Μου την πήρες.",
+        "Εσύ έπρεπε να είχες πεθάνει.",
+        "Όχι εκείνη.",
+        "Έπρεπε να είσαι εσύ. Θα το διορθώσω."
+      ]
+    : [
+        "You killed her.",
+        "If it weren't for you, she would still be here.",
+        "You took her from me.",
+        "You should have died.",
+        "Not her.",
+        "It should have been you. I'll fix it."
+      ];
+  container.innerHTML = "";
+
+lines.forEach((line, index) => {
+
+  setTimeout(() => {
+
+    container.innerHTML = `
+      <div class="henry-line">${line}</div>
+    `;
+
+    setTimeout(() => {
+      const currentLine = container.querySelector(".henry-line");
+
+      if (currentLine) {
+        currentLine.classList.add("show");
+      }
+    }, 50);
+
+  }, index * 3000);
+
+});
+
+}
 function nextEvent() {
 
   document
@@ -1191,6 +1251,7 @@ motherStatus.textContent =
   document
     .getElementById("storyScreen3")
     .classList.remove("hidden");
+      playHenryAnger();
 
 }, 2000);
 
