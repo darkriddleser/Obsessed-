@@ -692,6 +692,9 @@ transition: opacity 3s ease;
   text-align: center;
   font-size: 19px;
   line-height: 1.6;
+
+  opacity: 1;
+  transition: opacity 2s ease;
 }
 
 .henry-line {
@@ -713,6 +716,24 @@ transition: opacity 3s ease;
 
 #storyScreen3 .henry-anger {
   margin-top: 22vh;
+}
+/* EVENT 03 - ΣΚΗΝΗ ΦΩΤΙΑΣ */
+.fire-scene {
+  width: 100%;
+  margin-top: 8vh;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.fire-scene.show {
+  opacity: 1;
+}
+
+.fire-scene video {
+  width: 100%;
+  max-height: 55vh;
+  object-fit: cover;
+  display: block;
 }
   
 </style>
@@ -865,6 +886,19 @@ transition: opacity 3s ease;
     </h2>
 
     <div id="storyText3" class="story-text henry-anger"></div>
+
+   <!-- ΣΚΗΝΗ ΦΩΤΙΑΣ -->
+<div id="fireScene" class="fire-scene hidden">
+
+  <video id="fireVideo" muted playsinline loop>
+    <source src="fire.mp4" type="video/mp4">
+  </video>
+
+  <audio id="fireAudio" preload="auto">
+    <source src="fireAlarm.mp3" type="audio/mpeg">
+  </audio>
+
+</div>
 
   </div>
 
@@ -1178,6 +1212,38 @@ if (visibleLines.length > 3) {
     }, 50);
 
   }, index * 3000);
+
+  // EVENT 03 - Μετά τα λόγια του Henry ξεκινά η φωτιά
+setTimeout(() => {
+
+  // Σβήνουν τα λόγια του Henry
+  container.style.opacity = "0";
+
+  setTimeout(() => {
+
+    const fireScene = document.getElementById("fireScene");
+    const fireVideo = document.getElementById("fireVideo");
+    const fireAudio = document.getElementById("fireAudio");
+
+    // Εμφάνιση σκηνής φωτιάς
+    fireScene.classList.remove("hidden");
+
+    setTimeout(() => {
+      fireScene.classList.add("show");
+    }, 50);
+
+    // Έναρξη video
+    fireVideo.currentTime = 0;
+    fireVideo.play();
+
+    // Έναρξη ήχου φωτιάς
+    fireAudio.currentTime = 0;
+    fireAudio.volume = 1;
+    fireAudio.play();
+
+  }, 1500);
+
+}, 18000);
 
 });
 
