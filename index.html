@@ -1121,6 +1121,23 @@ function enterExperience(language) {
 
   selectedLanguage = language;
 
+    // Ξεκλείδωμα audio για mobile browsers
+  document.querySelectorAll("audio").forEach(audio => {
+    audio.muted = true;
+
+    const playPromise = audio.play();
+
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.muted = false;
+      }).catch(() => {
+        audio.muted = false;
+      });
+    }
+  });
+
   document
     .getElementById("languageScreen")
     .classList.add("hidden");
