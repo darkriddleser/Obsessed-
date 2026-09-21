@@ -1115,6 +1115,16 @@ else if (!storyScreen1.classList.contains("hidden")) {
   nextEvent();
 
 }
+  // EVENT 02 → EVENT 03
+if (!document.getElementById("storyScreen2").classList.contains("hidden")) {
+
+  document.getElementById("storyScreen2").classList.add("hidden");
+  document.getElementById("storyScreen3").classList.remove("hidden");
+
+  playHenryAnger();
+
+  return;
+}
 }
 function playHenryAnger() {
 
@@ -1151,6 +1161,20 @@ lines.forEach((line, index) => {
 
     setTimeout(() => {
       newLine.classList.add("show");
+      // Από την 4η φράση και μετά,
+// αρχίζει να εξαφανίζεται η παλιότερη
+const visibleLines = container.querySelectorAll(".henry-line.show");
+
+if (visibleLines.length > 3) {
+
+  const oldestLine = visibleLines[0];
+
+  oldestLine.classList.remove("show");
+
+  setTimeout(() => {
+    oldestLine.remove();
+  }, 1200);
+}
     }, 50);
 
   }, index * 3000);
