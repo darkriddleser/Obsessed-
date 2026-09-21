@@ -701,24 +701,21 @@ overflow: hidden;
 
 /* EVENT 03 - Smooth κίνηση λόγων Henry */
 .henry-line {
-  opacity: 0;
-  top: 100px;
   position: absolute;
-left: 0;
-bottom: 0;
-width: 100%;
+  left: 0;
+  top: 120px;
+  width: 100%;
 
-transform: translateY(0);
+  opacity: 0;
 
-transition:
-  top 3s linear,
-  opacity 1.2s ease;
+  transition:
+    top 9s linear,
+    opacity 1s ease;
 }
 
 .henry-line.show {
+  top: -40px;
   opacity: 1;
-  top: 50px;
-  transform: translateY(0);
 }
 
 .henry-line.fade-away {
@@ -1314,21 +1311,19 @@ lines.forEach((line, index) => {
 
     eventTimeout(() => {
       newLine.classList.add("show");
+      eventTimeout(() => {
+  newLine.style.opacity = "0";
+
+  eventTimeout(() => {
+    newLine.remove();
+  }, 1000);
+
+}, 8000);
       // Από την 4η φράση και μετά,
 // αρχίζει να εξαφανίζεται η παλιότερη
 const visibleLines = container.querySelectorAll(".henry-line.show");
 
-if (visibleLines.length > 2) {
 
-  const oldestLine = visibleLines[0];
-
-  oldestLine.classList.remove("show");
-oldestLine.classList.add("fade-away");
-
-  eventTimeout(() => {
-    oldestLine.remove();
-  }, 1200);
-}
     }, 50);
 
   }, index * 3000);
