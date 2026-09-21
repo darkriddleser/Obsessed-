@@ -762,6 +762,10 @@ overflow: hidden;
   
  /* EVENT 03 - ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ HENRY */
 .henry-statement {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: calc(100% - 40px);
   max-width: 390px;
 
@@ -812,11 +816,18 @@ overflow: hidden;
     inset 0 0 30px rgba(0,0,0,.08);
 
   opacity: 0;
-  transition: opacity 3s ease;
+
+transform-origin: top center;
+transform: scaleY(0);
+
+transition:
+  transform 2.2s cubic-bezier(.22,.8,.25,1),
+  opacity .5s ease;
 }
 
 .fire-report.show {
   opacity: 1;
+  transform: scaleY(1);
 }
 </style>
 </head>
@@ -983,7 +994,9 @@ overflow: hidden;
 </div>
     
 <!-- ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ HENRY -->
-<div id="henryStatement" class="henry-statement hidden">
+<div id="henryStatement"
+     class="henry-statement hidden"
+     onclick="showFireReport()">
 </div>
     <!-- ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ -->
 <div id="fireReport" class="fire-report hidden">
@@ -1484,42 +1497,32 @@ eventTimeout(() => {
 
   }, 2000);
 
-}, 32000);
+}, 38000);
   
-  // EVENT 03 - Μετά την κατάθεση εμφανίζεται η αναφορά
-eventTimeout(() => {
+}
 
-  const screen3 = document.getElementById("storyScreen3");
-
-  if (screen3.classList.contains("hidden")) {
-    return;
-  }
+function showFireReport() {
 
   const statement = document.getElementById("henryStatement");
   const report = document.getElementById("fireReport");
 
-  // Σβήνει η κατάθεση
+  // Σβήνει η κατάθεση του Henry
   statement.classList.remove("show");
 
   eventTimeout(() => {
 
-    if (screen3.classList.contains("hidden")) {
-      return;
-    }
-
     statement.classList.add("hidden");
 
+    // Εμφανίζεται το report
     report.classList.remove("hidden");
 
     eventTimeout(() => {
       report.classList.add("show");
     }, 50);
 
-  }, 2000);
-
-}, 42000);
-  
+  }, 1000);
 }
+  
 function nextEvent() {
 
   const monitor = document.getElementById("heartMonitor");
