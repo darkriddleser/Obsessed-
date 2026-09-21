@@ -519,10 +519,18 @@ body {
    DESKTOP
 ========================= */
 
+#storyScreen1,
 #storyScreen2 {
-  justify-content: center;
-  padding-top: 0;
-  transform: translateY(-45px);
+  justify-content: flex-start;
+  padding-top: 35px;
+}
+
+#storyScreen2 {
+  transform: none;
+}
+
+#storyScreen2 .heart-monitor {
+  margin-top: 22vh;
 }
   
   .heart-monitor {
@@ -1096,12 +1104,24 @@ if (babyCry) {
   });
 
 setTimeout(() => {
-  babyCry.pause();
-  babyCry.currentTime = 0;
-}, 15000);
+
+  const fadeOut = setInterval(() => {
+
+    if (babyCry.volume > 0.05) {
+      babyCry.volume = Math.max(0, babyCry.volume - 0.05);
+    } else {
+      clearInterval(fadeOut);
+      babyCry.pause();
+      babyCry.currentTime = 0;
+      babyCry.volume = 1;
+    }
+
+  }, 100);
+
+}, 13000);
 }
 
-}, 7500);
+}, 6000);
 // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
 setTimeout(() => {
 
