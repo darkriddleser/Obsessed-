@@ -1673,14 +1673,11 @@ const yPercent = (y / rect.height) * 100;
 
 if (
   !evidenceFound &&
-  xPercent > 35 && xPercent < 65 &&
-  yPercent > 35 && yPercent < 65
+xPercent > 42 && xPercent < 58 &&
+yPercent > 28 && yPercent < 48
 ) {
   evidenceFound = true;
   darkness.classList.add("found");
-  eventTimeout(() => {
-  nextEvent();
-}, 3000);
 }
 
   darkness.style.setProperty("--x", x + "px");
