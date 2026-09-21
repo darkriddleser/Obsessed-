@@ -759,7 +759,65 @@ overflow: hidden;
   object-fit: cover;
   display: block;
 }
- 
+  
+ /* EVENT 03 - ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ HENRY */
+.henry-statement {
+  width: calc(100% - 40px);
+  max-width: 390px;
+
+  margin: 30px auto;
+  padding: 26px 22px;
+
+  background: #d8d0ba;
+  color: #171512;
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  text-align: left;
+
+  border: 1px solid #8e8775;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.8),
+    inset 0 0 35px rgba(70,55,30,.12);
+
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.henry-statement.show {
+  opacity: 1;
+}
+/* EVENT 03 - ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ */
+.fire-report {
+  width: calc(100% - 40px);
+  max-width: 390px;
+
+  margin: 30px auto;
+  padding: 26px 22px;
+
+  background: #c9c5b8;
+  color: #171717;
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  text-align: left;
+
+  border: 1px solid #77736a;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.8),
+    inset 0 0 30px rgba(0,0,0,.08);
+
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.fire-report.show {
+  opacity: 1;
+}
 </style>
 </head>
 
@@ -923,7 +981,13 @@ overflow: hidden;
   </audio>
 
 </div>
-
+    
+<!-- ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ HENRY -->
+<div id="henryStatement" class="henry-statement hidden">
+</div>
+    <!-- ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ -->
+<div id="fireReport" class="fire-report hidden">
+</div>
   </div>
 
 </div>
@@ -1103,6 +1167,8 @@ function resetEvent3() {
 
   const container = document.getElementById("storyText3");
   const fireScene = document.getElementById("fireScene");
+  const statement = document.getElementById("henryStatement");
+  const report = document.getElementById("fireReport");
 
   // Καθαρισμός φράσεων Henry
   if (container) {
@@ -1115,6 +1181,17 @@ function resetEvent3() {
     fireScene.classList.remove("show");
     fireScene.classList.add("hidden");
   }
+  // Reset κατάθεσης Henry
+if (statement) {
+  statement.classList.remove("show");
+  statement.classList.add("hidden");
+}
+
+// Reset αναφοράς πυροσβεστικής / αστυνομίας
+if (report) {
+  report.classList.remove("show");
+  report.classList.add("hidden");
+}
 }
 
 function previousScreen() {
@@ -1368,7 +1445,80 @@ eventTimeout(() => {
 
   }, 1500);
 
-}, 18000);
+}, 24000);
+
+  // EVENT 03 - Μετά τη φωτιά εμφανίζεται η κατάθεση του Henry
+eventTimeout(() => {
+
+  const screen3 = document.getElementById("storyScreen3");
+
+  if (screen3.classList.contains("hidden")) {
+    return;
+  }
+
+  const fireScene = document.getElementById("fireScene");
+  const fireVideo = document.getElementById("fireVideo");
+  const fireAudio = document.getElementById("fireAudio");
+  const statement = document.getElementById("henryStatement");
+
+  // Σβήνει η φωτιά
+  fireScene.classList.remove("show");
+
+  // Σταματούν video και ήχος
+  fireVideo.pause();
+  fireAudio.pause();
+
+  eventTimeout(() => {
+
+    if (screen3.classList.contains("hidden")) {
+      return;
+    }
+
+    fireScene.classList.add("hidden");
+
+    statement.classList.remove("hidden");
+
+    eventTimeout(() => {
+      statement.classList.add("show");
+    }, 50);
+
+  }, 2000);
+
+}, 32000);
+  
+  // EVENT 03 - Μετά την κατάθεση εμφανίζεται η αναφορά
+eventTimeout(() => {
+
+  const screen3 = document.getElementById("storyScreen3");
+
+  if (screen3.classList.contains("hidden")) {
+    return;
+  }
+
+  const statement = document.getElementById("henryStatement");
+  const report = document.getElementById("fireReport");
+
+  // Σβήνει η κατάθεση
+  statement.classList.remove("show");
+
+  eventTimeout(() => {
+
+    if (screen3.classList.contains("hidden")) {
+      return;
+    }
+
+    statement.classList.add("hidden");
+
+    report.classList.remove("hidden");
+
+    eventTimeout(() => {
+      report.classList.add("show");
+    }, 50);
+
+  }, 2000);
+
+}, 42000);
+  
 }
 function nextEvent() {
 
@@ -1596,8 +1746,19 @@ storyText2.innerHTML =
     
 //-------------------------- chapter 3 -----------------------------//
 storyTitle3.textContent = "ΚΑΠΟΙΟΣ ΕΠΡΕΠΕ ΝΑ ΦΤΑΙΕΙ";
+document.getElementById("henryStatement").innerHTML =
+  "<strong>ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ</strong><br><br>" +
+  "ΧΕΝΡΙ ΤΖΕΦΕΡΣΟΝ<br><br>" +
+  "«Η φωτιά ξέσπασε ξαφνικά. Εξαπλώθηκε πολύ γρήγορα.<br><br>" +
+  "Προσπάθησα να φτάσω στο μωρό... αλλά δεν μπόρεσα.»";
   }
-
+document.getElementById("fireReport").innerHTML =
+  "<strong>ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ</strong><br><br>" +
+  "ΤΟΠΟΘΕΣΙΑ: ΟΙΚΙΑ ΤΖΕΦΕΡΣΟΝ<br>" +
+  "ΣΥΜΒΑΝ: ΠΥΡΚΑΓΙΑ ΚΑΤΟΙΚΙΑΣ<br><br>" +
+  "Η οικία υπέστη εκτεταμένες ζημιές από τη φωτιά.<br><br>" +
+  "Κατά την έρευνα του χώρου δεν εντοπίστηκε το νεογνό ούτε βρέθηκαν ανθρώπινα λείψανα που να αντιστοιχούν σε αυτό.<br><br>" +
+  "<strong>ΚΑΤΑΣΤΑΣΗ ΝΕΟΓΝΟΥ: ΑΓΝΟΟΥΜΕΝΟ</strong>";
 
   if (selectedLanguage === "en") {
 
@@ -1627,6 +1788,20 @@ riddleAnswer1.placeholder = "Enter your answer...";
     //-------------------------- chapter 3 -----------------------------//
 
     storyTitle3.textContent = "SOMEONE HAD TO BE TO BLAME";
+
+    document.getElementById("henryStatement").innerHTML =
+  "<strong>OFFICIAL STATEMENT</strong><br><br>" +
+  "HENRY JEFFERSON<br><br>" +
+  "“The fire started suddenly. It spread too quickly.<br><br>" +
+  "I tried to reach the baby... but I couldn't.”";
+
+    document.getElementById("fireReport").innerHTML =
+  "<strong>FIRE / POLICE REPORT</strong><br><br>" +
+  "LOCATION: JEFFERSON RESIDENCE<br>" +
+  "INCIDENT: RESIDENTIAL FIRE<br><br>" +
+  "The residence sustained extensive damage from the fire.<br><br>" +
+  "During the search of the property, the newborn was not located, nor were any human remains corresponding to the infant recovered.<br><br>" +
+  "<strong>INFANT STATUS: MISSING</strong>";
 
 storyText2.innerHTML =
   "The months passed.<br><br>" +
