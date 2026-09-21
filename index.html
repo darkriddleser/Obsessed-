@@ -843,6 +843,33 @@ transition: opacity 1.5s ease;
 .fire-report.show {
   opacity: 1;
 }
+
+  /* EVENT 03 - ΚΡΥΜΜΕΝΟ ΣΤΟΙΧΕΙΟ */
+.hidden-evidence {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: calc(100% - 30px);
+  max-width: 420px;
+  aspect-ratio: 3 / 4;
+
+  transform: translate(-50%, -50%);
+
+  background: #020202;
+
+  overflow: hidden;
+
+  opacity: 0;
+  transition: opacity 2s ease;
+
+  box-shadow: 0 10px 40px rgba(0,0,0,.95);
+}
+
+.hidden-evidence.show {
+  opacity: 1;
+}
+  
 </style>
 </head>
 
@@ -1014,6 +1041,10 @@ transition: opacity 1.5s ease;
 </div>
     <!-- ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ -->
 <div id="fireReport" class="fire-report hidden">
+</div>
+    <!-- EVENT 03 - ΚΡΥΜΜΕΝΗ ΦΩΤΟΓΡΑΦΙΑ -->
+<div id="hiddenEvidence" class="hidden-evidence hidden">
+
 </div>
   </div>
 
