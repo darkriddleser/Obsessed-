@@ -762,6 +762,8 @@ overflow: hidden;
   
  /* EVENT 03 - ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ HENRY */
 .henry-statement {
+  cursor: pointer;
+-webkit-tap-highlight-color: transparent;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -772,8 +774,14 @@ overflow: hidden;
   margin: 30px auto;
   padding: 26px 22px;
 
-  background: #d8d0ba;
-  color: #171512;
+background:
+  linear-gradient(
+    rgba(25, 18, 14, .18),
+    rgba(0, 0, 0, .12)
+  ),
+  #aaa18c;
+
+color: #18130f;
 
   font-family: "Courier New", monospace;
   font-size: 13px;
@@ -782,9 +790,10 @@ overflow: hidden;
 
   border: 1px solid #8e8775;
 
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.8),
-    inset 0 0 35px rgba(70,55,30,.12);
+box-shadow:
+  0 12px 35px rgba(0,0,0,.95),
+  inset 0 0 45px rgba(45,20,8,.28),
+  inset 0 0 8px rgba(0,0,0,.35);
 
   opacity: 0;
   transition: opacity 3s ease;
@@ -795,14 +804,24 @@ overflow: hidden;
 }
 /* EVENT 03 - ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ */
 .fire-report {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: calc(100% - 40px);
   max-width: 390px;
 
   margin: 30px auto;
   padding: 26px 22px;
 
-  background: #c9c5b8;
-  color: #171717;
+background:
+  linear-gradient(
+    rgba(25, 18, 14, .20),
+    rgba(0, 0, 0, .14)
+  ),
+  #9f9785;
+
+color: #17120f;
 
   font-family: "Courier New", monospace;
   font-size: 13px;
@@ -811,23 +830,18 @@ overflow: hidden;
 
   border: 1px solid #77736a;
 
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.8),
-    inset 0 0 30px rgba(0,0,0,.08);
+box-shadow:
+  0 12px 35px rgba(0,0,0,.95),
+  inset 0 0 45px rgba(45,20,8,.30),
+  inset 0 0 8px rgba(0,0,0,.38);
 
   opacity: 0;
 
-transform-origin: top center;
-transform: scaleY(0);
-
-transition:
-  transform 2.2s cubic-bezier(.22,.8,.25,1),
-  opacity .5s ease;
+transition: opacity 1.5s ease;
 }
 
 .fire-report.show {
   opacity: 1;
-  transform: scaleY(1);
 }
 </style>
 </head>
