@@ -519,9 +519,10 @@ body {
    DESKTOP
 ========================= */
 
-  #storyScreen2 {
-  justify-content: flex-start;
-  padding-top: 35px;
+#storyScreen2 {
+  justify-content: center;
+  padding-top: 0;
+  transform: translateY(-45px);
 }
   
   .heart-monitor {
@@ -1094,10 +1095,13 @@ if (babyCry) {
     console.log("Baby cry error:", error);
   });
 
-
+setTimeout(() => {
+  babyCry.pause();
+  babyCry.currentTime = 0;
+}, 15000);
 }
 
-}, 1000);
+}, 7500);
 // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
 setTimeout(() => {
 
@@ -1112,7 +1116,7 @@ setTimeout(() => {
 }, 50);
   }
 
-}, 17000);
+}, 12500);
 }
   
 function changeLanguage(language) {
