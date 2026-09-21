@@ -811,7 +811,7 @@ transition: opacity 3s ease;
     autocomplete="off"
   >
 
-  <button id="incidentTimeButton">
+  <button id="incidentTimeButton" onclick="checkIncidentTime()">
     ΕΠΙΒΕΒΑΙΩΣΗ
   </button>
 
@@ -822,6 +822,25 @@ transition: opacity 3s ease;
   </div>
 
 </div>
+
+  <!-- ΤΡΙΤΟ ΓΕΓΟΝΟΣ -->
+
+<div id="storyScreen3" class="screen hidden">
+
+  <div class="story-chapter">
+
+    <div class="chapter-number">03</div>
+
+    <h2 id="storyTitle3" class="story-title">
+      ΚΑΠΟΙΟΣ ΕΠΡΕΠΕ ΝΑ ΦΤΑΙΕΙ
+    </h2>
+
+    <div id="storyText3" class="story-text"></div>
+
+  </div>
+
+</div>
+  
 <!-- NAVIGATION ARROWS -->
 
 <div id="navigationArrows" class="hidden">
@@ -1138,6 +1157,54 @@ setTimeout(() => {
 
 }, 12500);
 }
+
+function checkIncidentTime() {
+
+  const input = document.getElementById("incidentTimeInput");
+  const message = document.getElementById("incidentTimeMessage");
+
+  const answer = input.value.trim();
+
+  if (answer === "02:21") {
+
+    const motherStatus = document.getElementById("hospitalMotherStatus");
+
+motherStatus.textContent =
+  selectedLanguage === "gr"
+    ? "ΚΑΤΑΣΤΑΣΗ ΜΗΤΕΡΑΣ: ΑΠΕΒΙΩΣΕ"
+    : "MOTHER STATUS: DECEASED";
+
+    input.style.borderColor = "#2f7d45";
+
+    message.style.color = "#2f7d45";
+    message.textContent =
+      selectedLanguage === "gr"
+        ? "Σωστά."
+        : "Correct.";
+
+    setTimeout(() => {
+
+  document
+    .getElementById("storyScreen2")
+    .classList.add("hidden");
+
+  document
+    .getElementById("storyScreen3")
+    .classList.remove("hidden");
+
+}, 2000);
+
+  } else {
+
+    input.style.borderColor = "#9b1c1c";
+
+    message.style.color = "#9b1c1c";
+    message.textContent =
+      selectedLanguage === "gr"
+        ? "Λάθος ώρα."
+        : "Wrong time.";
+  }
+}
   
 function changeLanguage(language) {
 
@@ -1161,6 +1228,9 @@ function updateLanguage() {
 const storyTitle1 = document.getElementById("storyTitle1");
 const storyTitle2 = document.getElementById("storyTitle2");
 const storyText2 = document.getElementById("storyText2");
+const storyTitle3 = document.getElementById("storyTitle3");
+const storyText3 = document.getElementById("storyText3");
+  
 document.getElementById("hospitalName").textContent =
   "ST. MARY'S HOSPITAL";
 
@@ -1225,8 +1295,9 @@ storyText2.innerHTML =
   "Οι μήνες πέρασαν.<br><br>" +
   "Η μέρα που περίμεναν τόσο καιρό είχε επιτέλους φτάσει.<br><br>" +
   "Όμως ο Χένρι δεν επέστρεψε ποτέ στο σπίτι μαζί με την Κάρεν.";
-
-
+    
+//-------------------------- chapter 3 -----------------------------//
+storyTitle3.textContent = "ΚΑΠΟΙΟΣ ΕΠΡΕΠΕ ΝΑ ΦΤΑΙΕΙ";
   }
 
 
@@ -1255,6 +1326,9 @@ riddleAnswer1.placeholder = "Enter your answer...";
     //-------------------------- chapter 2 -----------------------------//
 
     storyTitle2.textContent = "THE DAY EVERYTHING FADED";
+    //-------------------------- chapter 3 -----------------------------//
+
+    storyTitle3.textContent = "SOMEONE HAD TO BE TO BLAME";
 
 storyText2.innerHTML =
   "The months passed.<br><br>" +
