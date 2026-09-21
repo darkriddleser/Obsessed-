@@ -1647,7 +1647,14 @@ function checkIncidentTime() {
   const answer = input.value.trim();
 
   if (answer === "02:21") {
+    
+const babyCry = document.getElementById("babyCry");
 
+if (babyCry) {
+  babyCry.pause();
+  babyCry.currentTime = 0;
+  babyCry.volume = 1;
+}
     const motherStatus = document.getElementById("hospitalMotherStatus");
 
 motherStatus.textContent =
