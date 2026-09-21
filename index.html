@@ -1270,6 +1270,7 @@ clearEventTimers();
 else if (!storyScreen1.classList.contains("hidden")) {
 
   nextEvent();
+   return;
 
 }
 // EVENT 02 → EVENT 03
@@ -1314,13 +1315,22 @@ lines.forEach((line, index) => {
 
   eventTimeout(() => {
 
+    eventTimeout(() => {
+
+  // Αν φύγαμε από το EVENT 03, σταματά εδώ
+  if (document.getElementById("storyScreen3").classList.contains("hidden")) {
+    return;
+  }
+
+  const newLine = document.createElement("div");
+
     const newLine = document.createElement("div");
     newLine.className = "henry-line";
     newLine.textContent = line;
 
     container.appendChild(newLine);
 
-    setTimeout(() => {
+    eventTimeout(() => {
       newLine.classList.add("show");
       // Από την 4η φράση και μετά,
 // αρχίζει να εξαφανίζεται η παλιότερη
@@ -1333,7 +1343,7 @@ if (visibleLines.length > 3) {
   oldestLine.classList.remove("show");
 oldestLine.classList.add("fade-away");
 
-  setTimeout(() => {
+  eventTimeout(() => {
     oldestLine.remove();
   }, 1200);
 }
@@ -1341,30 +1351,40 @@ oldestLine.classList.add("fade-away");
 
   }, index * 3000);
 
-  // EVENT 03 - Μετά τα λόγια του Henry ξεκινά η φωτιά
+});
+// EVENT 03 - Μετά τα λόγια του Henry ξεκινά η φωτιά
 eventTimeout(() => {
 
-  // Σβήνουν τα λόγια του Henry
+  // Αν δεν είμαστε πλέον στο EVENT 03, δεν κάνει τίποτα
+  const screen3 = document.getElementById("storyScreen3");
+
+  if (screen3.classList.contains("hidden")) {
+    return;
+  }
+
+  // Σβήνουν ομαλά τα λόγια του Henry
   container.style.opacity = "0";
 
   eventTimeout(() => {
+
+    // Δεύτερος έλεγχος ότι είμαστε ακόμα στο EVENT 03
+    if (screen3.classList.contains("hidden")) {
+      return;
+    }
 
     const fireScene = document.getElementById("fireScene");
     const fireVideo = document.getElementById("fireVideo");
     const fireAudio = document.getElementById("fireAudio");
 
-    // Εμφάνιση σκηνής φωτιάς
     fireScene.classList.remove("hidden");
 
-    setTimeout(() => {
+    eventTimeout(() => {
       fireScene.classList.add("show");
     }, 50);
 
-    // Έναρξη video
     fireVideo.currentTime = 0;
     fireVideo.play();
 
-    // Έναρξη ήχου φωτιάς
     fireAudio.currentTime = 0;
     fireAudio.volume = 1;
     fireAudio.play();
@@ -1372,9 +1392,6 @@ eventTimeout(() => {
   }, 1500);
 
 }, 18000);
-
-});
-
 }
 function nextEvent() {
 
