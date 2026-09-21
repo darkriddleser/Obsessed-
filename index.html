@@ -763,33 +763,7 @@ transition: opacity 3s ease;
   object-fit: cover;
   display: block;
 }
-  /* Smooth κίνηση των φράσεων του Henry */
-.henry-line {
-  opacity: 0;
-  transform: translateY(15px);
-  max-height: 80px;
-
-  transition:
-    opacity 1.2s ease,
-    transform 1.2s ease,
-    max-height 1.2s ease,
-    margin 1.2s ease;
-}
-
-.henry-line.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.henry-line.fade-away {
-  opacity: 0;
-  transform: translateY(-20px);
-  max-height: 0;
-  margin: 0;
-  overflow: hidden;
-}
-
-  
+ 
 </style>
 </head>
 
@@ -1080,6 +1054,7 @@ function enterExperience(language) {
 // ==========================================
 
 let eventTimers = [];
+let eventIntervals = [];
 
 function eventTimeout(callback, delay) {
 
@@ -1090,11 +1065,22 @@ function eventTimeout(callback, delay) {
   return timer;
 }
 
+function eventInterval(callback, delay) {
+
+  const interval = setInterval(callback, delay);
+
+  eventIntervals.push(interval);
+
+  return interval;
+}
+
 function clearEventTimers() {
 
   eventTimers.forEach(timer => clearTimeout(timer));
+  eventIntervals.forEach(interval => clearInterval(interval));
 
   eventTimers = [];
+  eventIntervals = [];
 }
 
   // RESET ΟΛΩΝ ΤΩΝ ΗΧΩΝ ΚΑΙ VIDEO
@@ -1222,7 +1208,7 @@ if (
       selectedLanguage === "gr"
         ? "Σωστά."
         : "Correct.";
-  setTimeout(() => {
+  eventTimeout(() => {
   nextEvent();
 }, 1200);
 
@@ -1322,7 +1308,6 @@ lines.forEach((line, index) => {
 
   const newLine = document.createElement("div");
 
-    const newLine = document.createElement("div");
     newLine.className = "henry-line";
     newLine.textContent = line;
 
@@ -1406,14 +1391,14 @@ function nextEvent() {
 
 
   // Λίγο μετά το τέλος του ECG, το monitor χάνεται στο σκοτάδι
-setTimeout(() => {
+eventTimeout(() => {
 
   const monitor = document.getElementById("heartMonitor");
 
 if (monitor) {
   monitor.classList.add("fade-out");
 
-  setTimeout(() => {
+  eventTimeout(() => {
     monitor.classList.add("hidden");
   }, 2000);
 }
@@ -1421,7 +1406,7 @@ if (monitor) {
 }, 10000);
 
   // Μετά το σκοτάδι ακούγεται το κλάμα του νεογέννητου
-setTimeout(() => {
+eventTimeout(() => {
 
   const babyCry = document.getElementById("babyCry");
 
@@ -1433,9 +1418,9 @@ if (babyCry) {
     console.log("Baby cry error:", error);
   });
 
-setTimeout(() => {
+eventTimeout(() => {
 
-  const fadeOut = setInterval(() => {
+  const fadeOut = eventInterval(() => {
 
     if (babyCry.volume > 0.05) {
       babyCry.volume = Math.max(0, babyCry.volume - 0.05);
@@ -1453,7 +1438,7 @@ setTimeout(() => {
 
 }, 6000);
 // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
-setTimeout(() => {
+eventTimeout(() => {
 
   const hospitalDocument =
     document.getElementById("hospitalDocument");
@@ -1461,7 +1446,7 @@ setTimeout(() => {
   if (hospitalDocument) {
     hospitalDocument.classList.remove("hidden");
 
-setTimeout(() => {
+eventTimeout(() => {
   hospitalDocument.classList.add("show");
 }, 50);
   }
@@ -1493,7 +1478,7 @@ motherStatus.textContent =
         ? "Σωστά."
         : "Correct.";
 
-    setTimeout(() => {
+    eventTimeout(() => {
 
   document
     .getElementById("storyScreen2")
