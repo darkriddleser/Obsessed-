@@ -864,6 +864,7 @@ transition: opacity 1.5s ease;
   transition: opacity 2s ease;
 
   box-shadow: 0 10px 40px rgba(0,0,0,.95);
+  touch-action: none;
 }
 
 .hidden-evidence img {
@@ -877,6 +878,30 @@ transition: opacity 1.5s ease;
 
   filter: brightness(0.05);
 transition: filter .3s ease;
+}
+
+.evidence-darkness {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.97);
+
+  -webkit-mask-image: radial-gradient(
+    circle 65px at var(--x, 50%) var(--y, 50%),
+    transparent 0,
+    transparent 45px,
+    black 75px
+  );
+
+  mask-image: radial-gradient(
+    circle 65px at var(--x, 50%) var(--y, 50%),
+    transparent 0,
+    transparent 45px,
+    black 75px
+  );
+
+  pointer-events: none;
+  z-index: 2;
 }
   
 </style>
@@ -1061,6 +1086,7 @@ transition: filter .3s ease;
     src="evidence1.png"
     alt="Hidden evidence"
   >
+  <div id="evidenceDarkness" class="evidence-darkness"></div>
 
 </div>
   </div>
@@ -1623,6 +1649,24 @@ function showHiddenEvidence() {
 
   }, 1000);
 }
+
+function moveEvidenceLight(event) {
+
+  const evidence = document.getElementById("hiddenEvidence");
+  const darkness = document.getElementById("evidenceDarkness");
+
+  const rect = evidence.getBoundingClientRect();
+
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  darkness.style.setProperty("--x", x + "px");
+  darkness.style.setProperty("--y", y + "px");
+}
+
+document
+  .getElementById("hiddenEvidence")
+  .addEventListener("pointermove", moveEvidenceLight);
   
 function nextEvent() {
 
