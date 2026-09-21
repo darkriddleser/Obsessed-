@@ -718,10 +718,17 @@ transition: opacity 3s ease;
   margin-top: 22vh;
 }
 /* EVENT 03 - ΣΚΗΝΗ ΦΩΤΙΑΣ */
+/* EVENT 03 - ΣΚΗΝΗ ΦΩΤΙΑΣ */
 .fire-scene {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
   width: 100%;
-  margin-top: 8vh;
+
+  transform: translate(-50%, -50%);
   opacity: 0;
+
   transition: opacity 2s ease;
 }
 
@@ -735,6 +742,32 @@ transition: opacity 3s ease;
   object-fit: cover;
   display: block;
 }
+  /* Smooth κίνηση των φράσεων του Henry */
+.henry-line {
+  opacity: 0;
+  transform: translateY(15px);
+  max-height: 80px;
+
+  transition:
+    opacity 1.2s ease,
+    transform 1.2s ease,
+    max-height 1.2s ease,
+    margin 1.2s ease;
+}
+
+.henry-line.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.henry-line.fade-away {
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
   
 </style>
 </head>
@@ -1021,7 +1054,48 @@ function enterExperience(language) {
   updateLanguage();
 }
 
+  // RESET ΟΛΩΝ ΤΩΝ ΗΧΩΝ ΚΑΙ VIDEO
+function resetMedia() {
+
+  document.querySelectorAll("audio, video").forEach(media => {
+
+    media.pause();
+
+    try {
+      media.currentTime = 0;
+    } catch (e) {}
+
+    if (media.tagName === "AUDIO") {
+      media.volume = 1;
+    }
+
+  });
+
+}
+
+  // RESET EVENT 03
+function resetEvent3() {
+
+  const container = document.getElementById("storyText3");
+  const fireScene = document.getElementById("fireScene");
+
+  // Καθαρισμός φράσεων Henry
+  if (container) {
+    container.innerHTML = "";
+    container.style.opacity = "1";
+  }
+
+  // Κρύβει ξανά τη σκηνή της φωτιάς
+  if (fireScene) {
+    fireScene.classList.remove("show");
+    fireScene.classList.add("hidden");
+  }
+}
+
 function previousScreen() {
+
+    // Σταματά και μηδενίζει όλους τους ήχους / video
+  resetMedia();
 
   const storyScreen2 =
     document.getElementById("storyScreen2");
@@ -1131,6 +1205,9 @@ if (
 
 function nextScreen() {
 
+   // Σταματά και μηδενίζει όλους τους ήχους / video
+  resetMedia();
+
   const videoScreen = document.getElementById("videoScreen");
   const storyScreen1 = document.getElementById("storyScreen1");
   const storyScreen2 = document.getElementById("storyScreen2");
@@ -1149,12 +1226,16 @@ else if (!storyScreen1.classList.contains("hidden")) {
   nextEvent();
 
 }
-  // EVENT 02 → EVENT 03
+// EVENT 02 → EVENT 03
 if (!document.getElementById("storyScreen2").classList.contains("hidden")) {
 
   document.getElementById("storyScreen2").classList.add("hidden");
   document.getElementById("storyScreen3").classList.remove("hidden");
 
+  // Καθαρή εκκίνηση του EVENT 03
+  resetEvent3();
+
+  // Ξεκινά η σκηνή του Henry
   playHenryAnger();
 
   return;
@@ -1204,6 +1285,7 @@ if (visibleLines.length > 3) {
   const oldestLine = visibleLines[0];
 
   oldestLine.classList.remove("show");
+oldestLine.classList.add("fade-away");
 
   setTimeout(() => {
     oldestLine.remove();
