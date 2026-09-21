@@ -887,14 +887,14 @@ transition: opacity 1.5s ease;
   background: rgba(0, 0, 0, 0.97);
 
   -webkit-mask-image: radial-gradient(
-    circle 65px at var(--x, 0%) var(--y, 100%),
+    circle 65px at var(--x, 100%) var(--y, 100%),
     transparent 0,
     transparent 45px,
     black 75px
   );
 
   mask-image: radial-gradient(
-    circle 65px at var(--x, 50%) var(--y, 50%),
+    circle 65px at var(--x, 100%) var(--y, 100%),
     transparent 0,
     transparent 45px,
     black 75px
@@ -902,6 +902,11 @@ transition: opacity 1.5s ease;
 
   pointer-events: none;
   z-index: 2;
+  transition: opacity 2s ease;
+}
+
+.evidence-darkness.found {
+  opacity: 0;
 }
   
 </style>
@@ -1652,6 +1657,8 @@ function showHiddenEvidence() {
 
 function moveEvidenceLight(event) {
 
+  let evidenceFound = false;
+
   const evidence = document.getElementById("hiddenEvidence");
   const darkness = document.getElementById("evidenceDarkness");
 
@@ -1659,6 +1666,22 @@ function moveEvidenceLight(event) {
 
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
+
+  // Έλεγχος αν ο φακός βρήκε το κρυμμένο στοιχείο
+const xPercent = (x / rect.width) * 100;
+const yPercent = (y / rect.height) * 100;
+
+if (
+  !evidenceFound &&
+  xPercent > 35 && xPercent < 65 &&
+  yPercent > 35 && yPercent < 65
+) {
+  evidenceFound = true;
+  darkness.classList.add("found");
+  eventTimeout(() => {
+  nextEvent();
+}, 3000);
+}
 
   darkness.style.setProperty("--x", x + "px");
   darkness.style.setProperty("--y", y + "px");
