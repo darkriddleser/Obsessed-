@@ -697,13 +697,34 @@ transition: opacity 3s ease;
   transition: opacity 2s ease;
 }
 
+/* EVENT 03 - Smooth κίνηση λόγων Henry */
 .henry-line {
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transform: translateY(22px);
+
+  max-height: 100px;
+  margin-bottom: 14px;
+
+  transition:
+    opacity 1.8s ease,
+    transform 1.8s ease,
+    max-height 1.8s ease,
+    margin-bottom 1.8s ease;
 }
 
 .henry-line.show {
   opacity: 1;
+  transform: translateY(0);
+}
+
+.henry-line.fade-away {
+  opacity: 0;
+  transform: translateY(-25px);
+
+  max-height: 0;
+  margin-bottom: 0;
+
+  overflow: hidden;
 }
   #storyScreen3 {
   justify-content: flex-start;
@@ -1053,6 +1074,28 @@ function enterExperience(language) {
 
   updateLanguage();
 }
+  
+  // ==========================================
+// ΕΛΕΓΧΟΣ ACTIVE EVENT / TIMERS
+// ==========================================
+
+let eventTimers = [];
+
+function eventTimeout(callback, delay) {
+
+  const timer = setTimeout(callback, delay);
+
+  eventTimers.push(timer);
+
+  return timer;
+}
+
+function clearEventTimers() {
+
+  eventTimers.forEach(timer => clearTimeout(timer));
+
+  eventTimers = [];
+}
 
   // RESET ΟΛΩΝ ΤΩΝ ΗΧΩΝ ΚΑΙ VIDEO
 function resetMedia() {
@@ -1096,6 +1139,7 @@ function previousScreen() {
 
     // Σταματά και μηδενίζει όλους τους ήχους / video
   resetMedia();
+  clearEventTimers();
 
   const storyScreen2 =
     document.getElementById("storyScreen2");
@@ -1207,6 +1251,8 @@ function nextScreen() {
 
    // Σταματά και μηδενίζει όλους τους ήχους / video
   resetMedia();
+  // Ακυρώνει όλες τις προγραμματισμένες ενέργειες του προηγούμενου Event
+clearEventTimers();
 
   const videoScreen = document.getElementById("videoScreen");
   const storyScreen1 = document.getElementById("storyScreen1");
@@ -1266,7 +1312,7 @@ function playHenryAnger() {
 
 lines.forEach((line, index) => {
 
-  setTimeout(() => {
+  eventTimeout(() => {
 
     const newLine = document.createElement("div");
     newLine.className = "henry-line";
@@ -1296,12 +1342,12 @@ oldestLine.classList.add("fade-away");
   }, index * 3000);
 
   // EVENT 03 - Μετά τα λόγια του Henry ξεκινά η φωτιά
-setTimeout(() => {
+eventTimeout(() => {
 
   // Σβήνουν τα λόγια του Henry
   container.style.opacity = "0";
 
-  setTimeout(() => {
+  eventTimeout(() => {
 
     const fireScene = document.getElementById("fireScene");
     const fireVideo = document.getElementById("fireVideo");
