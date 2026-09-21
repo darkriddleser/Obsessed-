@@ -1019,14 +1019,7 @@ if (
         ? "Λάθος απάντηση."
         : "Wrong answer.";
   }
-  const babyCry = document.getElementById("babyCry");
 
-if (babyCry) {
-  babyCry.volume = 0;
-  babyCry.loop = true;
-  babyCry.currentTime = 0;
-  babyCry.play().catch(() => {});
-}
 }
   
   function flipMemoryPhoto() {
@@ -1097,6 +1090,9 @@ if (babyCry) {
   babyCry.currentTime = 0;
   babyCry.loop = false;
   babyCry.volume = 1;
+  babyCry.play().catch(error => {
+    console.log("Baby cry error:", error);
+  });
 
   setTimeout(() => {
     babyCry.pause();
