@@ -866,8 +866,17 @@ transition: opacity 1.5s ease;
   box-shadow: 0 10px 40px rgba(0,0,0,.95);
 }
 
-.hidden-evidence.show {
-  opacity: 1;
+.hidden-evidence img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+  filter: brightness(0.05);
+transition: filter .3s ease;
 }
   
 </style>
@@ -1040,10 +1049,18 @@ transition: opacity 1.5s ease;
      onclick="showFireReport()">
 </div>
     <!-- ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ -->
-<div id="fireReport" class="fire-report hidden">
+<div id="fireReport"
+     class="fire-report hidden"
+     onclick="showHiddenEvidence()">
 </div>
     <!-- EVENT 03 - ΚΡΥΜΜΕΝΗ ΦΩΤΟΓΡΑΦΙΑ -->
 <div id="hiddenEvidence" class="hidden-evidence hidden">
+
+  <img
+    id="evidenceImage"
+    src="evidence1.png"
+    alt="Hidden evidence"
+  >
 
 </div>
   </div>
@@ -1580,6 +1597,28 @@ function showFireReport() {
 
     eventTimeout(() => {
       report.classList.add("show");
+    }, 50);
+
+  }, 1000);
+}
+
+function showHiddenEvidence() {
+
+  const report = document.getElementById("fireReport");
+  const evidence = document.getElementById("hiddenEvidence");
+
+  // Σβήνει το report
+  report.classList.remove("show");
+
+  eventTimeout(() => {
+
+    report.classList.add("hidden");
+
+    // Εμφανίζεται η σκοτεινή φωτογραφία
+    evidence.classList.remove("hidden");
+
+    eventTimeout(() => {
+      evidence.classList.add("show");
     }, 50);
 
   }, 1000);
