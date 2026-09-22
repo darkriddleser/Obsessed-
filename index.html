@@ -1677,7 +1677,11 @@ xPercent > 42 && xPercent < 58 &&
 yPercent > 28 && yPercent < 48
 ) {
   evidenceFound = true;
+
+// Περιμένει 3 δευτερόλεπτα στο σημείο που βρέθηκε το μωρό
+eventTimeout(() => {
   darkness.classList.add("found");
+}, 3000);
 }
 
   darkness.style.setProperty("--x", x + "px");
