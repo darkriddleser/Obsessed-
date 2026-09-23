@@ -1021,18 +1021,68 @@ transition: opacity 1.5s ease;
 
   0% {
     transform: translateY(0) rotate(0deg);
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
     opacity: 1;
   }
 
-  35% {
-    transform: translateY(5px) rotate(1deg);
+  /* Αρχίζει να σκίζεται από πάνω δεξιά */
+  20% {
+    transform: translateY(3px) rotate(1deg);
+    clip-path: polygon(
+      0 0,
+      72% 0,
+      68% 5%,
+      58% 2%,
+      48% 7%,
+      38% 3%,
+      28% 8%,
+      18% 4%,
+      0 10%
+    );
   }
 
+  /* Το σκίσιμο περνάει σχεδόν σε όλο το πάνω μέρος */
+  45% {
+    transform: translateY(12px) rotate(3deg);
+    clip-path: polygon(
+      0 8%,
+      12% 4%,
+      24% 9%,
+      36% 5%,
+      48% 10%,
+      60% 4%,
+      72% 8%,
+      84% 3%,
+      100% 7%,
+      100% 100%,
+      0 100%
+    );
+  }
+
+  /* Η σελίδα έχει πλέον αποκολληθεί και πέφτει */
   100% {
-    transform: translateY(90px) rotate(7deg);
+    transform: translateY(140px) rotate(10deg);
+    clip-path: polygon(
+      0 8%,
+      12% 4%,
+      24% 9%,
+      36% 5%,
+      48% 10%,
+      60% 4%,
+      72% 8%,
+      84% 3%,
+      100% 7%,
+      100% 100%,
+      0 100%
+    );
     opacity: 0;
   }
-}  
+}
 </style>
 </head>
 
