@@ -908,6 +908,78 @@ transition: opacity 1.5s ease;
 .evidence-darkness.found {
   opacity: 0;
 }
+
+/* =========================
+   EVENT 04 - ΗΜΕΡΟΛΟΓΙΟ
+========================= */
+
+#storyScreen4 {
+  background: #000;
+}
+
+.calendar-scene {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 45px;
+}
+
+.old-calendar {
+  position: relative;
+
+  width: 280px;
+  height: 350px;
+
+  background:
+    linear-gradient(
+      rgba(70, 45, 25, .08),
+      rgba(20, 10, 5, .18)
+    ),
+    #c9bea4;
+
+  color: #191510;
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.95),
+    inset 0 0 45px rgba(55,30,10,.25);
+
+  border: 1px solid #716755;
+
+  font-family: "Courier New", monospace;
+}
+
+.calendar-top {
+  padding: 18px 10px 13px;
+
+  background: #251b17;
+  color: #b7aa91;
+
+  font-family: "Cinzel", serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+}
+
+.calendar-month {
+  margin-top: 30px;
+
+  font-size: 20px;
+  letter-spacing: 4px;
+}
+
+.calendar-day {
+  margin-top: 12px;
+
+  font-family: "GFS Didot", serif;
+  font-size: 120px;
+  line-height: 1;
+}
+
+.calendar-year {
+  margin-top: 12px;
+
+  font-size: 17px;
+  letter-spacing: 6px;
+}
   
 </style>
 </head>
@@ -1185,6 +1257,45 @@ transition: opacity 1.5s ease;
       </button>
 
       <div id="riddleMessage1" class="riddle-message"></div>
+
+    </div>
+
+  </div>
+
+</div>   
+  <!-- EVENT 04 -->
+<div id="storyScreen4" class="screen hidden">
+
+  <div class="story-chapter">
+
+    <div class="chapter-number">04</div>
+
+    <h2 id="storyTitle4" class="story-title">
+      Η ΕΜΜΟΝΗ
+    </h2>
+
+    <!-- Ημερολόγιο -->
+    <div id="calendarScene" class="calendar-scene">
+
+      <div id="calendar" class="old-calendar">
+
+        <div class="calendar-top">
+          JEFFERSON
+        </div>
+
+        <div id="calendarMonth" class="calendar-month">
+          OCTOBER
+        </div>
+
+        <div id="calendarDay" class="calendar-day">
+          17
+        </div>
+
+        <div id="calendarYear" class="calendar-year">
+          2018
+        </div>
+
+      </div>
 
     </div>
 
