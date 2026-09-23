@@ -1002,6 +1002,37 @@ transition: opacity 1.5s ease;
     opacity: 0;
   }
 } 
+
+/* EVENT 04 - Η ΣΕΛΙΔΑ ΠΟΥ ΦΕΥΓΕΙ */
+
+.calendar-page {
+  position: relative;
+  width: 100%;
+  height: 285px;
+
+  transform-origin: top center;
+}
+
+.calendar-page.tear {
+  animation: tearPage .22s ease-in forwards;
+}
+
+@keyframes tearPage {
+
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  35% {
+    transform: translateY(5px) rotate(1deg);
+  }
+
+  100% {
+    transform: translateY(90px) rotate(7deg);
+    opacity: 0;
+  }
+}  
 </style>
 </head>
 
@@ -1301,20 +1332,25 @@ transition: opacity 1.5s ease;
       <div id="calendar" class="old-calendar">
 
         <div class="calendar-top">
-          JEFFERSON
+          THE DAYS PASS
         </div>
 
-        <div id="calendarMonth" class="calendar-month">
-          OCTOBER
-        </div>
+<!-- Η χάρτινη σελίδα που θα σκίζεται -->
+<div id="calendarPage" class="calendar-page">
 
-        <div id="calendarDay" class="calendar-day">
-          17
-        </div>
+  <div id="calendarMonth" class="calendar-month">
+    OCTOBER
+  </div>
 
-        <div id="calendarYear" class="calendar-year">
-          2018
-        </div>
+  <div id="calendarDay" class="calendar-day">
+    17
+  </div>
+
+  <div id="calendarYear" class="calendar-year">
+    2018
+  </div>
+
+</div>
 
       </div>
 
@@ -1869,27 +1905,36 @@ function startEvent4Calendar() {
 
   function updateCalendar() {
 
-    const calendar = document.getElementById("calendar");
+    const page = document.getElementById("calendarPage");
 
-// Εφέ σκισίματος της προηγούμενης σελίδας
-calendar.classList.remove("tear-page");
+// Ξεκινά το σκίσιμο της τρέχουσας σελίδας
+page.classList.remove("tear");
 
-// Αναγκάζει τον browser να ξεκινήσει ξανά το animation
-void calendar.offsetWidth;
+// Αναγκάζει το animation να ξεκινήσει ξανά
+void page.offsetWidth;
 
-calendar.classList.add("tear-page");
+page.classList.add("tear");
 
-    dayElement.textContent = currentDate.getDate();
+// Περιμένουμε να φύγει η παλιά σελίδα
+eventTimeout(() => {
 
-    monthElement.textContent =
-      selectedLanguage === "gr"
-        ? monthsGR[currentDate.getMonth()]
-        : monthsEN[currentDate.getMonth()];
+  // Αλλάζουμε την ημερομηνία όσο η σελίδα δεν φαίνεται
+  dayElement.textContent = currentDate.getDate();
 
-    yearElement.textContent = currentDate.getFullYear();
+  monthElement.textContent =
+    selectedLanguage === "gr"
+      ? monthsGR[currentDate.getMonth()]
+      : monthsEN[currentDate.getMonth()];
 
-    // Προχωράμε κατά μία ημέρα
-    currentDate.setDate(currentDate.getDate() + 1);
+  yearElement.textContent = currentDate.getFullYear();
+
+  // Πηγαίνουμε στην επόμενη ημέρα
+  currentDate.setDate(currentDate.getDate() + 1);
+
+  // Εμφανίζουμε αμέσως τη νέα σελίδα
+  page.classList.remove("tear");
+
+}, 220);
   }
 
   updateCalendar();
