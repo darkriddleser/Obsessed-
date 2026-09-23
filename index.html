@@ -980,7 +980,28 @@ transition: opacity 1.5s ease;
   font-size: 17px;
   letter-spacing: 6px;
 }
-  
+ /* EVENT 04 - ΣΚΙΣΙΜΟ ΣΕΛΙΔΑΣ ΗΜΕΡΟΛΟΓΙΟΥ */
+
+.old-calendar.tear-page {
+  animation: tearCalendarPage .12s ease-in forwards;
+}
+
+@keyframes tearCalendarPage {
+
+  0% {
+    transform: rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+
+  35% {
+    transform: rotate(-2deg) translateY(-4px);
+  }
+
+  100% {
+    transform: rotate(-8deg) translate(-25px, 45px);
+    opacity: 0;
+  }
+} 
 </style>
 </head>
 
@@ -1807,6 +1828,76 @@ function showHiddenEvidence() {
   }, 1000);
 }
 
+function startEvent4Calendar() {
+
+  const dayElement = document.getElementById("calendarDay");
+  const monthElement = document.getElementById("calendarMonth");
+  const yearElement = document.getElementById("calendarYear");
+
+  // Ημερομηνία από την οποία ξεκινά το ημερολόγιο
+  let currentDate = new Date(2018, 0, 1);
+
+  const monthsGR = [
+    "ΙΑΝΟΥΑΡΙΟΣ",
+    "ΦΕΒΡΟΥΑΡΙΟΣ",
+    "ΜΑΡΤΙΟΣ",
+    "ΑΠΡΙΛΙΟΣ",
+    "ΜΑΪΟΣ",
+    "ΙΟΥΝΙΟΣ",
+    "ΙΟΥΛΙΟΣ",
+    "ΑΥΓΟΥΣΤΟΣ",
+    "ΣΕΠΤΕΜΒΡΙΟΣ",
+    "ΟΚΤΩΒΡΙΟΣ",
+    "ΝΟΕΜΒΡΙΟΣ",
+    "ΔΕΚΕΜΒΡΙΟΣ"
+  ];
+
+  const monthsEN = [
+    "JANUARY",
+    "FEBRUARY",
+    "MARCH",
+    "APRIL",
+    "MAY",
+    "JUNE",
+    "JULY",
+    "AUGUST",
+    "SEPTEMBER",
+    "OCTOBER",
+    "NOVEMBER",
+    "DECEMBER"
+  ];
+
+  function updateCalendar() {
+
+    const calendar = document.getElementById("calendar");
+
+// Εφέ σκισίματος της προηγούμενης σελίδας
+calendar.classList.remove("tear-page");
+
+// Αναγκάζει τον browser να ξεκινήσει ξανά το animation
+void calendar.offsetWidth;
+
+calendar.classList.add("tear-page");
+
+    dayElement.textContent = currentDate.getDate();
+
+    monthElement.textContent =
+      selectedLanguage === "gr"
+        ? monthsGR[currentDate.getMonth()]
+        : monthsEN[currentDate.getMonth()];
+
+    yearElement.textContent = currentDate.getFullYear();
+
+    // Προχωράμε κατά μία ημέρα
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  updateCalendar();
+
+  // Αλλάζει ημέρα κάθε 120ms
+  eventInterval(updateCalendar, 120);
+}  
+
  function goToEvent4() {
 
   // Σταματάμε οτιδήποτε ανήκει στο Event 03
@@ -1824,6 +1915,9 @@ function showHiddenEvidence() {
     .classList.remove("hidden");
 
   updateLanguage();
+
+  // Ξεκινά η γρήγορη πάροδος των ημερών
+startEvent4Calendar();
 } 
   
 function moveEvidenceLight(event) {
