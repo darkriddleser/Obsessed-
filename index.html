@@ -1542,44 +1542,85 @@ if (
 
 function nextScreen() {
 
-   // Σταματά και μηδενίζει όλους τους ήχους / video
+  // ==========================================
+  // ΣΤΑΜΑΤΑΜΕ Ο,ΤΙ ΤΡΕΧΕΙ ΑΠΟ ΤΟ ΠΡΟΗΓΟΥΜΕΝΟ EVENT
+  // ==========================================
+
+  // Σταματά και μηδενίζει όλους τους ήχους / video
   resetMedia();
-  // Ακυρώνει όλες τις προγραμματισμένες ενέργειες του προηγούμενου Event
-clearEventTimers();
+
+  // Ακυρώνει όλα τα timers / intervals
+  clearEventTimers();
+
+
+  // ==========================================
+  // ΠΑΙΡΝΟΥΜΕ ΤΙΣ ΒΑΣΙΚΕΣ ΟΘΟΝΕΣ
+  // ==========================================
 
   const videoScreen = document.getElementById("videoScreen");
   const storyScreen1 = document.getElementById("storyScreen1");
   const storyScreen2 = document.getElementById("storyScreen2");
+  const storyScreen3 = document.getElementById("storyScreen3");
+  const storyScreen4 = document.getElementById("storyScreen4");
 
-  // VIDEO → EVENT 01
+
+  // ==========================================
+  // INTRO VIDEO → EVENT 01
+  // ==========================================
+
   if (!videoScreen.classList.contains("hidden")) {
 
     videoScreen.classList.add("hidden");
     storyScreen1.classList.remove("hidden");
 
+    return;
   }
 
+
+  // ==========================================
   // EVENT 01 → EVENT 02
-else if (!storyScreen1.classList.contains("hidden")) {
+  // ==========================================
 
-  nextEvent();
-   return;
+  if (!storyScreen1.classList.contains("hidden")) {
 
-}
-// EVENT 02 → EVENT 03
-if (!document.getElementById("storyScreen2").classList.contains("hidden")) {
+    nextEvent();
 
-  document.getElementById("storyScreen2").classList.add("hidden");
-  document.getElementById("storyScreen3").classList.remove("hidden");
+    return;
+  }
 
-  // Καθαρή εκκίνηση του EVENT 03
-  resetEvent3();
 
-  // Ξεκινά η σκηνή του Henry
-  playHenryAnger();
+  // ==========================================
+  // EVENT 02 → EVENT 03
+  // ==========================================
 
-  return;
-}
+  if (!storyScreen2.classList.contains("hidden")) {
+
+    storyScreen2.classList.add("hidden");
+    storyScreen3.classList.remove("hidden");
+
+    // Καθαρή εκκίνηση του EVENT 03
+    resetEvent3();
+
+    // Ξεκινά η σκηνή του Henry
+    playHenryAnger();
+
+    return;
+  }
+
+
+  // ==========================================
+  // EVENT 03 → EVENT 04
+  // ==========================================
+
+  if (!storyScreen3.classList.contains("hidden")) {
+
+    // Χρησιμοποιούμε την ίδια μετάβαση
+    // που γίνεται όταν ολοκληρωθεί η φωτογραφία
+    goToEvent4();
+
+    return;
+  }
+
 }
 function playHenryAnger() {
 
@@ -1766,6 +1807,25 @@ function showHiddenEvidence() {
   }, 1000);
 }
 
+ function goToEvent4() {
+
+  // Σταματάμε οτιδήποτε ανήκει στο Event 03
+  resetMedia();
+  clearEventTimers();
+
+  // Κλείνουμε Event 03
+  document
+    .getElementById("storyScreen3")
+    .classList.add("hidden");
+
+  // Ανοίγουμε Event 04
+  document
+    .getElementById("storyScreen4")
+    .classList.remove("hidden");
+
+  updateLanguage();
+} 
+  
 function moveEvidenceLight(event) {
 
   let evidenceFound = false;
@@ -1792,7 +1852,13 @@ yPercent > 28 && yPercent < 48
 // Περιμένει 3 δευτερόλεπτα στο σημείο που βρέθηκε το μωρό
 eventTimeout(() => {
   darkness.classList.add("found");
-}, 3000);
+
+  // Αφήνουμε ολόκληρη τη φωτογραφία ορατή για 5 δευτερόλεπτα
+  eventTimeout(() => {
+    goToEvent4();
+  }, 5000);
+
+}, 4000);
 }
 
   darkness.style.setProperty("--x", x + "px");
