@@ -2340,32 +2340,68 @@ body {
   display: block;
 }
 
-.basement-darkness {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: rgba(0,0,0,.97);
-
-  -webkit-mask-image: radial-gradient(
-    circle 70px at var(--x, 15%) var(--y, 85%),
-    transparent 0, transparent 45px, black 80px
-  );
-  mask-image: radial-gradient(
-    circle 70px at var(--x, 15%) var(--y, 85%),
-    transparent 0, transparent 45px, black 80px
-  );
-
-  transition: opacity 2s ease;
+/* Σκοτάδι υπογείου */
+.basement-dark {
+  opacity: .95;
+  transition: opacity 1.8s ease;
 }
 
-.basement-darkness.found { opacity: .5; }
+/* Κεριά */
+.candle {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* Ο φακός σβήνει: απόλυτο σκοτάδι */
-.basement-scene.lights-out .basement-darkness {
+.candle-wax {
+  opacity: .55;
+  transition: opacity 1s ease;
+}
+
+.flame,
+.candle-glow {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.candle.lit .candle-wax { opacity: 1; }
+.candle.lit .flame {
   opacity: 1;
-  background: #000;
-  -webkit-mask-image: none;
-  mask-image: none;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: candleFlame 1.6s infinite alternate ease-in-out;
+}
+
+.candle-glow.lit {
+  opacity: 1;
+  animation: candleGlowPulse 2.4s infinite alternate ease-in-out;
+}
+
+@keyframes candleFlame {
+  0%   { transform: scale(1, 1) rotate(-3deg); }
+  50%  { transform: scale(1.08, .92) rotate(2deg); }
+  100% { transform: scale(.94, 1.08) rotate(-1deg); }
+}
+
+@keyframes candleGlowPulse {
+  from { opacity: .85; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .candle.lit .flame, .candle-glow.lit { animation: none; }
+}
+
+/* Όλα σβήνουν: απόλυτο σκοτάδι */
+.basement-scene.lights-out .basement-dark {
+  opacity: 1;
+  transition: none;
+}
+
+.basement-scene.lights-out .flame,
+.basement-scene.lights-out .candle-glow,
+.basement-scene.lights-out .candle-wax {
+  opacity: 0;
+  animation: none;
   transition: none;
 }
 
@@ -3093,7 +3129,7 @@ body {
 
     </div>
 
-    <!-- Το υπόγειο (ψάχνεις με το δάχτυλο σαν φακό) -->
+    <!-- Το υπόγειο (ανάβεις τα κεριά) -->
     <div id="basementScene" class="basement-scene hidden">
           <svg viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="520" fill="#120f0c"/>
@@ -3189,13 +3225,46 @@ body {
               <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="#0b0907" stroke-width="7"/>
               <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="rgba(255,230,200,.14)" stroke-width="2" transform="translate(-1.6,-1.6)"/>
             </g>
-            <!-- Λιωμένα κεριά στο πάτωμα -->
-            <rect x="248" y="408" width="9" height="22" fill="#cfc6b0"/>
-            <rect x="296" y="402" width="11" height="28" fill="#cfc6b0"/>
-            <rect x="252" y="403" width="1.5" height="5" fill="#111"/>
-            <rect x="301" y="397" width="1.5" height="5" fill="#111"/>
+            <defs>
+              <radialGradient id="candleGlow" cx=".5" cy=".5" r=".5">
+                <stop offset="0" stop-color="#ffb35c" stop-opacity=".42"/>
+                <stop offset="1" stop-color="#ffb35c" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="flameGrad" cx=".5" cy=".7" r=".6">
+                <stop offset="0" stop-color="#fff6d6"/>
+                <stop offset=".5" stop-color="#ffb347"/>
+                <stop offset="1" stop-color="#ff5a14" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Σκοτάδι του υπογείου (φωτίζει με κάθε κερί που ανάβει) -->
+            <rect id="basementDark" class="basement-dark" width="400" height="520" fill="#000"/>
+
+            <!-- Το φως από κάθε κερί -->
+            <circle class="candle-glow" id="glow0" cx="170" cy="380" r="170" fill="url(#candleGlow)"/>
+            <circle class="candle-glow" id="glow1" cx="252" cy="372" r="170" fill="url(#candleGlow)"/>
+            <circle class="candle-glow" id="glow2" cx="324" cy="364" r="170" fill="url(#candleGlow)"/>
+
+            <!-- Τα τρία κεριά (αγγίζεις για να τα ανάψεις) -->
+            <g class="candle" id="candle0" onclick="lightCandle(0)">
+              <rect x="142" y="366" width="56" height="82" fill="transparent"/>
+              <rect class="candle-wax" x="165" y="416" width="10" height="20" rx="1.5" fill="#cfc6b0"/>
+              <rect x="169.2" y="411" width="1.6" height="5" fill="#111"/>
+              <ellipse class="flame" cx="170" cy="405" rx="4" ry="8" fill="url(#flameGrad)"/>
+            </g>
+            <g class="candle" id="candle1" onclick="lightCandle(1)">
+              <rect x="224" y="350" width="56" height="92" fill="transparent"/>
+              <rect class="candle-wax" x="247" y="400" width="10" height="30" rx="1.5" fill="#cfc6b0"/>
+              <rect x="251.2" y="395" width="1.6" height="5" fill="#111"/>
+              <ellipse class="flame" cx="252" cy="389" rx="4" ry="8" fill="url(#flameGrad)"/>
+            </g>
+            <g class="candle" id="candle2" onclick="lightCandle(2)">
+              <rect x="296" y="350" width="56" height="86" fill="transparent"/>
+              <rect class="candle-wax" x="319" y="400" width="10" height="24" rx="1.5" fill="#cfc6b0"/>
+              <rect x="323.2" y="395" width="1.6" height="5" fill="#111"/>
+              <ellipse class="flame" cx="324" cy="389" rx="4" ry="8" fill="url(#flameGrad)"/>
+            </g>
           </svg>
-      <div id="basementDarkness" class="basement-darkness"></div>
     </div>
 
     <div id="cabinCaption" class="cabin-caption"></div>
@@ -4814,7 +4883,7 @@ function event5Text() {
       bennett1: "«Εσύ πρέπει να είσαι ο Henry.»",
       henry1: "«Ήρθα για το σύμβολο.»",
       bennett2: "«Έλα μέσα. Είναι στο υπόγειο.»",
-      basementHint: "Κατεβήκατε στο υπόγειο. Ψάξε με το δάχτυλό σου.",
+      basementHint: "Κατεβήκατε στο υπόγειο. Είναι σκοτεινά. Άναψε τα κεριά.",
       bennett3: "«Το βλέπεις; Τι λες να είναι;»",
       henry2: "«Είναι η πόρτα.»"
     };
@@ -4826,7 +4895,7 @@ function event5Text() {
     bennett1: "“You must be Henry.”",
     henry1: "“I came for the symbol.”",
     bennett2: "“Come in. It's in the basement.”",
-    basementHint: "You went down to the basement. Search with your finger.",
+    basementHint: "You went down to the basement. It's dark. Light the candles.",
     bennett3: "“Do you see it? What do you think it is?”",
     henry2: "“It's the door.”"
   };
@@ -4841,18 +4910,18 @@ function resetEvent5() {
   dialogue.classList.remove("show", "henry");
   dialogue.textContent = "";
 
-  basementFound = false;
   basementActive = false;
-  basementTimer = null;
+  candlesLit.clear();
 
   const basement = document.getElementById("basementScene");
   basement.classList.remove("show", "lights-out");
   basement.classList.add("hidden");
 
-  const darkness = document.getElementById("basementDarkness");
-  darkness.classList.remove("found");
-  darkness.style.removeProperty("--x");
-  darkness.style.removeProperty("--y");
+  document.getElementById("basementDark").style.opacity = "";
+  [0, 1, 2].forEach(i => {
+    document.getElementById("candle" + i).classList.remove("lit");
+    document.getElementById("glow" + i).classList.remove("lit");
+  });
 
   const caption = document.getElementById("cabinCaption");
   caption.classList.remove("show", "hidden");
@@ -4944,12 +5013,14 @@ function showDialogueLine(text, isHenry) {
 
 
 // =========================================
-// EVENT 05 - ΤΟ ΥΠΟΓΕΙΟ (φακός)
+// EVENT 05 - ΤΟ ΥΠΟΓΕΙΟ (ανάβεις τα κεριά)
 // =========================================
 
-let basementFound = false;
 let basementActive = false;
-let basementTimer = null;
+const candlesLit = new Set();
+
+// Πόσο σκοτάδι μένει ανάλογα με τα αναμμένα κεριά
+const basementDarkLevels = [0.95, 0.8, 0.62, 0.4];
 
 function enterBasement() {
 
@@ -4975,50 +5046,21 @@ function enterBasement() {
   }, 1800);
 }
 
-function isOnBasementSymbol(xPercent, yPercent) {
-  return xPercent > 55 && xPercent < 84 && yPercent > 30 && yPercent < 56;
-}
+function lightCandle(i) {
 
-function cancelBasementTimer() {
-  if (basementTimer) {
-    clearTimeout(basementTimer);
-    basementTimer = null;
-  }
-}
+  if (!basementActive || candlesLit.has(i)) return;
 
-function moveBasementLight(event) {
+  candlesLit.add(i);
 
-  if (!basementActive) return;
+  document.getElementById("candle" + i).classList.add("lit");
+  document.getElementById("glow" + i).classList.add("lit");
+  document.getElementById("basementDark").style.opacity =
+    basementDarkLevels[candlesLit.size];
 
-  const basement = document.getElementById("basementScene");
-  const darkness = document.getElementById("basementDarkness");
-  const rect = basement.getBoundingClientRect();
-
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  darkness.style.setProperty("--x", x + "px");
-  darkness.style.setProperty("--y", y + "px");
-
-  if (basementFound) return;
-
-  const xPercent = (x / rect.width) * 100;
-  const yPercent = (y / rect.height) * 100;
-
-  if (isOnBasementSymbol(xPercent, yPercent)) {
-
-    // Πρέπει να μείνει 3 δευτερόλεπτα πάνω στο σύμβολο
-    if (!basementTimer) {
-      basementTimer = eventTimeout(() => {
-        basementTimer = null;
-        basementFound = true;
-        darkness.classList.add("found");
-        onBasementSymbolFound();
-      }, 3000);
-    }
-
-  } else {
-    cancelBasementTimer();
+  // Όταν ανάψουν και τα τρία, φαίνεται το σύμβολο στον τοίχο
+  if (candlesLit.size === 3) {
+    basementActive = false;
+    eventTimeout(onBasementSymbolFound, 1800);
   }
 }
 
@@ -5074,13 +5116,7 @@ function showObsessedImage() {
   eventTimeout(() => blackout.classList.add("hidden"), 1600);
 }
 
-const basementEl = document.getElementById("basementScene");
 
-basementEl.addEventListener("pointerdown", moveBasementLight);
-basementEl.addEventListener("pointermove", moveBasementLight);
-basementEl.addEventListener("pointerup", cancelBasementTimer);
-basementEl.addEventListener("pointerleave", cancelBasementTimer);
-basementEl.addEventListener("pointercancel", cancelBasementTimer);
 
 
 // =========================================
