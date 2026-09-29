@@ -1443,7 +1443,13 @@ function resetEvent3() {
   const fireScene = document.getElementById("fireScene");
   const statement = document.getElementById("henryStatement");
   const report = document.getElementById("fireReport");
-
+   evidenceFound = false;
+  hotspotTimer = null;
+   document.getElementById("hiddenEvidence").classList.remove("show");
+   document.getElementById("hiddenEvidence").classList.add("hidden");
+   document.getElementById("evidenceDarkness").classList.remove("found");
+  document.getElementById("evidenceDarkness").style.removeProperty("--x");
+document.getElementById("evidenceDarkness").style.removeProperty("--y");
   // Καθαρισμός φράσεων Henry
   if (container) {
     container.innerHTML = "";
@@ -1485,7 +1491,18 @@ function previousScreen() {
 
   const languageScreen =
     document.getElementById("languageScreen");
-  
+
+// EVENT 04 → Πίσω στο EVENT 03
+if (!document.getElementById("storyScreen4").classList.contains("hidden")) {
+
+  document.getElementById("storyScreen4").classList.add("hidden");
+  document.getElementById("storyScreen3").classList.remove("hidden");
+
+  resetEvent3();
+  playHenryAnger();
+
+  return;
+}  
 // EVENT 03 → Πίσω στο EVENT 02
 if (!document.getElementById("storyScreen3").classList.contains("hidden")) {
 
@@ -1989,10 +2006,31 @@ function onCalendarFinished() {
   // Ξεκινά η γρήγορη πάροδος των ημερών
 startEvent4Calendar();
 } 
-  
-function moveEvidenceLight(event) {
 
-  let evidenceFound = false;
+  // =========================================
+// EVENT 03 - ΦΑΚΟΣ / ΚΡΥΜΜΕΝΟ ΣΤΟΙΧΕΙΟ
+// =========================================
+
+let evidenceFound = false;
+let hotspotTimer = null;
+
+// Η περιοχή όπου βρίσκεται ο Henry με το μωρό
+function isOnHotspot(xPercent, yPercent) {
+  return (
+    xPercent > 42 && xPercent < 58 &&
+    yPercent > 28 && yPercent < 48
+  );
+}
+
+// Ακυρώνει τη μέτρηση αν ο φακός φύγει από το σημείο
+function cancelHotspotTimer() {
+  if (hotspotTimer) {
+    clearTimeout(hotspotTimer);
+    hotspotTimer = null;
+  }
+}
+
+function moveEvidenceLight(event) {
 
   const evidence = document.getElementById("hiddenEvidence");
   const darkness = document.getElementById("evidenceDarkness");
@@ -2002,32 +2040,51 @@ function moveEvidenceLight(event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  // Έλεγχος αν ο φακός βρήκε το κρυμμένο στοιχείο
-const xPercent = (x / rect.width) * 100;
-const yPercent = (y / rect.height) * 100;
+  const xPercent = (x / rect.width) * 100;
+  const yPercent = (y / rect.height) * 100;
 
-if (
-  !evidenceFound &&
-xPercent > 42 && xPercent < 58 &&
-yPercent > 28 && yPercent < 48
-) {
-  evidenceFound = true;
-
-// Περιμένει 3 δευτερόλεπτα στο σημείο που βρέθηκε το μωρό
-eventTimeout(() => {
-  darkness.classList.add("found");
-
-  // Αφήνουμε ολόκληρη τη φωτογραφία ορατή για 5 δευτερόλεπτα
-  eventTimeout(() => {
-    goToEvent4();
-  }, 5000);
-
-}, 4000);
-}
-
+  // Ο φακός ακολουθεί το δάχτυλο
   darkness.style.setProperty("--x", x + "px");
   darkness.style.setProperty("--y", y + "px");
+
+  if (evidenceFound) return;
+
+  if (isOnHotspot(xPercent, yPercent)) {
+
+    // Ξεκινά η μέτρηση μόνο αν δεν τρέχει ήδη
+    if (!hotspotTimer) {
+
+      hotspotTimer = eventTimeout(() => {
+
+        hotspotTimer = null;
+        evidenceFound = true;
+
+        // Φωτίζεται ολόκληρη η φωτογραφία
+        darkness.classList.add("found");
+
+        // Μένει ορατή 5 δευτερόλεπτα και πάμε στο Event 04
+        eventTimeout(() => {
+          goToEvent4();
+        }, 5000);
+
+      }, 3000);
+    }
+
+  } else {
+    // Έφυγε από το σημείο πριν περάσουν τα 3 δευτερόλεπτα
+    cancelHotspotTimer();
+  }
 }
+
+const hiddenEvidenceEl = document.getElementById("hiddenEvidence");
+
+hiddenEvidenceEl.addEventListener("pointerdown", moveEvidenceLight);
+
+
+// Αν σηκώσει το δάχτυλο ή βγει από τη φωτογραφία, η μέτρηση μηδενίζει
+hiddenEvidenceEl.addEventListener("pointerup", cancelHotspotTimer);
+hiddenEvidenceEl.addEventListener("pointerleave", cancelHotspotTimer);
+hiddenEvidenceEl.addEventListener("pointercancel", cancelHotspotTimer);
 
 document
   .getElementById("hiddenEvidence")
