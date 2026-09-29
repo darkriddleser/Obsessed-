@@ -2191,12 +2191,34 @@ body {
 .cabin-zoom {
   position: absolute;
   inset: 0;
-  transform-origin: 52% 56%;
-  transition: transform 10s ease-in-out;
 }
 
-.cabin-scene.approach .cabin-zoom {
-  transform: scale(1.9);
+/* Φωτογραφία 1: αργό ζουμ προς την πόρτα καθώς πλησιάζει */
+.cabin-zoom-1 {
+  transform-origin: 52% 56%;
+  transition: transform 10s ease-in-out, opacity 1.4s ease;
+}
+
+.cabin-scene.approach .cabin-zoom-1 {
+  transform: scale(1.6);
+}
+
+/* Χτυπάει την πόρτα: η πρώτη φωτογραφία σβήνει */
+.cabin-scene.at-door .cabin-zoom-1 {
+  opacity: 0;
+}
+
+/* Φωτογραφία 2: η πόρτα άνοιξε, ο Henry και ο Bennett */
+.cabin-zoom-2 {
+  opacity: 0;
+  transform: scale(1.12);
+  transform-origin: 45% 55%;
+  transition: opacity 2s ease, transform 14s ease-out;
+}
+
+.cabin-scene.door-open .cabin-zoom-2 {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .cabin-photo,
@@ -2317,63 +2339,97 @@ body {
 .cabin-dialogue.show { opacity: 1; }
 .cabin-dialogue.henry { color: #d98c8c; }
 
-/* Το υπόγειο */
-.basement-scene {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 400 / 520;
-  max-height: 66vh;
-  margin: 2vh auto 0;
-  overflow: hidden;
-  border-radius: 4px;
+/* Το υπόγειο: σκοτάδι, κεριά, φως */
+.pool-dark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background: #000;
-  opacity: 0;
-  transition: opacity 2s ease;
-  touch-action: none;
-}
-
-.basement-scene.show { opacity: 1; }
-
-.basement-scene svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Σκοτάδι υπογείου */
-.basement-dark {
-  opacity: .95;
+  opacity: .94;
+  pointer-events: none;
   transition: opacity 1.8s ease;
 }
 
-/* Κεριά */
-.candle {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.candle-wax {
-  opacity: .55;
-  transition: opacity 1s ease;
-}
-
-.flame,
-.candle-glow {
+.pool-glow {
+  position: absolute;
+  z-index: 2;
+  width: 95%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -62%);
+  background: radial-gradient(circle,
+    rgba(255,179,92,.45) 0%,
+    rgba(255,179,92,.15) 35%,
+    rgba(255,179,92,0) 65%);
+  mix-blend-mode: screen;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 1.2s ease;
 }
 
-.candle.lit .candle-wax { opacity: 1; }
-.candle.lit .flame {
-  opacity: 1;
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: candleFlame 1.6s infinite alternate ease-in-out;
-}
-
-.candle-glow.lit {
+.pool-glow.lit {
   opacity: 1;
   animation: candleGlowPulse 2.4s infinite alternate ease-in-out;
+}
+
+.pool-canvas { z-index: 2; }
+
+.pool-candle {
+  position: absolute;
+  z-index: 3;
+  width: 46px;
+  height: 72px;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pool-candle .wax {
+  position: relative;
+  width: 10px;
+  height: 26px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #b9b09a, #e0d8c4 45%, #b9b09a);
+  opacity: .5;
+  transition: opacity 1s ease;
+}
+
+/* Φυτίλι */
+.pool-candle .wax::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 1.6px;
+  height: 5px;
+  margin-left: -.8px;
+  background: #111;
+}
+
+.pool-candle .flame {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  width: 9px;
+  height: 17px;
+  margin-left: -4.5px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(ellipse at 50% 70%,
+    #fff6d6 0%, #ffb347 50%, rgba(255,90,20,0) 75%);
+  box-shadow: 0 0 14px 4px rgba(255,160,70,.35);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  transition: opacity .8s ease;
+}
+
+.pool-candle.lit .wax { opacity: 1; }
+
+.pool-candle.lit .flame {
+  opacity: 1;
+  animation: candleFlame 1.6s infinite alternate ease-in-out;
 }
 
 @keyframes candleFlame {
@@ -2388,21 +2444,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .candle.lit .flame, .candle-glow.lit { animation: none; }
-}
-
-/* Όλα σβήνουν: απόλυτο σκοτάδι */
-.basement-scene.lights-out .basement-dark {
-  opacity: 1;
-  transition: none;
-}
-
-.basement-scene.lights-out .flame,
-.basement-scene.lights-out .candle-glow,
-.basement-scene.lights-out .candle-wax {
-  opacity: 0;
-  animation: none;
-  transition: none;
+  .pool-candle.lit .flame, .pool-glow.lit { animation: none; }
 }
 
 /* Η εικόνα OBSESSED */
@@ -3111,183 +3153,39 @@ body {
     <!-- Ο Henry έξω από την καλύβα στο δάσος -->
     <div id="cabinScene" class="cabin-scene">
 
-      <div class="cabin-zoom">
-
-        <!-- Η εικόνα: ο Henry, η καλύβα, το αγόρι στο αυτοκίνητο -->
+      <!-- 1. Ο Henry πλησιάζει την καλύβα, το αγόρι στο αυτοκίνητο -->
+      <div class="cabin-zoom cabin-zoom-1">
         <img class="cabin-photo" src="kaliba.png" alt="">
+      </div>
 
-        <!-- Εφέ πάνω στην εικόνα (ίδιες διαστάσεις με το kaliba.png: 1536 × 1024) -->
-        <svg class="cabin-overlay" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <linearGradient id="doorGlow" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffd48f"/>
-              <stop offset="1" stop-color="#c8762c"/>
-            </linearGradient>
-            <linearGradient id="spillGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffb760" stop-opacity=".55"/>
-              <stop offset="1" stop-color="#ffb760" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Τα παράθυρα τρεμοπαίζουν -->
-          <rect class="window-flicker" x="902" y="470" width="44" height="90" fill="#000"/>
-          <rect class="window-flicker" x="1010" y="483" width="36" height="80" fill="#000"/>
-
-          <!-- Η πόρτα ανοίγει: φως από μέσα και ο Bennett στο κατώφλι -->
-          <rect class="door-light" x="778" y="482" width="42" height="125" fill="url(#doorGlow)"/>
-          <g class="bennett-figure" fill="#120904">
-            <circle cx="799" cy="507" r="9"/>
-            <path d="M786 522 Q799 515 812 522 L815 607 L783 607 Z"/>
-          </g>
-          <polygon class="door-spill" points="776,607 822,607 880,672 690,676" fill="url(#spillGrad)"/>
-        </svg>
-
+      <!-- 2. Στην πόρτα: ο Henry και ο Bennett -->
+      <div class="cabin-zoom cabin-zoom-2">
+        <img class="cabin-photo" src="kaliba_2.png" alt="">
       </div>
 
     </div>
 
-    <!-- Το υπόγειο (ανάβεις τα κεριά) -->
-    <div id="basementScene" class="basement-scene hidden">
-          <svg viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="520" fill="#120f0c"/>
-            <rect x="-33" y="2" width="80" height="37" rx="3" fill="#3a3128"/>
-            <rect x="51" y="2" width="83" height="37" rx="3" fill="#27211b"/>
-            <rect x="138" y="2" width="63" height="37" rx="3" fill="#2f2821"/>
-            <rect x="205" y="2" width="83" height="37" rx="3" fill="#3a3128"/>
-            <rect x="292" y="2" width="91" height="37" rx="3" fill="#27211b"/>
-            <rect x="387" y="2" width="62" height="37" rx="3" fill="#2a241e"/>
-            <rect x="-17" y="43" width="60" height="37" rx="3" fill="#2a241e"/>
-            <rect x="47" y="43" width="85" height="37" rx="3" fill="#2a241e"/>
-            <rect x="136" y="43" width="89" height="37" rx="3" fill="#3a3128"/>
-            <rect x="229" y="43" width="79" height="37" rx="3" fill="#27211b"/>
-            <rect x="312" y="43" width="61" height="37" rx="3" fill="#27211b"/>
-            <rect x="377" y="43" width="51" height="37" rx="3" fill="#27211b"/>
-            <rect x="-1" y="84" width="53" height="31" rx="3" fill="#2f2821"/>
-            <rect x="56" y="84" width="66" height="31" rx="3" fill="#27211b"/>
-            <rect x="126" y="84" width="52" height="31" rx="3" fill="#3a3128"/>
-            <rect x="182" y="84" width="71" height="31" rx="3" fill="#3a3128"/>
-            <rect x="257" y="84" width="88" height="31" rx="3" fill="#2f2821"/>
-            <rect x="349" y="84" width="84" height="31" rx="3" fill="#2f2821"/>
-            <rect x="-16" y="119" width="82" height="40" rx="3" fill="#2a241e"/>
-            <rect x="70" y="119" width="56" height="40" rx="3" fill="#3a3128"/>
-            <rect x="130" y="119" width="68" height="40" rx="3" fill="#3a3128"/>
-            <rect x="202" y="119" width="86" height="40" rx="3" fill="#2a241e"/>
-            <rect x="292" y="119" width="67" height="40" rx="3" fill="#352d25"/>
-            <rect x="363" y="119" width="65" height="40" rx="3" fill="#27211b"/>
-            <rect x="1" y="163" width="55" height="34" rx="3" fill="#27211b"/>
-            <rect x="60" y="163" width="57" height="34" rx="3" fill="#3a3128"/>
-            <rect x="121" y="163" width="57" height="34" rx="3" fill="#352d25"/>
-            <rect x="182" y="163" width="75" height="34" rx="3" fill="#2a241e"/>
-            <rect x="261" y="163" width="52" height="34" rx="3" fill="#2a241e"/>
-            <rect x="317" y="163" width="64" height="34" rx="3" fill="#2f2821"/>
-            <rect x="385" y="163" width="54" height="34" rx="3" fill="#3a3128"/>
-            <rect x="-23" y="201" width="77" height="36" rx="3" fill="#2a241e"/>
-            <rect x="58" y="201" width="87" height="36" rx="3" fill="#2f2821"/>
-            <rect x="149" y="201" width="68" height="36" rx="3" fill="#352d25"/>
-            <rect x="221" y="201" width="56" height="36" rx="3" fill="#352d25"/>
-            <rect x="281" y="201" width="72" height="36" rx="3" fill="#2a241e"/>
-            <rect x="357" y="201" width="77" height="36" rx="3" fill="#2a241e"/>
-            <rect x="-13" y="241" width="57" height="32" rx="3" fill="#2a241e"/>
-            <rect x="48" y="241" width="54" height="32" rx="3" fill="#3a3128"/>
-            <rect x="106" y="241" width="82" height="32" rx="3" fill="#2f2821"/>
-            <rect x="192" y="241" width="86" height="32" rx="3" fill="#2f2821"/>
-            <rect x="282" y="241" width="79" height="32" rx="3" fill="#27211b"/>
-            <rect x="365" y="241" width="63" height="32" rx="3" fill="#2f2821"/>
-            <rect x="-22" y="277" width="58" height="36" rx="3" fill="#3a3128"/>
-            <rect x="40" y="277" width="77" height="36" rx="3" fill="#2f2821"/>
-            <rect x="121" y="277" width="51" height="36" rx="3" fill="#352d25"/>
-            <rect x="176" y="277" width="88" height="36" rx="3" fill="#352d25"/>
-            <rect x="268" y="277" width="52" height="36" rx="3" fill="#2f2821"/>
-            <rect x="324" y="277" width="62" height="36" rx="3" fill="#3a3128"/>
-            <rect x="390" y="277" width="89" height="36" rx="3" fill="#27211b"/>
-            <rect x="0" y="317" width="60" height="31" rx="3" fill="#2f2821"/>
-            <rect x="64" y="317" width="79" height="31" rx="3" fill="#352d25"/>
-            <rect x="147" y="317" width="51" height="31" rx="3" fill="#27211b"/>
-            <rect x="202" y="317" width="72" height="31" rx="3" fill="#352d25"/>
-            <rect x="278" y="317" width="75" height="31" rx="3" fill="#2a241e"/>
-            <rect x="357" y="317" width="55" height="31" rx="3" fill="#2a241e"/>
-            <rect x="-35" y="352" width="91" height="33" rx="3" fill="#2f2821"/>
-            <rect x="60" y="352" width="51" height="33" rx="3" fill="#27211b"/>
-            <rect x="115" y="352" width="74" height="33" rx="3" fill="#352d25"/>
-            <rect x="193" y="352" width="90" height="33" rx="3" fill="#3a3128"/>
-            <rect x="287" y="352" width="59" height="33" rx="3" fill="#27211b"/>
-            <rect x="350" y="352" width="81" height="33" rx="3" fill="#27211b"/>
-            <rect x="-22" y="389" width="62" height="32" rx="3" fill="#2f2821"/>
-            <rect x="44" y="389" width="70" height="32" rx="3" fill="#2f2821"/>
-            <rect x="118" y="389" width="90" height="32" rx="3" fill="#2f2821"/>
-            <rect x="212" y="389" width="63" height="32" rx="3" fill="#2f2821"/>
-            <rect x="279" y="389" width="91" height="32" rx="3" fill="#27211b"/>
-            <rect x="374" y="389" width="63" height="32" rx="3" fill="#3a3128"/>
-            <rect x="-36" y="425" width="56" height="37" rx="3" fill="#3a3128"/>
-            <rect x="24" y="425" width="54" height="37" rx="3" fill="#2a241e"/>
-            <rect x="82" y="425" width="57" height="37" rx="3" fill="#2a241e"/>
-            <rect x="143" y="425" width="83" height="37" rx="3" fill="#352d25"/>
-            <rect x="230" y="425" width="66" height="37" rx="3" fill="#3a3128"/>
-            <rect x="300" y="425" width="67" height="37" rx="3" fill="#3a3128"/>
-            <rect x="371" y="425" width="89" height="37" rx="3" fill="#3a3128"/>
-            <!-- Πάτωμα -->
-            <polygon points="0,440 400,418 400,520 0,520" fill="#15110d"/>
-            <!-- Σκάλα που κατεβαίνει -->
-            <rect x="0" y="40" width="150" height="10" fill="#3b2c1e"/><rect x="0" y="50" width="150" height="42" fill="#1c150f"/>
-            <rect x="0" y="92" width="136" height="10" fill="#3b2c1e"/><rect x="0" y="102" width="136" height="42" fill="#1c150f"/>
-            <rect x="0" y="144" width="122" height="10" fill="#3b2c1e"/><rect x="0" y="154" width="122" height="42" fill="#1c150f"/>
-            <rect x="0" y="196" width="108" height="10" fill="#3b2c1e"/><rect x="0" y="206" width="108" height="42" fill="#1c150f"/>
-            <rect x="0" y="248" width="94" height="10" fill="#3b2c1e"/><rect x="0" y="258" width="94" height="42" fill="#1c150f"/>
-            <rect x="0" y="300" width="80" height="10" fill="#3b2c1e"/><rect x="0" y="310" width="80" height="42" fill="#1c150f"/>
-            <rect x="0" y="352" width="66" height="10" fill="#3b2c1e"/><rect x="0" y="362" width="66" height="42" fill="#1c150f"/>
-            <!-- Παλιοί λεκέδες αίματος κάτω από το σύμβολο -->
-            <path d="M262 272 q3 18 1 34 M288 276 q2 12 0 26 M306 270 q2 22 -1 40" stroke="#3d0c09" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
-            <!-- Το σύμβολο του Βαρόνου χαραγμένο στην πέτρα -->
-            <g transform="translate(225,170) scale(1.05)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="#0b0907" stroke-width="7"/>
-              <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="rgba(255,230,200,.14)" stroke-width="2" transform="translate(-1.6,-1.6)"/>
-            </g>
-            <defs>
-              <radialGradient id="candleGlow" cx=".5" cy=".5" r=".5">
-                <stop offset="0" stop-color="#ffb35c" stop-opacity=".42"/>
-                <stop offset="1" stop-color="#ffb35c" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="flameGrad" cx=".5" cy=".7" r=".6">
-                <stop offset="0" stop-color="#fff6d6"/>
-                <stop offset=".5" stop-color="#ffb347"/>
-                <stop offset="1" stop-color="#ff5a14" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-
-            <!-- Σκοτάδι του υπογείου (φωτίζει με κάθε κερί που ανάβει) -->
-            <rect id="basementDark" class="basement-dark" width="400" height="520" fill="#000"/>
-
-            <!-- Το φως από κάθε κερί -->
-            <circle class="candle-glow" id="glow0" cx="170" cy="380" r="170" fill="url(#candleGlow)"/>
-            <circle class="candle-glow" id="glow1" cx="252" cy="372" r="170" fill="url(#candleGlow)"/>
-            <circle class="candle-glow" id="glow2" cx="324" cy="364" r="170" fill="url(#candleGlow)"/>
-
-            <!-- Τα τρία κεριά (αγγίζεις για να τα ανάψεις) -->
-            <g class="candle" id="candle0" onclick="lightCandle(0)">
-              <rect x="142" y="366" width="56" height="82" fill="transparent"/>
-              <rect class="candle-wax" x="165" y="416" width="10" height="20" rx="1.5" fill="#cfc6b0"/>
-              <rect x="169.2" y="411" width="1.6" height="5" fill="#111"/>
-              <ellipse class="flame" cx="170" cy="405" rx="4" ry="8" fill="url(#flameGrad)"/>
-            </g>
-            <g class="candle" id="candle1" onclick="lightCandle(1)">
-              <rect x="224" y="350" width="56" height="92" fill="transparent"/>
-              <rect class="candle-wax" x="247" y="400" width="10" height="30" rx="1.5" fill="#cfc6b0"/>
-              <rect x="251.2" y="395" width="1.6" height="5" fill="#111"/>
-              <ellipse class="flame" cx="252" cy="389" rx="4" ry="8" fill="url(#flameGrad)"/>
-            </g>
-            <g class="candle" id="candle2" onclick="lightCandle(2)">
-              <rect x="296" y="350" width="56" height="86" fill="transparent"/>
-              <rect class="candle-wax" x="319" y="400" width="10" height="24" rx="1.5" fill="#cfc6b0"/>
-              <rect x="323.2" y="395" width="1.6" height="5" fill="#111"/>
-              <ellipse class="flame" cx="324" cy="389" rx="4" ry="8" fill="url(#flameGrad)"/>
-            </g>
-          </svg>
-    </div>
-
-    <!-- Η φωτογραφία όπου βγαίνει το αίμα και απλώνεται σαν λίμνη -->
+    <!-- Το υπόγειο: η φωτογραφία στο σκοτάδι, τα κεριά την φωτίζουν, μετά βγαίνει το αίμα -->
     <div id="poolScene" class="pool-scene hidden">
+
       <img id="poolPhoto" class="pool-photo" alt="" onerror="this.classList.add('hidden')">
+
+      <!-- Σκοτάδι (φεύγει σιγά σιγά με κάθε κερί) -->
+      <div id="poolDark" class="pool-dark"></div>
+
+      <!-- Το φως από κάθε κερί -->
+      <div id="poolGlow0" class="pool-glow"></div>
+      <div id="poolGlow1" class="pool-glow"></div>
+      <div id="poolGlow2" class="pool-glow"></div>
+
+      <!-- Η λίμνη αίματος -->
       <canvas id="poolCanvas" class="pool-canvas"></canvas>
+
+      <!-- Τα τρία κεριά -->
+      <div id="poolCandle0" class="pool-candle" onclick="lightCandle(0)"><span class="flame"></span><span class="wax"></span></div>
+      <div id="poolCandle1" class="pool-candle" onclick="lightCandle(1)"><span class="flame"></span><span class="wax"></span></div>
+      <div id="poolCandle2" class="pool-candle" onclick="lightCandle(2)"><span class="flame"></span><span class="wax"></span></div>
+
     </div>
 
     <div id="cabinCaption" class="cabin-caption"></div>
@@ -4925,7 +4823,7 @@ function event5Text() {
 function resetEvent5() {
 
   const scene = document.getElementById("cabinScene");
-  scene.classList.remove("show", "hidden", "approach", "door-open");
+  scene.classList.remove("show", "hidden", "approach", "at-door", "door-open");
 
   const dialogue = document.getElementById("cabinDialogue");
   dialogue.classList.remove("show", "henry");
@@ -4934,14 +4832,10 @@ function resetEvent5() {
   basementActive = false;
   candlesLit.clear();
 
-  const basement = document.getElementById("basementScene");
-  basement.classList.remove("show", "lights-out");
-  basement.classList.add("hidden");
-
-  document.getElementById("basementDark").style.opacity = "";
+  document.getElementById("poolDark").style.opacity = "";
   [0, 1, 2].forEach(i => {
-    document.getElementById("candle" + i).classList.remove("lit");
-    document.getElementById("glow" + i).classList.remove("lit");
+    document.getElementById("poolCandle" + i).classList.remove("lit");
+    document.getElementById("poolGlow" + i).classList.remove("lit");
   });
 
   const caption = document.getElementById("cabinCaption");
@@ -4996,8 +4890,11 @@ function goToEvent5() {
 
   eventTimeout(() => caption.classList.remove("show"), 13500);
 
-  // 3. Χτυπάει την πόρτα, η πόρτα ανοίγει
-  eventTimeout(() => playSound("knockAudio", 1), 14000);
+  // 3. Χτυπάει την πόρτα (η εικόνα σβήνει), η πόρτα ανοίγει (δεύτερη φωτογραφία)
+  eventTimeout(() => {
+    playSound("knockAudio", 1);
+    scene.classList.add("at-door");
+  }, 14000);
 
   eventTimeout(() => {
     playSound("doorAudio", 0.9);
@@ -5038,35 +4935,66 @@ function showDialogueLine(text, isHenry) {
 
 
 // =========================================
-// EVENT 05 - ΤΟ ΥΠΟΓΕΙΟ (ανάβεις τα κεριά)
+// EVENT 05 - ΤΟ ΥΠΟΓΕΙΟ: ΚΕΡΙΑ ΚΑΙ ΛΙΜΝΗ ΑΙΜΑΤΟΣ
 // =========================================
+
+// Η φωτογραφία του υπογείου (βάλε το αρχείο στον ίδιο φάκελο)
+const POOL_IMAGE = "aima.png";
+
+// Πού βρίσκονται τα κεριά πάνω στη φωτογραφία (0 = αριστερά/πάνω, 1 = δεξιά/κάτω)
+const CANDLE_POSITIONS = [
+  { x: 0.30, y: 0.86 },
+  { x: 0.50, y: 0.83 },
+  { x: 0.70, y: 0.86 }
+];
+
+// Από ποιο σημείο βγαίνει το αίμα
+const POOL_ORIGIN = { x: 0.5, y: 0.72 };
+
+// Προοπτική του πατώματος (1 = κύκλος, μικρότερο = πιο «ξαπλωμένη» λίμνη)
+const POOL_FLATTEN = 0.42;
+
+// Πόσο σκοτάδι μένει ανάλογα με τα αναμμένα κεριά (0, 1, 2, 3)
+const POOL_DARK_LEVELS = [0.94, 0.72, 0.5, 0.22];
 
 let basementActive = false;
 const candlesLit = new Set();
+let poolFrame = null;
 
-// Πόσο σκοτάδι μένει ανάλογα με τα αναμμένα κεριά
-const basementDarkLevels = [0.95, 0.8, 0.62, 0.4];
+function placeCandles() {
+  CANDLE_POSITIONS.forEach((pos, i) => {
+    ["poolCandle", "poolGlow"].forEach(prefix => {
+      const el = document.getElementById(prefix + i);
+      el.style.left = (pos.x * 100) + "%";
+      el.style.top = (pos.y * 100) + "%";
+    });
+  });
+}
 
 function enterBasement() {
 
   const scene = document.getElementById("cabinScene");
-  const basement = document.getElementById("basementScene");
+  const pool = document.getElementById("poolScene");
+  const photo = document.getElementById("poolPhoto");
   const caption = document.getElementById("cabinCaption");
-  const crickets = document.getElementById("cricketsAudio");
 
   scene.classList.remove("show");
-  crickets.pause();
+  document.getElementById("cricketsAudio").pause();
+
+  placeCandles();
+  photo.classList.remove("hidden");
+  photo.src = POOL_IMAGE;
 
   eventTimeout(() => {
 
     scene.classList.add("hidden");
-    basement.classList.remove("hidden");
+    pool.classList.remove("hidden");
     basementActive = true;
 
     caption.innerHTML = event5Text().basementHint;
     caption.classList.add("show");
 
-    eventTimeout(() => basement.classList.add("show"), 50);
+    eventTimeout(() => pool.classList.add("show"), 50);
 
   }, 1800);
 }
@@ -5077,61 +5005,22 @@ function lightCandle(i) {
 
   candlesLit.add(i);
 
-  document.getElementById("candle" + i).classList.add("lit");
-  document.getElementById("glow" + i).classList.add("lit");
-  document.getElementById("basementDark").style.opacity =
-    basementDarkLevels[candlesLit.size];
+  document.getElementById("poolCandle" + i).classList.add("lit");
+  document.getElementById("poolGlow" + i).classList.add("lit");
+  document.getElementById("poolDark").style.opacity = POOL_DARK_LEVELS[candlesLit.size];
 
-  // Όταν ανάψουν και τα τρία, φαίνεται το σύμβολο στον τοίχο
+  // Όταν ανάψουν και τα τρία: αρχίζει το αίμα
   if (candlesLit.size === 3) {
     basementActive = false;
-    eventTimeout(onBasementSymbolFound, 1800);
+    onCandlesLit();
   }
 }
 
-// Όταν ανάψουν και τα τρία κεριά → η φωτογραφία με το αίμα
-function onBasementSymbolFound() {
-
-  const basement = document.getElementById("basementScene");
+function onCandlesLit() {
 
   document.getElementById("cabinCaption").classList.remove("show");
 
-  eventTimeout(() => basement.classList.remove("show"), 1500);
-
-  eventTimeout(() => {
-    basement.classList.add("hidden");
-    showPoolScene();
-  }, 3400);
-}
-
-
-// =========================================
-// EVENT 05 - ΛΙΜΝΗ ΑΙΜΑΤΟΣ ΠΑΝΩ ΣΤΗ ΦΩΤΟΓΡΑΦΙΑ
-// =========================================
-
-// Η φωτογραφία (βάλε το αρχείο στον ίδιο φάκελο)
-const POOL_IMAGE = "aima.png";
-
-// Από ποιο σημείο της φωτογραφίας βγαίνει το αίμα (0 = αριστερά/πάνω, 1 = δεξιά/κάτω)
-const POOL_ORIGIN = { x: 0.5, y: 0.72 };
-
-// Προοπτική του πατώματος (1 = κύκλος, μικρότερο = πιο «ξαπλωμένη» λίμνη)
-const POOL_FLATTEN = 0.42;
-
-let poolFrame = null;
-
-function showPoolScene() {
-
-  const scene = document.getElementById("poolScene");
-  const photo = document.getElementById("poolPhoto");
-
-  photo.classList.remove("hidden");
-  photo.src = POOL_IMAGE;
-
-  scene.classList.remove("hidden");
-  eventTimeout(() => scene.classList.add("show"), 50);
-
-  // Το αίμα αρχίζει να βγαίνει και απλώνεται (10 δευτ.)
+  // Το αίμα βγαίνει και απλώνεται (10 δευτ.)
   eventTimeout(() => startBloodPool(10), 2200);
 
   // Όλα σβήνουν
@@ -5288,7 +5177,6 @@ function showObsessedImage() {
   const image = document.getElementById("obsessedImage");
 
   document.getElementById("cabinScene").classList.add("hidden");
-  document.getElementById("basementScene").classList.add("hidden");
   document.getElementById("poolScene").classList.add("hidden");
   document.getElementById("cabinCaption").classList.add("hidden");
   document.getElementById("cabinDialogue").classList.remove("show");
