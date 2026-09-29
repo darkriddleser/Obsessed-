@@ -3616,9 +3616,9 @@ function playHenryAnger() {
       fireVideo.currentTime = 0;
       fireVideo.play();
 
-      fireAudio.currentTime = 0;
-      fireAudio.volume = 1;
-      fireAudio.play();
+      // Ο ήχος ανεβαίνει σιγά σιγά μαζί με την εικόνα, σε χαμηλότερη ένταση
+      playSound("fireAudio", 0);
+      fadeAudioTo("fireAudio", 0.35, 2000);
 
     }, 1500);
 
@@ -3638,12 +3638,9 @@ function playHenryAnger() {
     const fireAudio = document.getElementById("fireAudio");
     const statement = document.getElementById("henryStatement");
 
-    // Σβήνει η φωτιά
+    // Σβήνει η φωτιά: εικόνα και ήχος μαζί, μέσα σε 2 δευτερόλεπτα
     fireScene.classList.remove("show");
-
-    // Σταματούν video και ήχος
-    fireVideo.pause();
-    fireAudio.pause();
+    fadeOutAudio("fireAudio", 2000);
 
     eventTimeout(() => {
 
@@ -3651,6 +3648,7 @@ function playHenryAnger() {
         return;
       }
 
+      fireVideo.pause();
       fireScene.classList.add("hidden");
 
       statement.classList.remove("hidden");
