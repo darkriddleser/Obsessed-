@@ -1084,6 +1084,42 @@ transition: opacity 1.5s ease;
   will-change: transform, clip-path, opacity;
   filter: brightness(1.03);
 }
+
+ /* EVENT 04 - ΚΟΚΚΙΝΟΣ ΚΥΚΛΟΣ ΣΤΗΝ ΗΜΕΡΟΜΗΝΙΑ */
+.calendar-mark {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  width: 150px;
+  height: 120px;
+  transform: translateX(-50%) rotate(-5deg);
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+}
+
+.calendar-mark path {
+  fill: none;
+  stroke: #8b1414;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.calendar-mark.draw {
+  opacity: .9;
+}
+
+.calendar-mark.draw path {
+  animation: drawMark 1.6s ease-out forwards;
+}
+
+@keyframes drawMark {
+  to { stroke-dashoffset: 0; }
+} 
 </style>
 </head>
 
@@ -1399,7 +1435,12 @@ transition: opacity 1.5s ease;
 
   <!-- Το σκισμένο υπόλειμμα που μένει πάνω -->
   <div id="calendarStub" class="calendar-stub"></div>
-
+<!-- Κόκκινος κύκλος από το χέρι του Henry -->
+<svg id="calendarMark" class="calendar-mark" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path pathLength="1"
+        d="M50 12 C 82 10, 94 38, 88 60 C 83 82, 60 93, 42 88
+           C 17 83, 7 60, 12 40 C 17 20, 36 9, 60 15" />
+</svg>
 </div>
 
       </div>
@@ -2027,6 +2068,7 @@ function startEvent4Calendar() {
   document.querySelectorAll(".torn-sheet").forEach(s => s.remove());
   document.getElementById("calendarStub").style.clipPath = "";
   setCalendarDate(current);
+  document.getElementById("calendarMark").classList.remove("draw");
 
   function tick() {
 
@@ -2060,8 +2102,13 @@ function startEvent4Calendar() {
 }
 
 function onCalendarFinished() {
-  // Εδώ θα ξεκινήσει η κάθοδος του Henry
-  console.log("Calendar finished");
+
+  // Στιγμή σιωπής και μετά ο κόκκινος κύκλος
+  eventTimeout(() => {
+    document.getElementById("calendarMark").classList.add("draw");
+  }, 1200);
+
+  // Εδώ θα συνεχίσουμε στο επόμενο κομμάτι του Event 04
 }
 
  function goToEvent4() {
