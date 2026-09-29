@@ -2681,11 +2681,6 @@ body {
         <source src="babycry.mp3" type="audio/mpeg">
       </audio>
 
-      <!-- Ήχος υποβάθρου σε όλο το Event 02 -->
-      <audio id="hospitalBg" preload="auto" loop>
-        <source src="2.mp3" type="audio/mpeg">
-      </audio>
-
       <!-- Ήχος όσο φαίνεται το καρδιογράφημα -->
       <audio id="ecgAudio" preload="auto">
         <source src="hospital_Death.mp3" type="audio/mpeg">
@@ -3274,7 +3269,8 @@ function clearEventTimers() {
 // RESET ΟΛΩΝ ΤΩΝ ΗΧΩΝ ΚΑΙ VIDEO
 function resetMedia() {
 
-  document.querySelectorAll("audio, video").forEach(media => {
+  // Οι ήχοι υποβάθρου δεν σταματούν εδώ: αλλάζουν ομαλά από το setBackground()
+  document.querySelectorAll("audio:not(.bg-audio), video").forEach(media => {
 
     media.pause();
 
@@ -3441,7 +3437,7 @@ function checkRiddle1() {
 
     // Τα κινητά επιτρέπουν ήχο μόνο μετά από άγγιγμα:
     // "ξεκλειδώνουμε" εδώ τους ήχους του Event 02
-    primeAudio(["hospitalBg", "ecgAudio", "babyCry"]);
+    primeAudio(["ecgAudio", "babyCry"]);
 
     eventTimeout(() => {
       nextEvent();
@@ -3486,6 +3482,7 @@ function nextScreen() {
 
     videoScreen.classList.add("hidden");
     storyScreen1.classList.remove("hidden");
+    syncBackground();
 
     return;
   }
@@ -5341,7 +5338,7 @@ function nextEvent() {
   updateLanguage();
 
   // Ήχος υποβάθρου για όλο το Event 02 (χαμηλά όσο παίζουν οι άλλοι ήχοι)
-  playSound("hospitalBg", 0.15);
+  setBackground("event2", 0.15);
 
   // Ο ήχος του καρδιογραφήματος
   playSound("ecgAudio", 1);
@@ -5360,7 +5357,7 @@ function nextEvent() {
     }
 
     // Τελείωσαν οι άλλοι ήχοι: το υπόβαθρο ανεβαίνει ξανά
-    fadeAudioTo("hospitalBg", 0.45, 2500);
+    setBackgroundVolume("event2", BG_VOLUME, 2500);
 
   }, 27500);
 
@@ -5431,8 +5428,6 @@ function checkIncidentTime() {
       babyCry.currentTime = 0;
       babyCry.volume = 1;
     }
-
-    fadeOutAudio("hospitalBg", 1800);
 
     const motherStatus = document.getElementById("hospitalMotherStatus");
 
@@ -5687,6 +5682,163 @@ function updateLanguage() {
   }
 
 }
+
+
+// =========================================
+// ΗΧΟΙ ΥΠΟΒΑΘΡΟΥ
+// Παίζουν σε λούπα χωρίς κενό και αλλάζουν ομαλά από event σε event.
+// =========================================
+
+const BG_VOLUME = 0.45;
+
+// loopAt: λίγο πριν σβήσει το τέλος του αρχείου ξεκινά ξανά από την αρχή
+// με crossfade, ώστε να μην υπάρχει ποτέ σιωπή
+const BG_TRACKS = {
+  event1: { src: "1.mp3", loopAt: 77 },
+  event2: { src: "2.mp3", loopAt: 39.5 }
+};
+
+// Ποιο υπόβαθρο παίζει σε κάθε οθόνη (οι υπόλοιπες μένουν χωρίς υπόβαθρο προς το παρόν)
+const SCREEN_BACKGROUNDS = {
+  storyScreen1: "event1",
+  storyScreen2: "event2"
+};
+
+const bgState = {};
+const bgRamps = {};
+let currentBg = null;
+
+function rampVolume(audio, target, duration, onDone) {
+
+  clearInterval(bgRamps[audio.id]);
+
+  const steps = Math.max(1, Math.round(duration / 50));
+  const start = audio.volume;
+  let n = 0;
+
+  bgRamps[audio.id] = setInterval(() => {
+    n++;
+    audio.volume = Math.min(1, Math.max(0, start + (target - start) * (n / steps)));
+    if (n >= steps) {
+      clearInterval(bgRamps[audio.id]);
+      if (onDone) onDone();
+    }
+  }, duration / steps);
+}
+
+function initBackgrounds() {
+
+  Object.keys(BG_TRACKS).forEach(name => {
+
+    // Δύο αντίγραφα του κάθε ήχου για λούπα χωρίς κενό
+    const els = ["A", "B"].map(suffix => {
+      const audio = document.createElement("audio");
+      audio.id = "bg-" + name + suffix;
+      audio.className = "bg-audio";
+      audio.src = BG_TRACKS[name].src;
+      audio.preload = "auto";
+      document.body.appendChild(audio);
+      return audio;
+    });
+
+    bgState[name] = { els, cur: 0, target: 0, playing: false, crossfading: false };
+
+    els.forEach(audio => {
+      audio.addEventListener("timeupdate", () => checkBgLoop(name, audio));
+      audio.addEventListener("ended", () => checkBgLoop(name, audio, true));
+    });
+  });
+}
+
+function checkBgLoop(name, audio, ended) {
+
+  const state = bgState[name];
+
+  if (!state.playing || state.crossfading || audio !== state.els[state.cur]) return;
+  if (!ended && audio.currentTime < BG_TRACKS[name].loopAt) return;
+
+  state.crossfading = true;
+
+  const next = state.els[1 - state.cur];
+  next.currentTime = 0;
+  next.volume = 0;
+  next.play().catch(() => {});
+  rampVolume(next, state.target, 2500);
+
+  rampVolume(audio, 0, 2500, () => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+
+  state.cur = 1 - state.cur;
+  setTimeout(() => { state.crossfading = false; }, 2700);
+}
+
+// Αλλάζει υπόβαθρο με ομαλή μετάβαση (null = κανένα)
+function setBackground(name, volume = BG_VOLUME, fade = 2500) {
+
+  if (name === currentBg) {
+    if (name) setBackgroundVolume(name, volume, fade);
+    return;
+  }
+
+  // Το προηγούμενο σβήνει σιγά σιγά
+  if (currentBg) {
+    const old = bgState[currentBg];
+    old.playing = false;
+    old.els.forEach(audio => {
+      if (audio.paused) return;
+      rampVolume(audio, 0, fade, () => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    });
+  }
+
+  currentBg = name;
+  if (!name) return;
+
+  // Το νέο ανεβαίνει σιγά σιγά
+  const state = bgState[name];
+  state.playing = true;
+  state.target = volume;
+
+  const audio = state.els[state.cur];
+  audio.muted = false;
+  audio.currentTime = 0;
+  audio.volume = 0;
+  audio.play().catch(error => console.log("Υπόβαθρο δεν έπαιξε:", name, error));
+  rampVolume(audio, volume, fade);
+}
+
+// Χαμηλώνει / δυναμώνει το υπόβαθρο που παίζει (π.χ. όταν ακούγονται άλλοι ήχοι)
+function setBackgroundVolume(name, volume, duration) {
+  const state = bgState[name];
+  if (!state || !state.playing) return;
+  state.target = volume;
+  rampVolume(state.els[state.cur], volume, duration);
+}
+
+// Βρίσκει ποια οθόνη φαίνεται και βάζει το σωστό υπόβαθρο
+function syncBackground() {
+
+  const screens = ["languageScreen", "videoScreen", "storyScreen1", "storyScreen2",
+                   "storyScreen3", "storyScreen4", "storyScreen5"];
+
+  const visible = screens.find(id => !document.getElementById(id).classList.contains("hidden"));
+  const name = SCREEN_BACKGROUNDS[visible] || null;
+
+  if (name !== currentBg) setBackground(name);
+}
+
+initBackgrounds();
+
+// Κάθε φορά που αλλάζει οθόνη, αλλάζει και το υπόβαθρο
+const bgObserver = new MutationObserver(() => syncBackground());
+
+document.querySelectorAll(".screen").forEach(screen => {
+  bgObserver.observe(screen, { attributes: true, attributeFilter: ["class"] });
+});
 
 </script>
 
