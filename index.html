@@ -2689,6 +2689,7 @@ body {
       <!-- Ήχος όσο φαίνεται το καρδιογράφημα -->
       <audio id="ecgAudio" preload="auto">
         <source src="hospital_Death.mp3" type="audio/mpeg">
+        <source src="hospital%20Death.mp3" type="audio/mpeg">
       </audio>
 
       <div class="monitor-line">
@@ -3141,7 +3142,8 @@ body {
 
       <!-- 2. Στην πόρτα: ο Henry και ο Bennett -->
       <div class="cabin-zoom cabin-zoom-2">
-        <img class="cabin-photo" src="kaliba_2.png" alt="">
+        <img class="cabin-photo" src="kaliba_2.png" alt=""
+             onerror="if (!this.dataset.retry) { this.dataset.retry = 1; this.src = 'kaliba%202.png'; }">
       </div>
 
     </div>
@@ -3436,6 +3438,10 @@ function checkRiddle1() {
       selectedLanguage === "gr"
         ? "Σωστά."
         : "Correct.";
+
+    // Τα κινητά επιτρέπουν ήχο μόνο μετά από άγγιγμα:
+    // "ξεκλειδώνουμε" εδώ τους ήχους του Event 02
+    primeAudio(["hospitalBg", "ecgAudio", "babyCry"]);
 
     eventTimeout(() => {
       nextEvent();
@@ -4891,6 +4897,23 @@ function goToEvent5() {
   eventTimeout(enterBasement, 27500);
 }
 
+// Παίζει για μια στιγμή και σταματά κάθε ήχο, μέσα σε άγγιγμα του παίκτη,
+// ώστε αργότερα να μπορεί να παίξει κανονικά στα κινητά
+function primeAudio(ids) {
+  ids.forEach(id => {
+    const audio = document.getElementById(id);
+    if (!audio) return;
+    audio.muted = true;
+    audio.play().then(() => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.muted = false;
+    }).catch(() => {
+      audio.muted = false;
+    });
+  });
+}
+
 // Αλλάζει σιγά σιγά την ένταση ενός ήχου
 function fadeAudioTo(id, target, duration) {
 
@@ -4931,9 +4954,10 @@ function fadeOutAudio(id, duration) {
 function playSound(id, volume) {
   const audio = document.getElementById(id);
   if (!audio) return;
+  audio.muted = false;
   audio.currentTime = 0;
   audio.volume = volume;
-  audio.play().catch(() => {});
+  audio.play().catch(error => console.log("Ήχος δεν έπαιξε:", id, error));
 }
 
 function showDialogueLine(text, isHenry) {
@@ -5340,38 +5364,15 @@ function nextEvent() {
 
   }, 27500);
 
-  // Μετά το σκοτάδι ακούγεται το κλάμα του νεογέννητου
+  // Το κλάμα του νεογέννητου: ξεκινά λίγο πριν σταματήσει η καρδιά της Karen
+  // και κρατά μέχρι να σβήσει το καρδιογράφημα
   eventTimeout(() => {
-
     const babyCry = document.getElementById("babyCry");
+    if (babyCry) babyCry.loop = true;
+    playSound("babyCry", 1);
+  }, 11000);
 
-    if (babyCry) {
-      babyCry.currentTime = 0;
-      babyCry.loop = false;
-      babyCry.volume = 1;
-      babyCry.play().catch(error => {
-        console.log("Baby cry error:", error);
-      });
-
-      eventTimeout(() => {
-
-        const fadeOut = eventInterval(() => {
-
-          if (babyCry.volume > 0.05) {
-            babyCry.volume = Math.max(0, babyCry.volume - 0.05);
-          } else {
-            clearInterval(fadeOut);
-            babyCry.pause();
-            babyCry.currentTime = 0;
-            babyCry.volume = 1;
-          }
-
-        }, 100);
-
-      }, 8000);
-    }
-
-  }, 6000);
+  eventTimeout(() => fadeOutAudio("babyCry", 2000), 27500);
 
   // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
   eventTimeout(() => {
