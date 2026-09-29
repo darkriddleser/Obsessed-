@@ -2038,6 +2038,31 @@ body {
 
 
 /* =========================
+   EVENT 04 - ΤΕΛΙΚΗ ΣΚΗΝΗ (2023)
+========================= */
+
+.final-date {
+  margin: 3vh 0 0;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.final-date.show { opacity: 1; }
+
+/* Όλα σβήνουν, μένει μόνο ο υπολογιστής */
+.desk-scene.final-phase .desk-item:not(.laptop) {
+  filter: brightness(.35) saturate(.5);
+  pointer-events: none;
+}
+
+.desk-scene.final-phase .laptop {
+  box-shadow:
+    0 0 16px rgba(120,200,255,.4),
+    3px 5px 8px rgba(0,0,0,.7);
+}
+
+
+/* =========================
    EVENT 04 - ΣΤΑΔΙΟ 1: ΕΡΕΥΝΑ
 ========================= */
 
@@ -2501,6 +2526,9 @@ body {
       <div id="griefLine" class="grief-line"></div>
 
     </div>
+
+    <!-- Ημερομηνία της τελικής σκηνής (Απρίλιος 2023) -->
+    <div id="finalDate" class="research-date final-date hidden"></div>
 
     <!-- ===== ΓΡΑΦΕΙΟ HENRY ===== -->
     <div id="deskScene" class="desk-scene hidden">
@@ -3454,6 +3482,11 @@ const deskSeen = { newspaper: false, flyer: false, notes: false };
 let griefHintTimer = null;
 let deskDone = false;
 
+// Τελική σκηνή: ο υπολογιστής και το forum (Απρίλιος 2023)
+let finalPhase = false;
+let finalForumOpened = false;
+let finalDone = false;
+
 // Το σύμβολο του Βαρόνου (σταυρός πάνω σε τάφο)
 const baronSymbol =
   '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
@@ -3497,6 +3530,9 @@ function deskText() {
         "Η Margaret γύρισε. Γιατί όχι κι εκείνη;<br><br>" +
         "<span class='henry-ink'>Ό,τι κι αν κοστίσει.</span>",
       laptopTip: "Σύρε για να διαβάσεις · άγγιξε έξω για να κλείσει.",
+      finalDate: "ΑΠΡΙΛΙΟΣ 2023",
+      finalHint: "Τέσσερα χρόνια αργότερα. Ο Henry δεν σταμάτησε ποτέ να ψάχνει. Άγγιξε τον υπολογιστή.",
+      finalLine: "Elmore Street. Νέα Ορλεάνη.",
       hope: "Ίσως μπορεί να γυρίσει."
     };
   }
@@ -3535,6 +3571,9 @@ function deskText() {
       "Margaret came back. Why not her?<br><br>" +
       "<span class='henry-ink'>Whatever it costs.</span>",
     laptopTip: "Scroll to read · tap outside to close.",
+    finalDate: "APRIL 2023",
+    finalHint: "Four years later. Henry never stopped searching. Touch the computer.",
+    finalLine: "Elmore Street. New Orleans.",
     hope: "Maybe she can come back."
   };
 }
@@ -3542,6 +3581,15 @@ function deskText() {
 function resetDeskScene() {
 
   deskDone = false;
+  finalPhase = false;
+  finalForumOpened = false;
+  finalDone = false;
+
+  const finalDate = document.getElementById("finalDate");
+  finalDate.classList.remove("show");
+  finalDate.classList.add("hidden");
+  document.getElementById("deskScene").classList.remove("final-phase");
+
   deskSeen.newspaper = false;
   deskSeen.flyer = false;
   deskSeen.notes = false;
@@ -3587,6 +3635,16 @@ function openDeskItem(type) {
   const t = deskText();
   const viewer = document.getElementById("deskViewer");
   const content = document.getElementById("deskViewerContent");
+
+  // Το 2019 ο υπολογιστής μένει κλειστός. Ανοίγει μόνο στην τελική σκηνή.
+  if (type === "laptop" && !finalPhase) {
+    tapGriefItem("laptop");
+    return;
+  }
+
+  if (type === "laptop") {
+    finalForumOpened = true;
+  }
 
   // ===== ΜΑΡΤΥΡΙΑ (ΕΦΗΜΕΡΙΔΑ) =====
   if (type === "newspaper") {
@@ -3671,13 +3729,15 @@ function tapGriefItem(type) {
         photo:   "Της μιλούσε κάθε βράδυ. Εκείνη δεν απαντούσε ποτέ.",
         mail:    "Λογαριασμοί. Ειδοποιήσεις. Κανένας φάκελος δεν ανοίχτηκε ποτέ.",
         wine:    "Το κρασί που της άρεσε. Το άνοιγε κάθε Παρασκευή, όπως τότε.",
-        glasses: "Δύο ποτήρια. Έβαζε πάντα δύο."
+        glasses: "Δύο ποτήρια. Έβαζε πάντα δύο.",
+        laptop:  "Ο υπολογιστής του. Δεν τον είχε ανοίξει από τότε."
       }
     : {
         photo:   "He talked to her every night. She never answered.",
         mail:    "Bills. Final notices. Not a single envelope was ever opened.",
         wine:    "The wine she loved. He opened it every Friday, like before.",
-        glasses: "Two glasses. He always poured two."
+        glasses: "Two glasses. He always poured two.",
+        laptop:  "His computer. He hadn't opened it since."
       };
 
   const hint = document.getElementById("deskHint");
@@ -3699,6 +3759,15 @@ function closeDeskItem() {
 
   viewer.classList.remove("show");
   eventTimeout(() => viewer.classList.add("hidden"), 600);
+
+  // Τελική σκηνή: μόλις κλείσει το forum, τελειώνει το Event 04
+  if (finalPhase) {
+    if (finalForumOpened && !finalDone) {
+      finalDone = true;
+      eventTimeout(showFinalLine, 900);
+    }
+    return;
+  }
 
   // Όταν έχει δει μαρτυρία, φυλλάδιο και σημειώσεις → ελπίδα
   if (!deskDone && deskSeen.newspaper && deskSeen.flyer && deskSeen.notes) {
@@ -4026,8 +4095,75 @@ function tapResearchEntry(id) {
 }
 
 function onResearch1Solved() {
-  // Εδώ θα ξεκινήσει το στάδιο 2: το γράμμα της Céleste
-  console.log("Research stage 1 solved");
+  // Εδώ θα μπουν αργότερα τα στάδια 2–5 της έρευνας.
+  // Προς το παρόν πάμε κατευθείαν στην τελική σκηνή (υπολογιστής / forum).
+  showFinalForumScene();
+}
+
+
+// =========================================
+// EVENT 04 - ΤΕΛΙΚΗ ΣΚΗΝΗ: ΑΠΡΙΛΙΟΣ 2023
+// =========================================
+
+function showFinalForumScene() {
+
+  finalPhase = true;
+
+  const t = deskText();
+  const research = document.getElementById("researchScene");
+
+  // Σβήνει το σημειωματάριο
+  research.classList.remove("show");
+
+  eventTimeout(() => {
+
+    research.classList.add("hidden");
+
+    // Ημερομηνία: Απρίλιος 2023
+    const date = document.getElementById("finalDate");
+    date.textContent = t.finalDate;
+    date.classList.remove("hidden");
+
+    // Το γραφείο ξαναεμφανίζεται, μόνο ο υπολογιστής φωτίζεται
+    const desk = document.getElementById("deskScene");
+    desk.classList.add("final-phase");
+    desk.classList.remove("hidden", "desk-fade", "show");
+
+    const hint = document.getElementById("deskHint");
+    hint.classList.remove("hidden", "desk-fade");
+    hint.textContent = t.finalHint;
+    hint.classList.add("grief-active");
+
+    const hope = document.getElementById("henryHope");
+    hope.classList.remove("hidden", "desk-fade", "show");
+    hope.textContent = "";
+
+    eventTimeout(() => {
+      date.classList.add("show");
+      desk.classList.add("show");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
+
+  }, 2000);
+}
+
+function showFinalLine() {
+
+  const hint = document.getElementById("deskHint");
+  hint.textContent = "";
+  hint.classList.remove("grief-active");
+
+  const hope = document.getElementById("henryHope");
+  hope.textContent = deskText().finalLine;
+  hope.classList.add("show");
+  hope.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  eventTimeout(onEvent4Finished, 5000);
+}
+
+function onEvent4Finished() {
+  // Εδώ θα ξεκινήσει το Event 05
+  console.log("Event 04 finished");
 }
 
 
