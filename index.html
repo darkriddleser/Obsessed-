@@ -5795,7 +5795,10 @@ function checkBgLoop(name, audio, ended) {
 }
 
 // Αλλάζει υπόβαθρο με ομαλή μετάβαση (null = κανένα)
-function setBackground(name, volume = BG_VOLUME, fade = 2500) {
+// Πόσο διαρκεί η μετάβαση από το υπόβαθρο ενός event στο επόμενο
+const BG_CHANGE_FADE = 1200;
+
+function setBackground(name, volume = BG_VOLUME, fade = BG_CHANGE_FADE) {
 
   if (name === currentBg) {
     if (name) setBackgroundVolume(name, volume, fade);
