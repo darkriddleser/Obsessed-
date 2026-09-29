@@ -2372,7 +2372,11 @@ body {
   animation: candleGlowPulse 2.4s infinite alternate ease-in-out;
 }
 
-.pool-canvas { z-index: 2; }
+.pool-canvas {
+  z-index: 2;
+  /* Το αίμα "βάφει" τη φωτογραφία, κρατώντας την υφή του πατώματος */
+  mix-blend-mode: multiply;
+}
 
 .pool-candle {
   position: absolute;
@@ -4939,20 +4943,23 @@ function showDialogueLine(text, isHenry) {
 // =========================================
 
 // Η φωτογραφία του υπογείου (βάλε το αρχείο στον ίδιο φάκελο)
-const POOL_IMAGE = "aima.png";
+const POOL_IMAGE = "mpam.png";
 
 // Πού βρίσκονται τα κεριά πάνω στη φωτογραφία (0 = αριστερά/πάνω, 1 = δεξιά/κάτω)
 const CANDLE_POSITIONS = [
-  { x: 0.30, y: 0.86 },
-  { x: 0.50, y: 0.83 },
-  { x: 0.70, y: 0.86 }
+  { x: 0.12, y: 0.74 },   // αριστερά, δίπλα στο κεφάλι
+  { x: 0.78, y: 0.97 },   // δεξιά μπροστά, στο πάτωμα
+  { x: 0.42, y: 0.96 }    // μπροστά, στο πάτωμα
 ];
 
 // Από ποιο σημείο βγαίνει το αίμα
-const POOL_ORIGIN = { x: 0.5, y: 0.72 };
+const POOL_ORIGIN = { x: 0.33, y: 0.77 };   // κάτω από το σώμα
 
 // Προοπτική του πατώματος (1 = κύκλος, μικρότερο = πιο «ξαπλωμένη» λίμνη)
-const POOL_FLATTEN = 0.42;
+const POOL_FLATTEN = 0.32;
+
+// Πού αρχίζει το πάτωμα (το αίμα δεν ανεβαίνει πιο ψηλά από εδώ, 0 = πάνω, 1 = κάτω)
+const POOL_FLOOR_TOP = 0.6;
 
 // Πόσο σκοτάδι μένει ανάλογα με τα αναμμένα κεριά (0, 1, 2, 3)
 const POOL_DARK_LEVELS = [0.94, 0.72, 0.5, 0.22];
@@ -5062,7 +5069,7 @@ function startBloodPool(duration) {
 
   const cx = W * POOL_ORIGIN.x;
   const cy = H * POOL_ORIGIN.y;
-  const Rmax = Math.hypot(W, H) * 0.8;
+  const Rmax = Math.hypot(W, H) * 0.5;
 
   // Ακανόνιστο σχήμα: κάθε σημείο της άκρης έχει δική του "τύχη"
   const N = 80;
@@ -5126,8 +5133,8 @@ function startBloodPool(duration) {
 
     // Αρχίζει σαν λίγο αίμα που βγαίνει, μετά απλώνεται και στο τέλος σέρνεται αργά
     const grow = k < 0.15
-      ? Math.pow(k / 0.15, 2) * 0.05
-      : 0.05 + (1 - Math.pow(1 - (k - 0.15) / 0.85, 2.2)) * 0.95;
+      ? Math.pow(k / 0.15, 2) * 0.04
+      : 0.04 + Math.pow((k - 0.15) / 0.85, 1.15) * 0.96;
 
     const R = Math.max(2, Rmax * grow);
 
@@ -5135,30 +5142,29 @@ function startBloodPool(duration) {
 
     const pts = edgePoints(R, k, t);
 
-    // Η λίμνη
+    // Το αίμα (το canvas ανακατεύεται με τη φωτογραφία σε "multiply")
     const fill = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.1);
-    fill.addColorStop(0, "#220002");
-    fill.addColorStop(0.55, "#46040a");
-    fill.addColorStop(1, "#760a10");
+    fill.addColorStop(0, "#4a0306");
+    fill.addColorStop(0.5, "#7a0a10");
+    fill.addColorStop(1, "#b5141c");
 
     tracePath(pts);
     ctx.fillStyle = fill;
     ctx.fill();
 
-    // Γυαλιστερή άκρη
-    ctx.strokeStyle = "rgba(255,110,110,.2)";
-    ctx.lineWidth = 1.5;
+    // Πιο σκούρα άκρη, όπως στο αληθινό υγρό
+    ctx.strokeStyle = "rgba(60,0,4,.6)";
+    ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Αντανάκλαση πάνω στο υγρό
-    ctx.save();
-    tracePath(pts);
-    ctx.clip();
-    ctx.fillStyle = "rgba(255,190,190,.035)";
-    ctx.beginPath();
-    ctx.ellipse(cx - R * 0.22, cy - R * POOL_FLATTEN * 0.3, R * 0.38, R * POOL_FLATTEN * 0.12, -0.08, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    // Το αίμα σβήνει απαλά προς τα πάνω, για να μένει στο πάτωμα
+    const floorFade = ctx.createLinearGradient(0, H * POOL_FLOOR_TOP, 0, H * (POOL_FLOOR_TOP + 0.14));
+    floorFade.addColorStop(0, "rgba(0,0,0,0)");
+    floorFade.addColorStop(1, "rgba(0,0,0,1)");
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.fillStyle = floorFade;
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = "source-over";
 
     if (t < duration + 2) {
       poolFrame = requestAnimationFrame(frame);
