@@ -2252,6 +2252,100 @@ body {
 
 .cabin-caption.show { opacity: 1; }
 
+/* Ο Henry πλησιάζει: αργό ζουμ προς την πόρτα */
+.cabin-svg,
+.cabin-photo {
+  transform-origin: 50% 76%;
+  transition: transform 10s ease-in-out;
+}
+
+.cabin-scene.approach .cabin-svg,
+.cabin-scene.approach .cabin-photo {
+  transform: scale(1.7);
+}
+
+/* Η πόρτα ανοίγει */
+.door-light,
+.door-spill,
+.bennett-figure {
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+
+.cabin-scene.door-open .door-light,
+.cabin-scene.door-open .door-spill,
+.cabin-scene.door-open .bennett-figure {
+  opacity: 1;
+}
+
+/* Διάλογος */
+.cabin-dialogue {
+  min-height: 56px;
+  margin-top: 6px;
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.5;
+  color: #e6ddcf;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.cabin-dialogue.show { opacity: 1; }
+.cabin-dialogue.henry { color: #d98c8c; }
+
+/* Το υπόγειο */
+.basement-scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 400 / 520;
+  max-height: 66vh;
+  margin: 2vh auto 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+  opacity: 0;
+  transition: opacity 2s ease;
+  touch-action: none;
+}
+
+.basement-scene.show { opacity: 1; }
+
+.basement-scene svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.basement-darkness {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0,0,0,.97);
+
+  -webkit-mask-image: radial-gradient(
+    circle 70px at var(--x, 15%) var(--y, 85%),
+    transparent 0, transparent 45px, black 80px
+  );
+  mask-image: radial-gradient(
+    circle 70px at var(--x, 15%) var(--y, 85%),
+    transparent 0, transparent 45px, black 80px
+  );
+
+  transition: opacity 2s ease;
+}
+
+.basement-darkness.found { opacity: .5; }
+
+/* Ο φακός σβήνει: απόλυτο σκοτάδι */
+.basement-scene.lights-out .basement-darkness {
+  opacity: 1;
+  background: #000;
+  -webkit-mask-image: none;
+  mask-image: none;
+  transition: none;
+}
+
 /* Η εικόνα OBSESSED */
 .obsessed-image {
   display: block;
@@ -2990,14 +3084,38 @@ body {
           <line x1="122" y1="346" x2="200" y2="286" stroke="#1b1d1d" stroke-width="1.5"/>
           <line x1="200" y1="286" x2="278" y2="346" stroke="#1b1d1d" stroke-width="1.5"/>
           <rect x="190" y="368" width="22" height="42" fill="#040404"/>
+          <!-- Η πόρτα ανοίγει: φως και ο Bennett στο κατώφλι -->
+          <rect class="door-light" x="190" y="368" width="22" height="42" fill="#e3a24c"/>
+          <g class="bennett-figure" fill="#0a0604">
+            <circle cx="201" cy="380" r="4.6"/>
+            <path d="M194.5 387 Q201 384 207.5 387 L209.5 410 L192.5 410 Z"/>
+          </g>
           <rect class="cabin-window" x="148" y="356" width="26" height="20" fill="#d9892f"/>
           <path d="M161 356 V376 M148 366 H174" stroke="#0b0c0c" stroke-width="2"/>
           <rect x="226" y="356" width="26" height="20" fill="#111313"/>
           <path d="M239 356 V376 M226 366 H252" stroke="#0b0c0c" stroke-width="2"/>
           <rect x="184" y="410" width="34" height="5" fill="#0d0e0e"/>
 
+<!-- Το αυτοκίνητο του Henry. Στο πίσω τζάμι, το αγόρι -->
+          <g transform="translate(100,458) scale(1.3) translate(-100,-458)">
+            <path d="M58 450 L58 436 Q60 430 70 429 L88 428 L100 416 Q104 413 112 413 L132 413 Q138 413 142 419 L150 430 Q156 432 156 440 L156 450 Z" fill="#050607"/>
+            <polygon points="92,428 102,418 116,418 116,428" fill="#26343f"/>
+            <polygon points="119,418 131,418 139,428 119,428" fill="#1c2730"/>
+            <circle cx="109" cy="424.5" r="3.2" fill="#020304"/>
+            <ellipse cx="99.5" cy="424" rx="1.5" ry="2.1" fill="#020304"/>
+            <circle cx="76" cy="451" r="7" fill="#020202"/>
+            <circle cx="138" cy="451" r="7" fill="#020202"/>
+          </g>
+
           <!-- Μονοπάτι -->
           <polygon points="178,520 240,520 212,415 196,415" fill="#0e1416"/>
+          <defs>
+            <linearGradient id="spillGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e3a24c" stop-opacity=".45"/>
+              <stop offset="1" stop-color="#e3a24c" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polygon class="door-spill" points="190,412 212,412 246,520 160,520" fill="url(#spillGrad)"/>
 
           <!-- Ομίχλη -->
           <rect class="cabin-fog" x="-400" y="360" width="1200" height="130" fill="url(#fogGrad)"/>
@@ -3019,7 +3137,121 @@ body {
 
     </div>
 
+    <!-- Το υπόγειο (ψάχνεις με το δάχτυλο σαν φακό) -->
+    <div id="basementScene" class="basement-scene hidden">
+          <svg viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
+            <rect width="400" height="520" fill="#120f0c"/>
+            <rect x="-33" y="2" width="80" height="37" rx="3" fill="#3a3128"/>
+            <rect x="51" y="2" width="83" height="37" rx="3" fill="#27211b"/>
+            <rect x="138" y="2" width="63" height="37" rx="3" fill="#2f2821"/>
+            <rect x="205" y="2" width="83" height="37" rx="3" fill="#3a3128"/>
+            <rect x="292" y="2" width="91" height="37" rx="3" fill="#27211b"/>
+            <rect x="387" y="2" width="62" height="37" rx="3" fill="#2a241e"/>
+            <rect x="-17" y="43" width="60" height="37" rx="3" fill="#2a241e"/>
+            <rect x="47" y="43" width="85" height="37" rx="3" fill="#2a241e"/>
+            <rect x="136" y="43" width="89" height="37" rx="3" fill="#3a3128"/>
+            <rect x="229" y="43" width="79" height="37" rx="3" fill="#27211b"/>
+            <rect x="312" y="43" width="61" height="37" rx="3" fill="#27211b"/>
+            <rect x="377" y="43" width="51" height="37" rx="3" fill="#27211b"/>
+            <rect x="-1" y="84" width="53" height="31" rx="3" fill="#2f2821"/>
+            <rect x="56" y="84" width="66" height="31" rx="3" fill="#27211b"/>
+            <rect x="126" y="84" width="52" height="31" rx="3" fill="#3a3128"/>
+            <rect x="182" y="84" width="71" height="31" rx="3" fill="#3a3128"/>
+            <rect x="257" y="84" width="88" height="31" rx="3" fill="#2f2821"/>
+            <rect x="349" y="84" width="84" height="31" rx="3" fill="#2f2821"/>
+            <rect x="-16" y="119" width="82" height="40" rx="3" fill="#2a241e"/>
+            <rect x="70" y="119" width="56" height="40" rx="3" fill="#3a3128"/>
+            <rect x="130" y="119" width="68" height="40" rx="3" fill="#3a3128"/>
+            <rect x="202" y="119" width="86" height="40" rx="3" fill="#2a241e"/>
+            <rect x="292" y="119" width="67" height="40" rx="3" fill="#352d25"/>
+            <rect x="363" y="119" width="65" height="40" rx="3" fill="#27211b"/>
+            <rect x="1" y="163" width="55" height="34" rx="3" fill="#27211b"/>
+            <rect x="60" y="163" width="57" height="34" rx="3" fill="#3a3128"/>
+            <rect x="121" y="163" width="57" height="34" rx="3" fill="#352d25"/>
+            <rect x="182" y="163" width="75" height="34" rx="3" fill="#2a241e"/>
+            <rect x="261" y="163" width="52" height="34" rx="3" fill="#2a241e"/>
+            <rect x="317" y="163" width="64" height="34" rx="3" fill="#2f2821"/>
+            <rect x="385" y="163" width="54" height="34" rx="3" fill="#3a3128"/>
+            <rect x="-23" y="201" width="77" height="36" rx="3" fill="#2a241e"/>
+            <rect x="58" y="201" width="87" height="36" rx="3" fill="#2f2821"/>
+            <rect x="149" y="201" width="68" height="36" rx="3" fill="#352d25"/>
+            <rect x="221" y="201" width="56" height="36" rx="3" fill="#352d25"/>
+            <rect x="281" y="201" width="72" height="36" rx="3" fill="#2a241e"/>
+            <rect x="357" y="201" width="77" height="36" rx="3" fill="#2a241e"/>
+            <rect x="-13" y="241" width="57" height="32" rx="3" fill="#2a241e"/>
+            <rect x="48" y="241" width="54" height="32" rx="3" fill="#3a3128"/>
+            <rect x="106" y="241" width="82" height="32" rx="3" fill="#2f2821"/>
+            <rect x="192" y="241" width="86" height="32" rx="3" fill="#2f2821"/>
+            <rect x="282" y="241" width="79" height="32" rx="3" fill="#27211b"/>
+            <rect x="365" y="241" width="63" height="32" rx="3" fill="#2f2821"/>
+            <rect x="-22" y="277" width="58" height="36" rx="3" fill="#3a3128"/>
+            <rect x="40" y="277" width="77" height="36" rx="3" fill="#2f2821"/>
+            <rect x="121" y="277" width="51" height="36" rx="3" fill="#352d25"/>
+            <rect x="176" y="277" width="88" height="36" rx="3" fill="#352d25"/>
+            <rect x="268" y="277" width="52" height="36" rx="3" fill="#2f2821"/>
+            <rect x="324" y="277" width="62" height="36" rx="3" fill="#3a3128"/>
+            <rect x="390" y="277" width="89" height="36" rx="3" fill="#27211b"/>
+            <rect x="0" y="317" width="60" height="31" rx="3" fill="#2f2821"/>
+            <rect x="64" y="317" width="79" height="31" rx="3" fill="#352d25"/>
+            <rect x="147" y="317" width="51" height="31" rx="3" fill="#27211b"/>
+            <rect x="202" y="317" width="72" height="31" rx="3" fill="#352d25"/>
+            <rect x="278" y="317" width="75" height="31" rx="3" fill="#2a241e"/>
+            <rect x="357" y="317" width="55" height="31" rx="3" fill="#2a241e"/>
+            <rect x="-35" y="352" width="91" height="33" rx="3" fill="#2f2821"/>
+            <rect x="60" y="352" width="51" height="33" rx="3" fill="#27211b"/>
+            <rect x="115" y="352" width="74" height="33" rx="3" fill="#352d25"/>
+            <rect x="193" y="352" width="90" height="33" rx="3" fill="#3a3128"/>
+            <rect x="287" y="352" width="59" height="33" rx="3" fill="#27211b"/>
+            <rect x="350" y="352" width="81" height="33" rx="3" fill="#27211b"/>
+            <rect x="-22" y="389" width="62" height="32" rx="3" fill="#2f2821"/>
+            <rect x="44" y="389" width="70" height="32" rx="3" fill="#2f2821"/>
+            <rect x="118" y="389" width="90" height="32" rx="3" fill="#2f2821"/>
+            <rect x="212" y="389" width="63" height="32" rx="3" fill="#2f2821"/>
+            <rect x="279" y="389" width="91" height="32" rx="3" fill="#27211b"/>
+            <rect x="374" y="389" width="63" height="32" rx="3" fill="#3a3128"/>
+            <rect x="-36" y="425" width="56" height="37" rx="3" fill="#3a3128"/>
+            <rect x="24" y="425" width="54" height="37" rx="3" fill="#2a241e"/>
+            <rect x="82" y="425" width="57" height="37" rx="3" fill="#2a241e"/>
+            <rect x="143" y="425" width="83" height="37" rx="3" fill="#352d25"/>
+            <rect x="230" y="425" width="66" height="37" rx="3" fill="#3a3128"/>
+            <rect x="300" y="425" width="67" height="37" rx="3" fill="#3a3128"/>
+            <rect x="371" y="425" width="89" height="37" rx="3" fill="#3a3128"/>
+            <!-- Πάτωμα -->
+            <polygon points="0,440 400,418 400,520 0,520" fill="#15110d"/>
+            <!-- Σκάλα που κατεβαίνει -->
+            <rect x="0" y="40" width="150" height="10" fill="#3b2c1e"/><rect x="0" y="50" width="150" height="42" fill="#1c150f"/>
+            <rect x="0" y="92" width="136" height="10" fill="#3b2c1e"/><rect x="0" y="102" width="136" height="42" fill="#1c150f"/>
+            <rect x="0" y="144" width="122" height="10" fill="#3b2c1e"/><rect x="0" y="154" width="122" height="42" fill="#1c150f"/>
+            <rect x="0" y="196" width="108" height="10" fill="#3b2c1e"/><rect x="0" y="206" width="108" height="42" fill="#1c150f"/>
+            <rect x="0" y="248" width="94" height="10" fill="#3b2c1e"/><rect x="0" y="258" width="94" height="42" fill="#1c150f"/>
+            <rect x="0" y="300" width="80" height="10" fill="#3b2c1e"/><rect x="0" y="310" width="80" height="42" fill="#1c150f"/>
+            <rect x="0" y="352" width="66" height="10" fill="#3b2c1e"/><rect x="0" y="362" width="66" height="42" fill="#1c150f"/>
+            <!-- Παλιοί λεκέδες αίματος κάτω από το σύμβολο -->
+            <path d="M262 272 q3 18 1 34 M288 276 q2 12 0 26 M306 270 q2 22 -1 40" stroke="#3d0c09" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+            <!-- Το σύμβολο του Βαρόνου χαραγμένο στην πέτρα -->
+            <g transform="translate(225,170) scale(1.05)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="#0b0907" stroke-width="7"/>
+              <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86" stroke="rgba(255,230,200,.14)" stroke-width="2" transform="translate(-1.6,-1.6)"/>
+            </g>
+            <!-- Λιωμένα κεριά στο πάτωμα -->
+            <rect x="248" y="408" width="9" height="22" fill="#cfc6b0"/>
+            <rect x="296" y="402" width="11" height="28" fill="#cfc6b0"/>
+            <rect x="252" y="403" width="1.5" height="5" fill="#111"/>
+            <rect x="301" y="397" width="1.5" height="5" fill="#111"/>
+          </svg>
+      <div id="basementDarkness" class="basement-darkness"></div>
+    </div>
+
     <div id="cabinCaption" class="cabin-caption"></div>
+
+    <!-- Διάλογος Henry / Bennett -->
+    <div id="cabinDialogue" class="cabin-dialogue"></div>
+
+    <!-- Ήχοι Event 05 (τα αρχεία μπαίνουν στον ίδιο φάκελο) -->
+    <audio id="cricketsAudio" src="crickets.mp3" preload="auto" loop></audio>
+    <audio id="footstepsAudio" src="footsteps.mp3" preload="auto"></audio>
+    <audio id="knockAudio" src="knock.mp3" preload="auto"></audio>
+    <audio id="doorAudio" src="doorcreak.mp3" preload="auto"></audio>
 
     <!-- Η εικόνα OBSESSED (η πηγή μπαίνει από τη JavaScript) -->
     <img id="obsessedImage" class="obsessed-image hidden" alt="OBSESSED">
@@ -4622,20 +4854,49 @@ function event5Text() {
   if (selectedLanguage === "gr") {
     return {
       button: "Η ΑΡΧΗ ΤΟΥ ΤΕΛΟΥΣ",
-      caption: "Elmore Street, Νέα Ορλεάνη.<br>26 Απριλίου 2023, 21:00."
+      caption: "Elmore Street, Νέα Ορλεάνη.<br>26 Απριλίου 2023, 21:00.",
+      bennett1: "«Εσύ πρέπει να είσαι ο Henry.»",
+      henry1: "«Ήρθα για το σύμβολο.»",
+      bennett2: "«Έλα μέσα. Είναι στο υπόγειο.»",
+      basementHint: "Κατεβήκατε στο υπόγειο. Ψάξε με το δάχτυλό σου.",
+      bennett3: "«Το βλέπεις; Τι λες να είναι;»",
+      henry2: "«Είναι η πόρτα.»"
     };
   }
 
   return {
     button: "THE BEGINNING OF THE END",
-    caption: "Elmore Street, New Orleans.<br>April 26, 2023, 9:00 PM."
+    caption: "Elmore Street, New Orleans.<br>April 26, 2023, 9:00 PM.",
+    bennett1: "“You must be Henry.”",
+    henry1: "“I came for the symbol.”",
+    bennett2: "“Come in. It's in the basement.”",
+    basementHint: "You went down to the basement. Search with your finger.",
+    bennett3: "“Do you see it? What do you think it is?”",
+    henry2: "“It's the door.”"
   };
 }
 
 function resetEvent5() {
 
   const scene = document.getElementById("cabinScene");
-  scene.classList.remove("show", "hidden");
+  scene.classList.remove("show", "hidden", "approach", "door-open");
+
+  const dialogue = document.getElementById("cabinDialogue");
+  dialogue.classList.remove("show", "henry");
+  dialogue.textContent = "";
+
+  basementFound = false;
+  basementActive = false;
+  basementTimer = null;
+
+  const basement = document.getElementById("basementScene");
+  basement.classList.remove("show", "lights-out");
+  basement.classList.add("hidden");
+
+  const darkness = document.getElementById("basementDarkness");
+  darkness.classList.remove("found");
+  darkness.style.removeProperty("--x");
+  darkness.style.removeProperty("--y");
 
   const caption = document.getElementById("cabinCaption");
   caption.classList.remove("show", "hidden");
@@ -4664,45 +4925,206 @@ function goToEvent5() {
   resetEvent5();
   window.scrollTo(0, 0);
 
+  const t = event5Text();
   const scene = document.getElementById("cabinScene");
   const caption = document.getElementById("cabinCaption");
-  const blackout = document.getElementById("blackout");
-  const image = document.getElementById("obsessedImage");
 
-  // 1. Ο Henry έξω από την καλύβα
+  // 1. Ο Henry έξω από την καλύβα, το αγόρι στο αυτοκίνητο
   eventTimeout(() => scene.classList.add("show"), 100);
+  eventTimeout(() => playSound("cricketsAudio", 0.45), 500);
 
   eventTimeout(() => {
-    caption.innerHTML = event5Text().caption;
+    caption.innerHTML = t.caption;
     caption.classList.add("show");
   }, 2200);
 
-  // 2. Το αίμα αρχίζει σιγά σιγά από πάνω και γεμίζει την οθόνη (10 δευτ.)
-  eventTimeout(() => startBloodEffect(10), 8000);
-
-  // 3. Όλα σβήνουν
+  // 2. Πλησιάζει την πόρτα
   eventTimeout(() => {
-    blackout.classList.remove("hidden");
-    eventTimeout(() => blackout.classList.add("show"), 30);
-  }, 17600);
+    scene.classList.add("approach");
+    playSound("footstepsAudio", 0.8);
+  }, 6000);
 
-  // 4. Ανοίγει καθαρά η εικόνα OBSESSED
+  eventTimeout(() => caption.classList.remove("show"), 13500);
+
+  // 3. Χτυπάει την πόρτα, η πόρτα ανοίγει
+  eventTimeout(() => playSound("knockAudio", 1), 14000);
+
+  eventTimeout(() => {
+    playSound("doorAudio", 0.9);
+    scene.classList.add("door-open");
+  }, 16000);
+
+  // 4. Διάλογος
+  eventTimeout(() => showDialogueLine(t.bennett1, false), 18000);
+  eventTimeout(() => showDialogueLine(t.henry1, true), 21000);
+  eventTimeout(() => showDialogueLine(t.bennett2, false), 24000);
+
+  // 5. Το υπόγειο
+  eventTimeout(enterBasement, 27500);
+}
+
+function playSound(id, volume) {
+  const audio = document.getElementById(id);
+  if (!audio) return;
+  audio.currentTime = 0;
+  audio.volume = volume;
+  audio.play().catch(() => {});
+}
+
+function showDialogueLine(text, isHenry) {
+
+  const dialogue = document.getElementById("cabinDialogue");
+
+  dialogue.classList.remove("show");
+
+  eventTimeout(() => {
+    dialogue.textContent = text;
+    dialogue.classList.toggle("henry", isHenry);
+    dialogue.classList.add("show");
+  }, 350);
+
+  eventTimeout(() => dialogue.classList.remove("show"), 2800);
+}
+
+
+// =========================================
+// EVENT 05 - ΤΟ ΥΠΟΓΕΙΟ (φακός)
+// =========================================
+
+let basementFound = false;
+let basementActive = false;
+let basementTimer = null;
+
+function enterBasement() {
+
+  const scene = document.getElementById("cabinScene");
+  const basement = document.getElementById("basementScene");
+  const caption = document.getElementById("cabinCaption");
+  const crickets = document.getElementById("cricketsAudio");
+
+  scene.classList.remove("show");
+  crickets.pause();
+
   eventTimeout(() => {
 
     scene.classList.add("hidden");
-    caption.classList.add("hidden");
-    stopBloodEffect();
+    basement.classList.remove("hidden");
+    basementActive = true;
 
-    image.src = OBSESSED_IMAGE;
-    image.classList.remove("hidden");
+    caption.innerHTML = event5Text().basementHint;
+    caption.classList.add("show");
 
-    blackout.classList.remove("show");
+    eventTimeout(() => basement.classList.add("show"), 50);
 
-    eventTimeout(() => image.classList.add("show"), 400);
-    eventTimeout(() => blackout.classList.add("hidden"), 1600);
-
-  }, 19800);
+  }, 1800);
 }
+
+function isOnBasementSymbol(xPercent, yPercent) {
+  return xPercent > 55 && xPercent < 84 && yPercent > 30 && yPercent < 56;
+}
+
+function cancelBasementTimer() {
+  if (basementTimer) {
+    clearTimeout(basementTimer);
+    basementTimer = null;
+  }
+}
+
+function moveBasementLight(event) {
+
+  if (!basementActive) return;
+
+  const basement = document.getElementById("basementScene");
+  const darkness = document.getElementById("basementDarkness");
+  const rect = basement.getBoundingClientRect();
+
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  darkness.style.setProperty("--x", x + "px");
+  darkness.style.setProperty("--y", y + "px");
+
+  if (basementFound) return;
+
+  const xPercent = (x / rect.width) * 100;
+  const yPercent = (y / rect.height) * 100;
+
+  if (isOnBasementSymbol(xPercent, yPercent)) {
+
+    // Πρέπει να μείνει 3 δευτερόλεπτα πάνω στο σύμβολο
+    if (!basementTimer) {
+      basementTimer = eventTimeout(() => {
+        basementTimer = null;
+        basementFound = true;
+        darkness.classList.add("found");
+        onBasementSymbolFound();
+      }, 3000);
+    }
+
+  } else {
+    cancelBasementTimer();
+  }
+}
+
+function onBasementSymbolFound() {
+
+  const t = event5Text();
+  const basement = document.getElementById("basementScene");
+  const caption = document.getElementById("cabinCaption");
+
+  caption.classList.remove("show");
+
+  eventTimeout(() => showDialogueLine(t.bennett3, false), 1000);
+  eventTimeout(() => showDialogueLine(t.henry2, true), 4500);
+
+  // 6. Σιωπή: όλοι οι ήχοι κόβονται, ο φακός σβήνει
+  eventTimeout(() => {
+    basementActive = false;
+    resetMedia();
+    basement.classList.add("lights-out");
+  }, 8000);
+
+  // Μετά από δύο δευτερόλεπτα απόλυτου σκοταδιού: το αίμα
+  eventTimeout(() => startBloodEffect(10), 10000);
+
+  // Όλα σβήνουν
+  eventTimeout(() => {
+    const blackout = document.getElementById("blackout");
+    blackout.classList.remove("hidden");
+    eventTimeout(() => blackout.classList.add("show"), 30);
+  }, 19600);
+
+  // Ανοίγει καθαρά η εικόνα OBSESSED
+  eventTimeout(showObsessedImage, 21800);
+}
+
+function showObsessedImage() {
+
+  const blackout = document.getElementById("blackout");
+  const image = document.getElementById("obsessedImage");
+
+  document.getElementById("cabinScene").classList.add("hidden");
+  document.getElementById("basementScene").classList.add("hidden");
+  document.getElementById("cabinCaption").classList.add("hidden");
+  document.getElementById("cabinDialogue").classList.remove("show");
+  stopBloodEffect();
+
+  image.src = OBSESSED_IMAGE;
+  image.classList.remove("hidden");
+
+  blackout.classList.remove("show");
+
+  eventTimeout(() => image.classList.add("show"), 400);
+  eventTimeout(() => blackout.classList.add("hidden"), 1600);
+}
+
+const basementEl = document.getElementById("basementScene");
+
+basementEl.addEventListener("pointerdown", moveBasementLight);
+basementEl.addEventListener("pointermove", moveBasementLight);
+basementEl.addEventListener("pointerup", cancelBasementTimer);
+basementEl.addEventListener("pointerleave", cancelBasementTimer);
+basementEl.addEventListener("pointercancel", cancelBasementTimer);
 
 
 // =========================================
