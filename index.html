@@ -2418,13 +2418,30 @@ body {
 
 .obsessed-image.show { opacity: 1; }
 
-/* Αίμα που γεμίζει την οθόνη (canvas) */
-.blood-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 1100;
-  pointer-events: none;
+/* Η φωτογραφία με τη λίμνη αίματος */
+.pool-scene {
+  position: relative;
+  width: calc(100% + 48px);
+  aspect-ratio: 4 / 3;
+  margin: 5vh -24px 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 70%, #1c1511, #060403 75%);
+  opacity: 0;
+  transition: opacity 1.8s ease;
 }
+
+.pool-scene.show { opacity: 1; }
+
+.pool-photo,
+.pool-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.pool-photo { object-fit: cover; }
 
 .blackout {
   position: fixed;
@@ -3267,6 +3284,12 @@ body {
           </svg>
     </div>
 
+    <!-- Η φωτογραφία όπου βγαίνει το αίμα και απλώνεται σαν λίμνη -->
+    <div id="poolScene" class="pool-scene hidden">
+      <img id="poolPhoto" class="pool-photo" alt="" onerror="this.classList.add('hidden')">
+      <canvas id="poolCanvas" class="pool-canvas"></canvas>
+    </div>
+
     <div id="cabinCaption" class="cabin-caption"></div>
 
     <!-- Διάλογος Henry / Bennett -->
@@ -3286,8 +3309,6 @@ body {
 </div>
 
 
-<!-- EVENT 05 - Αίμα που γεμίζει την οθόνη -->
-<canvas id="bloodCanvas" class="blood-canvas hidden"></canvas>
 
 <!-- EVENT 05 - Σκοτάδι -->
 <div id="blackout" class="blackout hidden"></div>
@@ -4927,7 +4948,11 @@ function resetEvent5() {
   caption.classList.remove("show", "hidden");
   caption.innerHTML = "";
 
-  stopBloodEffect();
+  stopBloodPool();
+
+  const pool = document.getElementById("poolScene");
+  pool.classList.remove("show");
+  pool.classList.add("hidden");
 
   const blackout = document.getElementById("blackout");
   blackout.classList.remove("show");
@@ -5064,37 +5089,198 @@ function lightCandle(i) {
   }
 }
 
+// Όταν ανάψουν και τα τρία κεριά → η φωτογραφία με το αίμα
 function onBasementSymbolFound() {
 
-  const t = event5Text();
   const basement = document.getElementById("basementScene");
-  const caption = document.getElementById("cabinCaption");
 
-  caption.classList.remove("show");
+  document.getElementById("cabinCaption").classList.remove("show");
 
-  eventTimeout(() => showDialogueLine(t.bennett3, false), 1000);
-  eventTimeout(() => showDialogueLine(t.henry2, true), 4500);
+  eventTimeout(() => basement.classList.remove("show"), 1500);
 
-  // 6. Σιωπή: όλοι οι ήχοι κόβονται, ο φακός σβήνει
   eventTimeout(() => {
-    basementActive = false;
-    resetMedia();
-    basement.classList.add("lights-out");
-  }, 8000);
+    basement.classList.add("hidden");
+    showPoolScene();
+  }, 3400);
+}
 
-  // Μετά από δύο δευτερόλεπτα απόλυτου σκοταδιού: το αίμα
-  eventTimeout(() => startBloodEffect(10), 10000);
+
+// =========================================
+// EVENT 05 - ΛΙΜΝΗ ΑΙΜΑΤΟΣ ΠΑΝΩ ΣΤΗ ΦΩΤΟΓΡΑΦΙΑ
+// =========================================
+
+// Η φωτογραφία (βάλε το αρχείο στον ίδιο φάκελο)
+const POOL_IMAGE = "aima.png";
+
+// Από ποιο σημείο της φωτογραφίας βγαίνει το αίμα (0 = αριστερά/πάνω, 1 = δεξιά/κάτω)
+const POOL_ORIGIN = { x: 0.5, y: 0.72 };
+
+// Προοπτική του πατώματος (1 = κύκλος, μικρότερο = πιο «ξαπλωμένη» λίμνη)
+const POOL_FLATTEN = 0.42;
+
+let poolFrame = null;
+
+function showPoolScene() {
+
+  const scene = document.getElementById("poolScene");
+  const photo = document.getElementById("poolPhoto");
+
+  photo.classList.remove("hidden");
+  photo.src = POOL_IMAGE;
+
+  scene.classList.remove("hidden");
+  eventTimeout(() => scene.classList.add("show"), 50);
+
+  // Το αίμα αρχίζει να βγαίνει και απλώνεται (10 δευτ.)
+  eventTimeout(() => startBloodPool(10), 2200);
 
   // Όλα σβήνουν
   eventTimeout(() => {
     const blackout = document.getElementById("blackout");
     blackout.classList.remove("hidden");
     eventTimeout(() => blackout.classList.add("show"), 30);
-  }, 19600);
+  }, 13200);
 
-  // Ανοίγει καθαρά η εικόνα OBSESSED
-  eventTimeout(showObsessedImage, 21800);
+  // Ανοίγει η εικόνα OBSESSED
+  eventTimeout(showObsessedImage, 15400);
 }
+
+function stopBloodPool() {
+
+  if (poolFrame) cancelAnimationFrame(poolFrame);
+  poolFrame = null;
+
+  const canvas = document.getElementById("poolCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function startBloodPool(duration) {
+
+  const scene = document.getElementById("poolScene");
+  const canvas = document.getElementById("poolCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const rect = scene.getBoundingClientRect();
+  const W = rect.width;
+  const H = rect.height;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const cx = W * POOL_ORIGIN.x;
+  const cy = H * POOL_ORIGIN.y;
+  const Rmax = Math.hypot(W, H) * 0.8;
+
+  // Ακανόνιστο σχήμα: κάθε σημείο της άκρης έχει δική του "τύχη"
+  const N = 80;
+  const seedA = Math.random() * 10;
+  const seedB = Math.random() * 10;
+
+  // "Γλώσσες" αίματος που τρέχουν πιο μακριά προς κάποιες κατευθύνσεις
+  const lobes = Array.from({ length: 6 }, () => ({
+    ang: Math.random() * Math.PI * 2,
+    amp: 0.15 + Math.random() * 0.4,
+    width: 0.25 + Math.random() * 0.35,
+    delay: Math.random() * 0.45
+  }));
+
+  const start = performance.now();
+
+  function edgePoints(R, k, t) {
+
+    const pts = [];
+
+    for (let i = 0; i < N; i++) {
+
+      const ang = (i / N) * Math.PI * 2;
+
+      let r = 1
+        + 0.08 * Math.sin(ang * 3 + seedA)
+        + 0.05 * Math.sin(ang * 7 + seedB + t * 0.3)
+        + 0.03 * Math.sin(ang * 13 + seedA * 2);
+
+      for (const lobe of lobes) {
+        const diff = Math.atan2(Math.sin(ang - lobe.ang), Math.cos(ang - lobe.ang));
+        const grow = Math.max(0, Math.min(1, (k - lobe.delay) / 0.5));
+        r += lobe.amp * grow * Math.exp(-((diff / lobe.width) ** 2));
+      }
+
+      pts.push({
+        x: cx + Math.cos(ang) * R * r,
+        y: cy + Math.sin(ang) * R * r * POOL_FLATTEN
+      });
+    }
+
+    return pts;
+  }
+
+  function tracePath(pts) {
+    ctx.beginPath();
+    const last = pts[pts.length - 1];
+    ctx.moveTo((last.x + pts[0].x) / 2, (last.y + pts[0].y) / 2);
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const n = pts[(i + 1) % pts.length];
+      ctx.quadraticCurveTo(p.x, p.y, (p.x + n.x) / 2, (p.y + n.y) / 2);
+    }
+    ctx.closePath();
+  }
+
+  function frame(now) {
+
+    const t = (now - start) / 1000;
+    const k = Math.min(1, t / duration);
+
+    // Αρχίζει σαν λίγο αίμα που βγαίνει, μετά απλώνεται και στο τέλος σέρνεται αργά
+    const grow = k < 0.15
+      ? Math.pow(k / 0.15, 2) * 0.05
+      : 0.05 + (1 - Math.pow(1 - (k - 0.15) / 0.85, 2.2)) * 0.95;
+
+    const R = Math.max(2, Rmax * grow);
+
+    ctx.clearRect(0, 0, W, H);
+
+    const pts = edgePoints(R, k, t);
+
+    // Η λίμνη
+    const fill = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.1);
+    fill.addColorStop(0, "#220002");
+    fill.addColorStop(0.55, "#46040a");
+    fill.addColorStop(1, "#760a10");
+
+    tracePath(pts);
+    ctx.fillStyle = fill;
+    ctx.fill();
+
+    // Γυαλιστερή άκρη
+    ctx.strokeStyle = "rgba(255,110,110,.2)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Αντανάκλαση πάνω στο υγρό
+    ctx.save();
+    tracePath(pts);
+    ctx.clip();
+    ctx.fillStyle = "rgba(255,190,190,.035)";
+    ctx.beginPath();
+    ctx.ellipse(cx - R * 0.22, cy - R * POOL_FLATTEN * 0.3, R * 0.38, R * POOL_FLATTEN * 0.12, -0.08, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    if (t < duration + 2) {
+      poolFrame = requestAnimationFrame(frame);
+    } else {
+      poolFrame = null;
+    }
+  }
+
+  poolFrame = requestAnimationFrame(frame);
+}
+
 
 function showObsessedImage() {
 
@@ -5103,9 +5289,10 @@ function showObsessedImage() {
 
   document.getElementById("cabinScene").classList.add("hidden");
   document.getElementById("basementScene").classList.add("hidden");
+  document.getElementById("poolScene").classList.add("hidden");
   document.getElementById("cabinCaption").classList.add("hidden");
   document.getElementById("cabinDialogue").classList.remove("show");
-  stopBloodEffect();
+  stopBloodPool();
 
   image.src = OBSESSED_IMAGE;
   image.classList.remove("hidden");
@@ -5114,184 +5301,6 @@ function showObsessedImage() {
 
   eventTimeout(() => image.classList.add("show"), 400);
   eventTimeout(() => blackout.classList.add("hidden"), 1600);
-}
-
-
-
-
-// =========================================
-// EVENT 05 - ΑΙΜΑ (ρεαλιστικές σταγόνες σε canvas)
-// =========================================
-
-let bloodFrame = null;
-
-function stopBloodEffect() {
-
-  if (bloodFrame) cancelAnimationFrame(bloodFrame);
-  bloodFrame = null;
-
-  const canvas = document.getElementById("bloodCanvas");
-  const ctx = canvas.getContext("2d");
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.classList.add("hidden");
-}
-
-function startBloodEffect(duration) {
-
-  const canvas = document.getElementById("bloodCanvas");
-  const ctx = canvas.getContext("2d");
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const W = window.innerWidth;
-  const H = window.innerHeight;
-
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width = W + "px";
-  canvas.style.height = H + "px";
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  canvas.classList.remove("hidden");
-
-  // Σταγόνες: διαφορετικό πάχος, ταχύτητα και στιγμή που ξεκινούν
-  const count = Math.max(10, Math.round(W / 20));
-  const drips = [];
-
-  for (let i = 0; i < count; i++) {
-    const thick = Math.random() < 0.2;
-    drips.push({
-      x: (i + 0.15 + Math.random() * 0.7) * (W / count),
-      w: thick ? 9 + Math.random() * 7 : 3 + Math.random() * 6,
-      len: 0,
-      delay: Math.random() * duration * 0.35,
-      speed: 18 + Math.random() * 45,
-      phase: Math.random() * 10,
-      shade: Math.floor(Math.random() * 25)
-    });
-  }
-
-  const FLOOD_START = duration * 0.5;
-  const start = performance.now();
-  let last = start;
-
-  function wave(x, t, amp) {
-    return amp * (Math.sin(x * 0.021 + t * 1.2) * 0.6 + Math.sin(x * 0.063 + 2.1 + t * 0.7) * 0.4);
-  }
-
-  function drawDrip(d, top, tipY) {
-
-    const w = d.w;
-    const r = w * 0.62;
-    const neck = w * 0.42;
-
-    // Σώμα της σταγόνας
-    const g = ctx.createLinearGradient(0, 0, 0, tipY);
-    g.addColorStop(0, `rgb(${58 + d.shade},3,6)`);
-    g.addColorStop(0.7, `rgb(${112 + d.shade},9,13)`);
-    g.addColorStop(1, `rgb(${138 + d.shade},12,17)`);
-
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.moveTo(d.x - w * 1.4, 0);
-    ctx.bezierCurveTo(d.x - w * 0.9, top + 4, d.x - neck, top + 10, d.x - neck, tipY - r);
-    ctx.arc(d.x, tipY - r, r, Math.PI, 0, true);
-    ctx.bezierCurveTo(d.x + neck, top + 10, d.x + w * 0.9, top + 4, d.x + w * 1.4, 0);
-    ctx.closePath();
-    ctx.fill();
-
-    // Γυαλάδα (το φως πάνω στο υγρό)
-    ctx.strokeStyle = "rgba(255,150,150,.16)";
-    ctx.lineWidth = Math.max(1, w * 0.14);
-    ctx.beginPath();
-    ctx.moveTo(d.x - w * 0.18, top + 6);
-    ctx.lineTo(d.x - w * 0.18, tipY - r * 1.2);
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(255,210,210,.28)";
-    ctx.beginPath();
-    ctx.ellipse(d.x - r * 0.35, tipY - r * 1.15, r * 0.22, r * 0.32, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function frame(now) {
-
-    const t = (now - start) / 1000;
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-
-    ctx.clearRect(0, 0, W, H);
-
-    // Το αίμα μαζεύεται σιγά σιγά στο πάνω μέρος
-    const poolH = Math.min(1, t / (duration * 0.3)) * 16;
-
-    // Πλημμύρα: στο δεύτερο μισό κατεβαίνει όλο και πιο γρήγορα
-    let floodY = 0;
-    if (t > FLOOD_START) {
-      const k = Math.min(1, (t - FLOOD_START) / (duration - FLOOD_START));
-      floodY = k * k * k * (H + 90);
-    }
-
-    // Σταγόνες που τρέχουν: σταματούν και ξεκινούν, βαραίνουν όσο μακραίνουν
-    for (const d of drips) {
-
-      if (t < d.delay) continue;
-
-      const stickSlip = 0.2 + 0.8 * Math.max(0, Math.sin(t * 1.6 + d.phase));
-      const heavier = 1 + (d.len / H) * 2;
-      d.len += d.speed * stickSlip * heavier * dt;
-
-      const tipY = poolH + 4 + d.len;
-      if (tipY < floodY + 10) continue;
-
-      drawDrip(d, poolH, tipY);
-    }
-
-    // Η λίμνη αίματος στο πάνω μέρος
-    const pool = ctx.createLinearGradient(0, 0, 0, poolH + 6);
-    pool.addColorStop(0, "#3a0003");
-    pool.addColorStop(1, "#6e080c");
-    ctx.fillStyle = pool;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(W, 0);
-    for (let x = W; x >= 0; x -= 8) ctx.lineTo(x, poolH + wave(x, t, 3));
-    ctx.closePath();
-    ctx.fill();
-
-    // Το κύμα που καλύπτει όλη την οθόνη
-    if (floodY > 0) {
-      const flood = ctx.createLinearGradient(0, 0, 0, floodY + 20);
-      flood.addColorStop(0, "#240002");
-      flood.addColorStop(0.8, "#5c0609");
-      flood.addColorStop(1, "#7e0b10");
-      ctx.fillStyle = flood;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(W, 0);
-      for (let x = W; x >= 0; x -= 6) ctx.lineTo(x, floodY + wave(x, t, 16));
-      ctx.closePath();
-      ctx.fill();
-
-      // Σταγόνες που κρέμονται από την άκρη του κύματος
-      for (const d of drips) {
-        const extra = 8 + ((d.phase * 37) % 45) * (0.6 + 0.4 * Math.sin(t * 1.3 + d.phase));
-        ctx.save();
-        ctx.translate(0, floodY + wave(d.x, t, 16) - 6);
-        drawDrip(d, 4, extra);
-        ctx.restore();
-      }
-    }
-
-    if (t < duration) {
-      bloodFrame = requestAnimationFrame(frame);
-    } else {
-      ctx.fillStyle = "#240002";
-      ctx.fillRect(0, 0, W, H);
-      bloodFrame = null;
-    }
-  }
-
-  bloodFrame = requestAnimationFrame(frame);
 }
 
 
