@@ -1529,8 +1529,8 @@ body {
   text-align: left;
   font-family: "GFS Didot", serif;
   font-style: italic;
-  font-size: 19px;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .smudge {
@@ -1560,6 +1560,207 @@ body {
 }
 
 .henry-hope.show { opacity: 1; }
+
+
+/* Σύμβολο που αντέγραψε ο Henry στο πίσω μέρος */
+.flyer-symbol-copy {
+  width: 72px;
+  height: 72px;
+  margin: 10px auto 0;
+  color: #1d2233;
+}
+
+.vodou-symbol {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================
+   EVENT 04 - ΓΡΑΦΕΙΟ: ΦΑΣΗ VODOU
+========================= */
+
+/* Τα αντικείμενα του πένθους σβήνουν */
+.grief-obj {
+  transition: opacity 2s ease, filter .5s ease;
+}
+
+.desk-scene.vodou-phase .grief-obj {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Τα αντικείμενα του Vodou εμφανίζονται */
+.vodou-obj {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 2.5s ease 1.2s, filter .5s ease;
+}
+
+.desk-scene.vodou-phase .vodou-obj {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Το φως της λάμπας γίνεται κόκκινο */
+.desk-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 55%,
+    rgba(140,20,10,.28),
+    rgba(40,0,0,.38) 70%
+  );
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.desk-scene.vodou-phase::after { opacity: 1; }
+
+/* Σύμβολο με κιμωλία πάνω στο ξύλο */
+.chalk-veve {
+  left: 6%;
+  top: 44%;
+  width: 34%;
+  aspect-ratio: 1;
+  box-shadow: none;
+  color: rgba(235,228,210,.55);
+  transform: rotate(-8deg);
+}
+
+.chalk-veve .vodou-symbol {
+  stroke-width: 3;
+  stroke-dasharray: 7 3;
+}
+
+/* Μαύρο κερί */
+.candle {
+  left: 46%;
+  bottom: 8%;
+  width: 22px;
+  height: 58px;
+  border-radius: 3px 3px 2px 2px;
+  background: linear-gradient(90deg, #0c0a0a, #2a2222 45%, #0c0a0a);
+  box-shadow: 0 6px 12px rgba(0,0,0,.7);
+}
+
+.candle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  width: 12px;
+  height: 22px;
+  margin-left: -6px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    #fff4c8 0%,
+    #ffb347 40%,
+    rgba(255,90,20,.6) 70%,
+    transparent 75%
+  );
+  box-shadow: 0 0 18px 6px rgba(255,150,60,.35);
+  transform-origin: 50% 100%;
+  animation: candleFlicker 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes candleFlicker {
+  0%   { transform: scale(1) rotate(-2deg); opacity: .95; }
+  50%  { transform: scale(1.08, .94) rotate(2deg); opacity: 1; }
+  100% { transform: scale(.94, 1.06) rotate(-1deg); opacity: .85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .candle::before { animation: none; }
+}
+
+/* Μπουκάλι ρούμι */
+.rum-bottle {
+  right: 5%;
+  bottom: 4%;
+  width: 34px;
+  height: 78px;
+  border-radius: 8px 8px 5px 5px;
+  background: linear-gradient(90deg, #2a1204, #6b3410 40%, #3a1a06);
+  box-shadow: 0 8px 14px rgba(0,0,0,.7);
+}
+
+.rum-bottle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  width: 12px;
+  height: 22px;
+  margin-left: -6px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, #2a1204, #5a2c0d, #2a1204);
+}
+
+.rum-bottle::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 26px;
+  height: 26px;
+  background: #d8cba8;
+}
+
+/* Κάρτα του Βαρόνου (μικρή) */
+.baron-card {
+  left: 36%;
+  top: 28%;
+  width: 22%;
+  aspect-ratio: 2 / 3;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0b0a;
+  border: 1px solid #7a6330;
+  color: #d9c48c;
+  transform: rotate(-10deg);
+}
+
+.baron-card .vodou-symbol {
+  width: 85%;
+  height: auto;
+}
+
+/* Κάρτα του Βαρόνου (μεγάλη) */
+.baron-front {
+  background: radial-gradient(circle at 50% 35%, #1d1512, #070505 75%);
+  border: 1px solid #7a6330;
+  color: #d9c48c;
+  text-align: center;
+}
+
+.baron-front .vodou-symbol {
+  width: 58%;
+  height: auto;
+}
+
+.baron-name {
+  margin-top: 18px;
+  font-family: "Cinzel", serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+}
+
+/* Τα λόγια του Henry με κόκκινο μελάνι */
+.henry-ink {
+  color: #8b1414;
+  font-size: 18px;
+}
 
 
 /* =========================
@@ -2030,6 +2231,15 @@ body {
     <!-- ===== ΓΡΑΦΕΙΟ HENRY ===== -->
     <div id="deskScene" class="desk-scene hidden">
 
+      <!-- Vodou: σύμβολο με κιμωλία (κάτω από όλα) -->
+      <div class="desk-item vodou-obj chalk-veve" onclick="tapGriefItem('chalk')">
+        <svg class="vodou-symbol" viewBox="0 0 100 100">
+          <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78
+                   M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86"/>
+        </svg>
+      </div>
+
+      <!-- Φωτογραφία Karen & Henry (μένει πάντα) -->
       <div class="desk-item photo-frame" onclick="tapGriefItem('photo')">
         <img src="front.png" alt="">
       </div>
@@ -2040,7 +2250,8 @@ body {
         <div class="clip-lines"></div>
       </div>
 
-      <div class="desk-item dead-roses" onclick="tapGriefItem('roses')">🥀</div>
+      <!-- Πένθος -->
+      <div class="desk-item grief-obj dead-roses" onclick="tapGriefItem('roses')">🥀</div>
 
       <div id="mediumFlyer" class="desk-item medium-flyer" onclick="openDeskItem('flyer')">
         <div class="flyer-symbol">☽&#xFE0E;</div>
@@ -2048,23 +2259,30 @@ body {
         <div class="flyer-name">MADAME CÉLESTE</div>
       </div>
 
-      <div class="desk-item envelopes" onclick="tapGriefItem('mail')">
+      <div class="desk-item grief-obj envelopes" onclick="tapGriefItem('mail')">
         <span></span><span></span><span></span>
       </div>
 
-      <div class="glass-stain" onclick="tapGriefItem('glass')"></div>
+      <div class="glass-stain grief-obj" onclick="tapGriefItem('glass')"></div>
+
+      <!-- Vodou -->
+      <div class="desk-item vodou-obj candle" onclick="tapGriefItem('candle')"></div>
+
+      <div class="desk-item vodou-obj rum-bottle" onclick="tapGriefItem('rum')"></div>
+
+      <div id="baronCard" class="desk-item vodou-obj baron-card" onclick="openDeskItem('baron')">
+        <svg class="vodou-symbol" viewBox="0 0 100 120">
+          <path d="M36 40 V14 H64 V40 M24 40 H76"/>
+          <path d="M34 48 H66 C66 74 60 88 50 88 C40 88 34 74 34 48 Z"/>
+          <circle cx="43" cy="60" r="5"/><circle cx="57" cy="60" r="5"/>
+          <path d="M50 66 L47 72 H53 Z M42 79 H58 M45 76 V82 M50 76 V82 M55 76 V82"/>
+          <path d="M50 94 V116 M42 102 H58"/>
+        </svg>
+      </div>
 
     </div>
 
     <div id="deskHint" class="desk-hint"></div>
-
-    <!-- Γρίφος γραφείου -->
-    <div id="deskRiddle" class="riddle-box desk-riddle hidden">
-      <div id="deskRiddleText" class="riddle-text"></div>
-      <input id="deskRiddleAnswer" class="riddle-input" type="text" autocomplete="off">
-      <button id="deskRiddleButton" class="riddle-button" onclick="checkDeskRiddle()"></button>
-      <div id="deskRiddleMessage" class="riddle-message"></div>
-    </div>
 
     <div id="henryHope" class="henry-hope"></div>
 
@@ -2870,16 +3088,34 @@ function goToEvent4() {
 // EVENT 04 - ΓΡΑΦΕΙΟ HENRY
 // =========================================
 
-const deskSeen = { newspaper: false, flyer: false };
+const deskSeen = { newspaper: false, flyer: false, baron: false };
 let griefHintTimer = null;
+let deskPhase = "grief";   // "grief" → "vodou" → "done"
+
+// Το σύμβολο του Βαρόνου (σταυρός πάνω σε τάφο)
+const baronSymbol =
+  '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
+  '<path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 ' +
+  'M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86"/></svg>';
+
+// Η μορφή του Βαρόνου: ψηλό καπέλο, κρανίο, σταυρός
+const baronFigure =
+  '<svg class="vodou-symbol" viewBox="0 0 100 120">' +
+  '<path d="M36 40 V14 H64 V40 M24 40 H76"/>' +
+  '<path d="M34 48 H66 C66 74 60 88 50 88 C40 88 34 74 34 48 Z"/>' +
+  '<circle cx="43" cy="60" r="5"/><circle cx="57" cy="60" r="5"/>' +
+  '<path d="M50 66 L47 72 H53 Z M42 79 H58 M45 76 V82 M50 76 V82 M55 76 V82"/>' +
+  '<path d="M50 94 V116 M42 102 H58"/></svg>';
 
 function deskText() {
 
   if (selectedLanguage === "gr") {
     return {
       hint: "Άγγιξε τα αντικείμενα στο γραφείο.",
+      vodouHint: "Τις εβδομάδες μετά τη συνεδρία, το γραφείο του άλλαξε.",
       closeTip: "Άγγιξε για να κλείσει.",
       flyerTip: "Άγγιξε το φυλλάδιο για να το γυρίσεις · έξω για να κλείσει.",
+      cardTip: "Άγγιξε την κάρτα για να τη γυρίσεις · έξω για να κλείσει.",
       dateline: "ΠΕΜΠΤΗ 16 ΜΑΪΟΥ 2019",
       headline: "ΕΠΕΣΤΡΕΨΕ ΜΕΤΑ ΑΠΟ 17 ΛΕΠΤΑ ΚΛΙΝΙΚΟΥ ΘΑΝΑΤΟΥ",
       article:
@@ -2892,22 +3128,30 @@ function deskText() {
       flyerQuote: "«Οι νεκροί δεν φεύγουν ποτέ εντελώς.»",
       flyerDetails: "ΠΑΡΑΣΚΕΥΗ 24 ΜΑΪΟΥ · 23:00<br>7 RAVENWOOD LANE<br>ΜΟΝΟ ΜΕ ΠΡΟΣΚΛΗΣΗ",
       flyerBack:
-        "24 / 5<br><br>Ήταν εκεί.<br>Η φωνή της. Η δική της φωνή.<br><br>" +
-        "Με ρώτησε αν της φέρνω ακόμα <span class='smudge'>xxxxxxx xxxxxxxxxxxx</span>.<br><br>" +
-        "Κανείς δεν το ήξερε αυτό.<br>Κανείς.",
-      riddle: "Τι ρώτησε η φωνή αν της φέρνει ακόμα ο Henry;",
-      button: "ΑΠΑΝΤΗΣΗ",
-      placeholder: "Γράψε την απάντηση...",
-      correct: "Σωστά.",
-      wrong: "Λάθος απάντηση.",
+        "24 Μαΐου — μετά τη συνεδρία<br><br>" +
+        "Η Céleste μίλησε με τη φωνή της Karen. " +
+        "Με ρώτησε αν της φέρνω ακόμα κόκκινα τριαντάφυλλα. " +
+        "Κανείς δεν το ήξερε αυτό.<br><br>" +
+        "Πριν φύγω, χάραξε ένα σύμβολο στο τραπέζι.<br>" +
+        "«Αυτός κρατά την πόρτα», είπε.<br>Το αντέγραψα:" +
+        "<div class='flyer-symbol-copy'>" + baronSymbol + "</div>",
+      baronBack:
+        "«Ο Βαρόνος είναι ο πρώτος νεκρός κάθε νεκροταφείου.<br>" +
+        "Κρατά την πόρτα ανάμεσα στους ζωντανούς και τους νεκρούς.<br><br>" +
+        "Τίποτα δεν περνά χωρίς την άδειά του.<br>" +
+        "Και η άδειά του έχει πάντα τίμημα.»<br><br>" +
+        "— C.M.<br><br>" +
+        "<span class='henry-ink'>Ό,τι κι αν κοστίσει.</span>",
       hope: "Ίσως μπορεί να γυρίσει."
     };
   }
 
   return {
     hint: "Touch the objects on the desk.",
+    vodouHint: "In the weeks after the séance, his desk changed.",
     closeTip: "Tap to close.",
     flyerTip: "Tap the flyer to turn it over · outside to close.",
+    cardTip: "Tap the card to turn it over · outside to close.",
     dateline: "THURSDAY, MAY 16, 2019",
     headline: "WOMAN RETURNS AFTER 17 MINUTES OF CLINICAL DEATH",
     article:
@@ -2920,42 +3164,48 @@ function deskText() {
     flyerQuote: "“The dead never fully leave.”",
     flyerDetails: "FRIDAY, MAY 24 · 11:00 PM<br>7 RAVENWOOD LANE<br>BY INVITATION ONLY",
     flyerBack:
-      "24 / 5<br><br>She was there.<br>Her voice. Her own voice.<br><br>" +
-      "She asked if I still bring her <span class='smudge'>xxxxxxx xxxxxxxxxxxx</span>.<br><br>" +
-      "No one knew that.<br>No one.",
-    riddle: "What did the voice ask if Henry still brings her?",
-    button: "ANSWER",
-    placeholder: "Enter your answer...",
-    correct: "Correct.",
-    wrong: "Wrong answer.",
+      "May 24 — after the séance<br><br>" +
+      "Céleste spoke in Karen's voice. " +
+      "She asked if I still bring her red roses. " +
+      "No one knew that.<br><br>" +
+      "Before I left, she carved a symbol into the table.<br>" +
+      "“He holds the door,” she said.<br>I copied it:" +
+      "<div class='flyer-symbol-copy'>" + baronSymbol + "</div>",
+    baronBack:
+      "“The Baron is the first of the dead in every cemetery.<br>" +
+      "He holds the door between the living and the dead.<br><br>" +
+      "Nothing passes without his permission.<br>" +
+      "And his permission always has a price.”<br><br>" +
+      "— C.M.<br><br>" +
+      "<span class='henry-ink'>Whatever it costs.</span>",
     hope: "Maybe she can come back."
   };
 }
 
+function currentDeskHint() {
+  const t = deskText();
+  if (deskPhase === "grief") return t.hint;
+  if (deskPhase === "vodou") return t.vodouHint;
+  return "";
+}
+
 function resetDeskScene() {
 
+  deskPhase = "grief";
   deskSeen.newspaper = false;
   deskSeen.flyer = false;
+  deskSeen.baron = false;
 
   document.getElementById("calendarScene").classList.remove("hidden", "fade-out");
 
   const desk = document.getElementById("deskScene");
-  desk.classList.remove("show");
+  desk.classList.remove("show", "vodou-phase");
   desk.classList.add("hidden");
   desk.querySelectorAll(".desk-item").forEach(item => item.classList.remove("seen"));
 
   const hint = document.getElementById("deskHint");
   hint.textContent = "";
   hint.classList.remove("grief-active");
-
-  const riddle = document.getElementById("deskRiddle");
-  riddle.classList.remove("show");
-  riddle.classList.add("hidden");
-
-  const input = document.getElementById("deskRiddleAnswer");
-  input.value = "";
-  input.style.borderColor = "";
-  document.getElementById("deskRiddleMessage").textContent = "";
 
   const hope = document.getElementById("henryHope");
   hope.classList.remove("show");
@@ -3007,38 +3257,51 @@ function openDeskItem(type) {
 
   } else {
 
+    // Φυλλάδιο ή κάρτα του Βαρόνου: και τα δύο γυρίζουν
+    const isFlyer = type === "flyer";
+
+    const front = isFlyer
+      ? `<div class="flyer-face flyer-front">
+           <div class="f-title">${t.flyerTitle}</div>
+           <div class="f-symbol">☽&#xFE0E;</div>
+           <div class="f-name">Madame Céleste Marchand</div>
+           <div class="f-quote">${t.flyerQuote}</div>
+           <div class="f-details">${t.flyerDetails}</div>
+         </div>`
+      : `<div class="flyer-face baron-front">
+           ${baronFigure}
+           <div class="baron-name">BARON SAMEDI</div>
+         </div>`;
+
+    const back = isFlyer ? t.flyerBack : t.baronBack;
+
     content.innerHTML = `
-      <div class="flyer-card" onclick="flipFlyer(event)">
-        <div id="flyerInner" class="flyer-inner">
-          <div class="flyer-face flyer-front">
-            <div class="f-title">${t.flyerTitle}</div>
-            <div class="f-symbol">☽&#xFE0E;</div>
-            <div class="f-name">Madame Céleste Marchand</div>
-            <div class="f-quote">${t.flyerQuote}</div>
-            <div class="f-details">${t.flyerDetails}</div>
-          </div>
-          <div class="flyer-face flyer-back">${t.flyerBack}</div>
+      <div class="flyer-card" onclick="flipCard(event, '${type}')">
+        <div id="cardInner" class="flyer-inner">
+          ${front}
+          <div class="flyer-face flyer-back">${back}</div>
         </div>
       </div>
-      <div class="viewer-tip">${t.flyerTip}</div>`;
+      <div class="viewer-tip">${isFlyer ? t.flyerTip : t.cardTip}</div>`;
   }
 
   viewer.classList.remove("hidden");
   eventTimeout(() => viewer.classList.add("show"), 30);
 }
 
-function flipFlyer(event) {
+function flipCard(event, type) {
 
-  // Να μην κλείσει το viewer όταν γυρίζουμε το φυλλάδιο
+  // Να μην κλείσει το viewer όταν γυρίζουμε την κάρτα
   event.stopPropagation();
 
-  const inner = document.getElementById("flyerInner");
+  const inner = document.getElementById("cardInner");
   inner.classList.toggle("flipped");
 
   // Μετράει ως "διαβασμένο" μόνο όταν δει την πίσω πλευρά
   if (inner.classList.contains("flipped")) {
-    deskSeen.flyer = true;
-    document.getElementById("mediumFlyer").classList.add("seen");
+    deskSeen[type] = true;
+    document.getElementById(type === "flyer" ? "mediumFlyer" : "baronCard")
+      .classList.add("seen");
   }
 }
 
@@ -3046,16 +3309,22 @@ function tapGriefItem(type) {
 
   const lines = selectedLanguage === "gr"
     ? {
-        photo: "Της μιλούσε κάθε βράδυ. Εκείνη δεν απαντούσε ποτέ.",
-        roses: "Τα τελευταία τριαντάφυλλα που της πήρε. Δεν τα πέταξε ποτέ.",
-        mail:  "Λογαριασμοί. Συλλυπητήρια. Κανένας φάκελος δεν ανοίχτηκε.",
-        glass: "Ένα ποτήρι κάθε βράδυ. Μετά δύο. Μετά σταμάτησε να μετράει."
+        photo:  "Της μιλούσε κάθε βράδυ. Εκείνη δεν απαντούσε ποτέ.",
+        roses:  "Τα τελευταία τριαντάφυλλα που της πήρε. Δεν τα πέταξε ποτέ.",
+        mail:   "Λογαριασμοί. Συλλυπητήρια. Κανένας φάκελος δεν ανοίχτηκε.",
+        glass:  "Ένα ποτήρι κάθε βράδυ. Μετά δύο. Μετά σταμάτησε να μετράει.",
+        chalk:  "Το σύμβολο από το τραπέζι της Céleste. Το ζωγράφισε με κιμωλία στο γραφείο του. Ξανά και ξανά.",
+        candle: "Ένα μαύρο κερί. Το άναβε κάθε βράδυ, όπως του είπε η Céleste. Δεν το άφηνε ποτέ να σβήσει.",
+        rum:    "Ρούμι. Ο Henry δεν έπινε ποτέ ρούμι. Η Céleste είπε ότι ο Βαρόνος το αγαπά."
       }
     : {
-        photo: "He talked to her every night. She never answered.",
-        roses: "The last roses he bought her. He never threw them away.",
-        mail:  "Bills. Condolences. Not a single envelope opened.",
-        glass: "One glass every night. Then two. Then he stopped counting."
+        photo:  "He talked to her every night. She never answered.",
+        roses:  "The last roses he bought her. He never threw them away.",
+        mail:   "Bills. Condolences. Not a single envelope opened.",
+        glass:  "One glass every night. Then two. Then he stopped counting.",
+        chalk:  "The symbol from Céleste's table. He drew it in chalk on his desk. Again and again.",
+        candle: "A black candle. He lit it every night, as Céleste told him. He never let it go out.",
+        rum:    "Rum. Henry never drank rum. Céleste said the Baron loves it."
       };
 
   const hint = document.getElementById("deskHint");
@@ -3066,8 +3335,7 @@ function tapGriefItem(type) {
   if (griefHintTimer) clearTimeout(griefHintTimer);
 
   griefHintTimer = eventTimeout(() => {
-    const riddleShown = !document.getElementById("deskRiddle").classList.contains("hidden");
-    hint.textContent = riddleShown ? "" : deskText().hint;
+    hint.textContent = currentDeskHint();
     hint.classList.remove("grief-active");
   }, 4500);
 }
@@ -3079,75 +3347,43 @@ function closeDeskItem() {
   viewer.classList.remove("show");
   eventTimeout(() => viewer.classList.add("hidden"), 600);
 
-  // Όταν έχει δει και τα δύο, εμφανίζεται ο γρίφος
-  if (deskSeen.newspaper && deskSeen.flyer) {
-    eventTimeout(showDeskRiddle, 700);
+  // Πένθος → Vodou: όταν έχει δει εφημερίδα και φυλλάδιο
+  if (deskPhase === "grief" && deskSeen.newspaper && deskSeen.flyer) {
+    deskPhase = "vodou";
+    eventTimeout(startVodouPhase, 900);
+    return;
+  }
+
+  // Vodou → ελπίδα: όταν έχει διαβάσει την κάρτα του Βαρόνου
+  if (deskPhase === "vodou" && deskSeen.baron) {
+    deskPhase = "done";
+    eventTimeout(showHenryHope, 900);
   }
 }
 
-function showDeskRiddle() {
+function startVodouPhase() {
 
-  const riddle = document.getElementById("deskRiddle");
-  if (!riddle.classList.contains("hidden")) return;
+  const hint = document.getElementById("deskHint");
 
-  const t = deskText();
+  // Τα αντικείμενα του πένθους φεύγουν, έρχονται τα αντικείμενα του Vodou
+  document.getElementById("deskScene").classList.add("vodou-phase");
 
-  document.getElementById("deskRiddleText").innerHTML = `<strong>${t.riddle}</strong>`;
-  document.getElementById("deskRiddleButton").textContent = t.button;
-  document.getElementById("deskRiddleAnswer").placeholder = t.placeholder;
+  hint.textContent = deskText().vodouHint;
+  hint.classList.add("grief-active");
+
+  eventTimeout(() => hint.classList.remove("grief-active"), 4000);
+}
+
+function showHenryHope() {
+
   document.getElementById("deskHint").textContent = "";
 
-  riddle.classList.remove("hidden");
+  const hope = document.getElementById("henryHope");
+  hope.textContent = deskText().hope;
+  hope.classList.add("show");
+  hope.scrollIntoView({ behavior: "smooth", block: "center" });
 
-  eventTimeout(() => {
-    riddle.classList.add("show");
-    riddle.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, 50);
-}
-
-function checkDeskRiddle() {
-
-  const t = deskText();
-  const input = document.getElementById("deskRiddleAnswer");
-  const message = document.getElementById("deskRiddleMessage");
-
-  const answer = input.value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "")
-    .toLowerCase();
-
-  const correctAnswers = [
-    "κοκκινοτριανταφυλλο",
-    "κοκκινατριανταφυλλα",
-    "τριανταφυλλα",
-    "redrose",
-    "redroses",
-    "roses"
-  ];
-
-  if (correctAnswers.includes(answer)) {
-
-    input.style.borderColor = "#2f7d45";
-    message.style.color = "#5fa873";
-    message.textContent = t.correct;
-
-    // Η πρώτη ελπίδα του Henry
-    eventTimeout(() => {
-      const hope = document.getElementById("henryHope");
-      hope.textContent = t.hope;
-      hope.classList.add("show");
-      hope.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 1200);
-
-    eventTimeout(onDeskSolved, 6000);
-
-  } else {
-
-    input.style.borderColor = "#9b1c1c";
-    message.style.color = "#b83232";
-    message.textContent = t.wrong;
-  }
+  eventTimeout(onDeskSolved, 5500);
 }
 
 function onDeskSolved() {
@@ -3162,7 +3398,7 @@ function onDeskSolved() {
 let researchPhase = "read";      // "read" → "choose" → "done"
 const researchRead = new Set();
 
-const deskElements = ["deskScene", "deskHint", "deskRiddle", "henryHope"];
+const deskElements = ["deskScene", "deskHint", "henryHope"];
 
 function researchText() {
 
