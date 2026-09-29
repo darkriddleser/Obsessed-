@@ -5378,12 +5378,13 @@ function nextEvent() {
     // Για να ακούγεται καθαρά το κλάμα, χαμηλώνουν οι άλλοι ήχοι
     fadeAudioTo("ecgAudio", 0.55, 1500);
     setBackgroundVolume("event2", 0.08, 1500);
-  }, 8000);
+  }, 7000);
 
   // Η καρδιά σταμάτησε: ο ήχος του καρδιογραφήματος χαμηλώνει ακόμα περισσότερο
   eventTimeout(() => fadeAudioTo("ecgAudio", 0.2, 2500), 14000);
 
-  eventTimeout(() => fadeOutAudio("babyCry", 2000), 19000);
+  // Το κλάμα συνεχίζει λίγο ακόμα αφού σβήσει το μόνιτορ και σβήνει αργά
+  eventTimeout(() => fadeOutAudio("babyCry", 4500), 19500);
 
   // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
   eventTimeout(() => {
