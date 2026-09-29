@@ -2749,6 +2749,8 @@ body {
         type="text"
         placeholder="__:__"
         maxlength="5"
+        inputmode="numeric"
+        pattern="[0-9]*"
         autocomplete="off"
       >
 
@@ -5368,14 +5370,37 @@ function nextEvent() {
 }
 
 
+// Η άνω-κάτω τελεία μπαίνει μόνη της: ο παίκτης γράφει μόνο 0221
+const incidentInput = document.getElementById("incidentTimeInput");
+
+incidentInput.addEventListener("input", event => {
+
+  const digits = incidentInput.value.replace(/\D/g, "").slice(0, 4);
+  const deleting = event.inputType && event.inputType.startsWith("delete");
+
+  if (digits.length > 2) {
+    incidentInput.value = digits.slice(0, 2) + ":" + digits.slice(2);
+  } else if (digits.length === 2 && !deleting) {
+    incidentInput.value = digits + ":";
+  } else {
+    incidentInput.value = digits;
+  }
+});
+
+// Enter = επιβεβαίωση
+incidentInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") checkIncidentTime();
+});
+
 function checkIncidentTime() {
 
   const input = document.getElementById("incidentTimeInput");
   const message = document.getElementById("incidentTimeMessage");
 
-  const answer = input.value.trim();
+  // Μετράνε μόνο τα ψηφία: "0221" = "02:21"
+  const answer = input.value.replace(/\D/g, "");
 
-  if (answer === "02:21") {
+  if (answer === "0221") {
 
     const babyCry = document.getElementById("babyCry");
 
