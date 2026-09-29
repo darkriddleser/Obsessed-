@@ -914,110 +914,176 @@ transition: opacity 1.5s ease;
 ========================= */
 
 #storyScreen4 {
-  background: #000;
+  justify-content: flex-start;
+  padding-top: 35px;
+
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      #140b07 0%,
+      #060403 45%,
+      #000 100%
+    );
 }
 
 .calendar-scene {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 45px;
+  margin-top: 6vh;
 }
 
 .old-calendar {
   position: relative;
 
-  width: 280px;
-  height: 350px;
+  width: 230px;
+  height: 290px;
 
-  background:
-    linear-gradient(
-      rgba(70, 45, 25, .08),
-      rgba(20, 10, 5, .18)
-    ),
-    #c9bea4;
+  display: flex;
+  flex-direction: column;
 
-  color: #191510;
-
-  box-shadow:
-    0 15px 50px rgba(0,0,0,.95),
-    inset 0 0 45px rgba(55,30,10,.25);
-
-  border: 1px solid #716755;
+  background: #c9bea4;
+  color: #1c1712;
 
   font-family: "Courier New", monospace;
+
+  /* Κρεμασμένο στον τοίχο, ελαφρώς στραβό */
+  transform: rotate(-1.2deg);
+
+  /* Πάχος στοίβας σελίδων + σκιά */
+  box-shadow:
+    0 2px 0 #b4a98f,
+    0 4px 0 #a69b81,
+    0 6px 0 #978c73,
+    0 7px 0 #6e6553,
+    0 20px 45px rgba(0,0,0,.95);
 }
 
-.calendar-top {
-  padding: 18px 10px 13px;
+/* Μεταλλικοί κρίκοι */
+.old-calendar::before,
+.old-calendar::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  z-index: 5;
 
-  background: #251b17;
+  width: 9px;
+  height: 22px;
+
+  border: 3px solid #77726a;
+  border-radius: 6px;
+
+  box-shadow:
+    inset 0 0 2px rgba(0,0,0,.7),
+    0 2px 3px rgba(0,0,0,.8);
+}
+
+.old-calendar::before { left: 27%; }
+.old-calendar::after  { right: 27%; }
+
+.calendar-top {
+  flex-shrink: 0;
+
+  padding: 17px 10px 11px;
+
+  background: linear-gradient(#30241d, #1b1410);
   color: #b7aa91;
 
   font-family: "Cinzel", serif;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 4px;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,.45);
+  position: relative;
+  z-index: 4;
 }
 
-.calendar-month {
-  margin-top: 30px;
+/* =========================
+   EVENT 04 - ΣΤΟΙΒΑ ΣΕΛΙΔΩΝ
+========================= */
 
-  font-size: 20px;
-  letter-spacing: 4px;
-}
-
-.calendar-day {
-  margin-top: 12px;
-
-  font-family: "GFS Didot", serif;
-  font-size: 120px;
-  line-height: 1;
-}
-
-.calendar-year {
-  margin-top: 12px;
-
-  font-size: 17px;
-  letter-spacing: 6px;
-}
- /* EVENT 04 - ΣΚΙΣΙΜΟ ΣΕΛΙΔΑΣ ΗΜΕΡΟΛΟΓΙΟΥ */
-
-
-
-/* EVENT 04 - Η ΣΕΛΙΔΑ ΠΟΥ ΦΕΥΓΕΙ */
-/* EVENT 04 - ΣΤΟΙΒΑ ΣΕΛΙΔΩΝ */
 .calendar-pages {
   position: relative;
-  height: 285px;
+  flex: 1;
 }
 
 .calendar-page,
 .calendar-stub {
   position: absolute;
   inset: 0;
+
   background:
-    linear-gradient(rgba(70,45,25,.08), rgba(20,10,5,.18)),
-    #c9bea4;
+    radial-gradient(
+      ellipse at 25% 15%,
+      rgba(255,248,230,.28),
+      transparent 60%
+    ),
+    linear-gradient(
+      rgba(70,45,25,.05),
+      rgba(40,22,10,.24)
+    ),
+    #cbbfa3;
+}
+
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: inset 0 0 28px rgba(60,35,15,.28);
+}
+
+.calendar-month {
+  margin-top: 20px;
+  font-size: 15px;
+  letter-spacing: 4px;
+}
+
+.calendar-day {
+  margin-top: 4px;
+
+  font-family: "GFS Didot", serif;
+  font-size: 96px;
+  line-height: 1;
+}
+
+.calendar-weekday {
+  margin-top: 4px;
+
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.calendar-year {
+  margin-top: 12px;
+
+  font-size: 13px;
+  letter-spacing: 6px;
+  opacity: .75;
+}
+
+/* Κυριακές με κόκκινο */
+.calendar-page.sunday .calendar-day,
+.calendar-page.sunday .calendar-weekday {
+  color: #8b1d1d;
 }
 
 /* Υπόλειμμα χαρτιού στην κορυφή */
 .calendar-stub {
   z-index: 2;
   pointer-events: none;
-  filter: brightness(.88);
-  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* αρχικά αόρατο */
+  filter: brightness(.86);
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
 }
 
 /* Η σελίδα που σκίζεται και πέφτει */
 .torn-sheet {
   z-index: 3;
   transform-origin: top left;
-  background:
-    linear-gradient(rgba(70,45,25,.06), rgba(20,10,5,.24)),
-    #cdc2a8;
   will-change: transform, clip-path, opacity;
+  filter: brightness(1.03);
 }
-
 </style>
 </head>
 
@@ -1324,11 +1390,12 @@ transition: opacity 1.5s ease;
 <!-- Στοίβα σελίδων -->
 <div id="calendarPages" class="calendar-pages">
 
-  <div id="calendarPage" class="calendar-page">
-    <div id="calendarMonth" class="calendar-month">JANUARY</div>
-    <div id="calendarDay" class="calendar-day">1</div>
-    <div id="calendarYear" class="calendar-year">2018</div>
-  </div>
+<div id="calendarPage" class="calendar-page">
+  <div id="calendarMonth" class="calendar-month">ΙΑΝΟΥΑΡΙΟΣ</div>
+  <div id="calendarDay" class="calendar-day">27</div>
+  <div id="calendarWeekday" class="calendar-weekday">Σάββατο</div>
+  <div id="calendarYear" class="calendar-year">2018</div>
+</div>
 
   <!-- Το σκισμένο υπόλειμμα που μένει πάνω -->
   <div id="calendarStub" class="calendar-stub"></div>
@@ -1868,19 +1935,31 @@ function showHiddenEvidence() {
 // EVENT 04 - ΗΜΕΡΟΛΟΓΙΟ
 // =========================================
 
-const CALENDAR_START = new Date(2018, 0, 1);
-const CALENDAR_END   = new Date(2019, 11, 31); // προσωρινό
+const CALENDAR_START = new Date(2018, 0, 27);  // 27 Ιανουαρίου 2018
+const CALENDAR_END   = new Date(2019, 4, 16);  // 16 Μαΐου 2019
 
 const monthsGR = ["ΙΑΝΟΥΑΡΙΟΣ","ΦΕΒΡΟΥΑΡΙΟΣ","ΜΑΡΤΙΟΣ","ΑΠΡΙΛΙΟΣ","ΜΑΪΟΣ","ΙΟΥΝΙΟΣ",
                   "ΙΟΥΛΙΟΣ","ΑΥΓΟΥΣΤΟΣ","ΣΕΠΤΕΜΒΡΙΟΣ","ΟΚΤΩΒΡΙΟΣ","ΝΟΕΜΒΡΙΟΣ","ΔΕΚΕΜΒΡΙΟΣ"];
 const monthsEN = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
                   "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
 
+const weekdaysGR = ["Κυριακή","Δευτέρα","Τρίτη","Τετάρτη","Πέμπτη","Παρασκευή","Σάββατο"];
+const weekdaysEN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
 function setCalendarDate(date) {
+
+  const gr = selectedLanguage === "gr";
+
   document.getElementById("calendarDay").textContent = date.getDate();
   document.getElementById("calendarMonth").textContent =
-    (selectedLanguage === "gr" ? monthsGR : monthsEN)[date.getMonth()];
+    (gr ? monthsGR : monthsEN)[date.getMonth()];
+  document.getElementById("calendarWeekday").textContent =
+    (gr ? weekdaysGR : weekdaysEN)[date.getDay()];
   document.getElementById("calendarYear").textContent = date.getFullYear();
+
+  // Κόκκινο για Κυριακή
+  document.getElementById("calendarPage")
+    .classList.toggle("sunday", date.getDay() === 0);
 }
 
 // Τυχαία σκισμένη άκρη - διαφορετική σε κάθε σελίδα
