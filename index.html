@@ -2681,6 +2681,16 @@ body {
         <source src="babycry.mp3" type="audio/mpeg">
       </audio>
 
+      <!-- Ήχος υποβάθρου σε όλο το Event 02 -->
+      <audio id="hospitalBg" preload="auto" loop>
+        <source src="2.mp3" type="audio/mpeg">
+      </audio>
+
+      <!-- Ήχος όσο φαίνεται το καρδιογράφημα -->
+      <audio id="ecgAudio" preload="auto">
+        <source src="hospital_Death.mp3" type="audio/mpeg">
+      </audio>
+
       <div class="monitor-line">
         <svg viewBox="0 0 2400 120" preserveAspectRatio="none">
 
@@ -4916,6 +4926,26 @@ function goToEvent5() {
   eventTimeout(enterBasement, 27500);
 }
 
+// Σβήνει έναν ήχο σιγά σιγά
+function fadeOutAudio(id, duration) {
+
+  const audio = document.getElementById(id);
+  if (!audio || audio.paused) return;
+
+  const steps = 20;
+  const step = audio.volume / steps;
+
+  const fade = eventInterval(() => {
+    if (audio.volume > step) {
+      audio.volume = Math.max(0, audio.volume - step);
+    } else {
+      clearInterval(fade);
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }, duration / steps);
+}
+
 function playSound(id, volume) {
   const audio = document.getElementById(id);
   if (!audio) return;
@@ -5304,6 +5334,12 @@ function nextEvent() {
 
   updateLanguage();
 
+  // Ήχος υποβάθρου για όλο το Event 02
+  playSound("hospitalBg", 0.45);
+
+  // Ο ήχος του καρδιογραφήματος
+  playSound("ecgAudio", 1);
+
   // Λίγο μετά το τέλος του ECG, το monitor χάνεται στο σκοτάδι
   eventTimeout(() => {
 
@@ -5311,6 +5347,7 @@ function nextEvent() {
 
     if (monitor) {
       monitor.classList.add("fade-out");
+      fadeOutAudio("ecgAudio", 2000);
 
       eventTimeout(() => {
         monitor.classList.add("hidden");
@@ -5347,7 +5384,7 @@ function nextEvent() {
 
         }, 100);
 
-      }, 13000);
+      }, 8000);
     }
 
   }, 6000);
@@ -5409,6 +5446,8 @@ function checkIncidentTime() {
       babyCry.currentTime = 0;
       babyCry.volume = 1;
     }
+
+    fadeOutAudio("hospitalBg", 1800);
 
     const motherStatus = document.getElementById("hospitalMotherStatus");
 
