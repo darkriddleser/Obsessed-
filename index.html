@@ -5362,10 +5362,13 @@ function nextEvent() {
       }, 2000);
     }
 
+    // Ο ήχος του καρδιογραφήματος σβήνει μαζί με το μόνιτορ
+    fadeOutAudio("ecgAudio", 2000);
+
     // Τελείωσαν οι άλλοι ήχοι: το υπόβαθρο ανεβαίνει ξανά
     setBackgroundVolume("event2", BG_VOLUME, 2500);
 
-  }, 27500);
+  }, 19000);
 
   // Το κλάμα του νεογέννητου: ξεκινά λίγο πριν σταματήσει η καρδιά της Karen
   // και κρατά μέχρι να σβήσει το καρδιογράφημα
@@ -5373,9 +5376,9 @@ function nextEvent() {
     const babyCry = document.getElementById("babyCry");
     if (babyCry) babyCry.loop = true;
     playSound("babyCry", 1);
-  }, 11000);
+  }, 8000);
 
-  eventTimeout(() => fadeOutAudio("babyCry", 2000), 27500);
+  eventTimeout(() => fadeOutAudio("babyCry", 2000), 19000);
 
   // Μετά το κλάμα εμφανίζεται το νοσοκομειακό έγγραφο
   eventTimeout(() => {
@@ -5391,7 +5394,7 @@ function nextEvent() {
       }, 50);
     }
 
-  }, 29800);
+  }, 21300);
 }
 
 
