@@ -982,107 +982,42 @@ transition: opacity 1.5s ease;
 }
  /* EVENT 04 - ΣΚΙΣΙΜΟ ΣΕΛΙΔΑΣ ΗΜΕΡΟΛΟΓΙΟΥ */
 
-.old-calendar.tear-page {
-  animation: tearCalendarPage .12s ease-in forwards;
-}
 
-@keyframes tearCalendarPage {
-
-  0% {
-    transform: rotate(0deg) translateY(0);
-    opacity: 1;
-  }
-
-  35% {
-    transform: rotate(-2deg) translateY(-4px);
-  }
-
-  100% {
-    transform: rotate(-8deg) translate(-25px, 45px);
-    opacity: 0;
-  }
-} 
 
 /* EVENT 04 - Η ΣΕΛΙΔΑ ΠΟΥ ΦΕΥΓΕΙ */
-
-.calendar-page {
+/* EVENT 04 - ΣΤΟΙΒΑ ΣΕΛΙΔΩΝ */
+.calendar-pages {
   position: relative;
-  width: 100%;
   height: 285px;
-
-  transform-origin: top center;
 }
 
-.calendar-page.tear {
-  animation: tearPage .22s ease-in forwards;
+.calendar-page,
+.calendar-stub {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(70,45,25,.08), rgba(20,10,5,.18)),
+    #c9bea4;
 }
 
-@keyframes tearPage {
-
-  0% {
-    transform: translateY(0) rotate(0deg);
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      0 100%
-    );
-    opacity: 1;
-  }
-
-  /* Αρχίζει να σκίζεται από πάνω δεξιά */
-  20% {
-    transform: translateY(3px) rotate(1deg);
-    clip-path: polygon(
-      0 0,
-      72% 0,
-      68% 5%,
-      58% 2%,
-      48% 7%,
-      38% 3%,
-      28% 8%,
-      18% 4%,
-      0 10%
-    );
-  }
-
-  /* Το σκίσιμο περνάει σχεδόν σε όλο το πάνω μέρος */
-  45% {
-    transform: translateY(12px) rotate(3deg);
-    clip-path: polygon(
-      0 8%,
-      12% 4%,
-      24% 9%,
-      36% 5%,
-      48% 10%,
-      60% 4%,
-      72% 8%,
-      84% 3%,
-      100% 7%,
-      100% 100%,
-      0 100%
-    );
-  }
-
-  /* Η σελίδα έχει πλέον αποκολληθεί και πέφτει */
-  100% {
-    transform: translateY(140px) rotate(10deg);
-    clip-path: polygon(
-      0 8%,
-      12% 4%,
-      24% 9%,
-      36% 5%,
-      48% 10%,
-      60% 4%,
-      72% 8%,
-      84% 3%,
-      100% 7%,
-      100% 100%,
-      0 100%
-    );
-    opacity: 0;
-  }
+/* Υπόλειμμα χαρτιού στην κορυφή */
+.calendar-stub {
+  z-index: 2;
+  pointer-events: none;
+  filter: brightness(.88);
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); /* αρχικά αόρατο */
 }
+
+/* Η σελίδα που σκίζεται και πέφτει */
+.torn-sheet {
+  z-index: 3;
+  transform-origin: top left;
+  background:
+    linear-gradient(rgba(70,45,25,.06), rgba(20,10,5,.24)),
+    #cdc2a8;
+  will-change: transform, clip-path, opacity;
+}
+
 </style>
 </head>
 
@@ -1386,19 +1321,17 @@ transition: opacity 1.5s ease;
         </div>
 
 <!-- Η χάρτινη σελίδα που θα σκίζεται -->
-<div id="calendarPage" class="calendar-page">
+<!-- Στοίβα σελίδων -->
+<div id="calendarPages" class="calendar-pages">
 
-  <div id="calendarMonth" class="calendar-month">
-    OCTOBER
+  <div id="calendarPage" class="calendar-page">
+    <div id="calendarMonth" class="calendar-month">JANUARY</div>
+    <div id="calendarDay" class="calendar-day">1</div>
+    <div id="calendarYear" class="calendar-year">2018</div>
   </div>
 
-  <div id="calendarDay" class="calendar-day">
-    17
-  </div>
-
-  <div id="calendarYear" class="calendar-year">
-    2018
-  </div>
+  <!-- Το σκισμένο υπόλειμμα που μένει πάνω -->
+  <div id="calendarStub" class="calendar-stub"></div>
 
 </div>
 
@@ -1914,84 +1847,126 @@ function showHiddenEvidence() {
   }, 1000);
 }
 
+// =========================================
+// EVENT 04 - ΗΜΕΡΟΛΟΓΙΟ
+// =========================================
+
+const CALENDAR_START = new Date(2018, 0, 1);
+const CALENDAR_END   = new Date(2019, 11, 31); // προσωρινό
+
+const monthsGR = ["ΙΑΝΟΥΑΡΙΟΣ","ΦΕΒΡΟΥΑΡΙΟΣ","ΜΑΡΤΙΟΣ","ΑΠΡΙΛΙΟΣ","ΜΑΪΟΣ","ΙΟΥΝΙΟΣ",
+                  "ΙΟΥΛΙΟΣ","ΑΥΓΟΥΣΤΟΣ","ΣΕΠΤΕΜΒΡΙΟΣ","ΟΚΤΩΒΡΙΟΣ","ΝΟΕΜΒΡΙΟΣ","ΔΕΚΕΜΒΡΙΟΣ"];
+const monthsEN = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+                  "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+
+function setCalendarDate(date) {
+  document.getElementById("calendarDay").textContent = date.getDate();
+  document.getElementById("calendarMonth").textContent =
+    (selectedLanguage === "gr" ? monthsGR : monthsEN)[date.getMonth()];
+  document.getElementById("calendarYear").textContent = date.getFullYear();
+}
+
+// Τυχαία σκισμένη άκρη - διαφορετική σε κάθε σελίδα
+function makeTornEdge() {
+  const count = 16;
+  const points = [];
+  for (let i = 0; i < count; i++) {
+    points.push({
+      x: (i / (count - 1)) * 100,
+      y: 2 + Math.random() * 6        // 2%–8% από την κορυφή
+    });
+  }
+  return points;
+}
+
+function tearOffSheet(nextDate) {
+
+  const page = document.getElementById("calendarPage");
+  const stub = document.getElementById("calendarStub");
+
+  // 1. Αντίγραφο της τρέχουσας σελίδας -> αυτό θα σκιστεί
+  const sheet = page.cloneNode(true);
+  sheet.removeAttribute("id");
+  sheet.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
+  sheet.classList.add("torn-sheet");
+  page.parentElement.appendChild(sheet);
+
+  // 2. Από κάτω εμφανίζεται ήδη η επόμενη μέρα
+  setCalendarDate(nextDate);
+
+  // 3. Σχήματα σκισίματος
+  const edge = makeTornEdge();
+  const poly = pts =>
+    `polygon(${pts.map(p => `${p.x}% ${p.y}%`).join(", ")}, 100% 100%, 0% 100%)`;
+
+  const intact  = poly(edge.map(p => ({ x: p.x, y: 0 })));
+  const halfway = poly(edge.map(p => ({ x: p.x, y: p.x > 55 ? p.y : 0 }))); // σκίζεται από δεξιά
+  const torn    = poly(edge);
+
+  const drift = -20 + Math.random() * 40;
+  const spin  = 6 + Math.random() * 10;
+
+  const anim = sheet.animate([
+    { offset: 0,   clipPath: intact,  transform: "translate(0,0) rotate(0deg)",   opacity: 1 },
+    { offset: 0.2, clipPath: halfway, transform: "translate(0,2px) rotate(1.5deg)", opacity: 1 },
+    { offset: 0.4, clipPath: torn,    transform: "translate(0,6px) rotate(3deg)",   opacity: 1 },
+    { offset: 1,   clipPath: torn,    transform: `translate(${drift}px,190px) rotate(${spin}deg)`, opacity: 0 }
+  ], { duration: 700, easing: "ease-in", fill: "forwards" });
+
+  // 4. Τη στιγμή που αποκολλάται, μένει το σκισμένο κομμάτι πάνω
+  eventTimeout(() => {
+    stub.style.clipPath =
+      `polygon(0% 0%, 100% 0%, ${[...edge].reverse().map(p => `${p.x}% ${p.y}%`).join(", ")})`;
+  }, 280);
+
+  anim.onfinish = () => sheet.remove();
+}
+
 function startEvent4Calendar() {
 
-  const dayElement = document.getElementById("calendarDay");
-  const monthElement = document.getElementById("calendarMonth");
-  const yearElement = document.getElementById("calendarYear");
+  const current = new Date(CALENDAR_START);
+  let delay = 900;
 
-  // Ημερομηνία από την οποία ξεκινά το ημερολόγιο
-  let currentDate = new Date(2018, 0, 1);
+  // Καθαρή εκκίνηση
+  document.querySelectorAll(".torn-sheet").forEach(s => s.remove());
+  document.getElementById("calendarStub").style.clipPath = "";
+  setCalendarDate(current);
 
-  const monthsGR = [
-    "ΙΑΝΟΥΑΡΙΟΣ",
-    "ΦΕΒΡΟΥΑΡΙΟΣ",
-    "ΜΑΡΤΙΟΣ",
-    "ΑΠΡΙΛΙΟΣ",
-    "ΜΑΪΟΣ",
-    "ΙΟΥΝΙΟΣ",
-    "ΙΟΥΛΙΟΣ",
-    "ΑΥΓΟΥΣΤΟΣ",
-    "ΣΕΠΤΕΜΒΡΙΟΣ",
-    "ΟΚΤΩΒΡΙΟΣ",
-    "ΝΟΕΜΒΡΙΟΣ",
-    "ΔΕΚΕΜΒΡΙΟΣ"
-  ];
+  function tick() {
 
-  const monthsEN = [
-    "JANUARY",
-    "FEBRUARY",
-    "MARCH",
-    "APRIL",
-    "MAY",
-    "JUNE",
-    "JULY",
-    "AUGUST",
-    "SEPTEMBER",
-    "OCTOBER",
-    "NOVEMBER",
-    "DECEMBER"
-  ];
+    if (document.getElementById("storyScreen4").classList.contains("hidden")) return;
 
-  function updateCalendar() {
+    const remaining = Math.round((CALENDAR_END - current) / 86400000);
 
-    const page = document.getElementById("calendarPage");
+    if (remaining <= 0) {
+      onCalendarFinished();
+      return;
+    }
 
-// Ξεκινά το σκίσιμο της τρέχουσας σελίδας
-page.classList.remove("tear");
+    let step = 1;
 
-// Αναγκάζει το animation να ξεκινήσει ξανά
-void page.offsetWidth;
+    if (remaining <= 10) {
+      delay = Math.min(delay * 1.3, 1200);   // φρενάρει στις τελευταίες μέρες
+    } else {
+      delay = Math.max(delay * 0.88, 90);    // επιταχύνει
+      if (delay <= 100) step = 4;            // στη μέγιστη ταχύτητα, 4 μέρες τη φορά
+    }
 
-page.classList.add("tear");
+    step = Math.min(step, remaining);
 
-// Περιμένουμε να φύγει η παλιά σελίδα
-eventTimeout(() => {
+    current.setDate(current.getDate() + step);
+    tearOffSheet(current);
 
-  // Αλλάζουμε την ημερομηνία όσο η σελίδα δεν φαίνεται
-  dayElement.textContent = currentDate.getDate();
-
-  monthElement.textContent =
-    selectedLanguage === "gr"
-      ? monthsGR[currentDate.getMonth()]
-      : monthsEN[currentDate.getMonth()];
-
-  yearElement.textContent = currentDate.getFullYear();
-
-  // Πηγαίνουμε στην επόμενη ημέρα
-  currentDate.setDate(currentDate.getDate() + 1);
-
-  // Εμφανίζουμε αμέσως τη νέα σελίδα
-  page.classList.remove("tear");
-
-}, 220);
+    eventTimeout(tick, delay);
   }
 
-  updateCalendar();
+  eventTimeout(tick, 1200); // μικρή παύση πριν αρχίσει
+}
 
-  // Αλλάζει ημέρα κάθε 120ms
-  eventInterval(updateCalendar, 500);
-}  
+function onCalendarFinished() {
+  // Εδώ θα ξεκινήσει η κάθοδος του Henry
+  console.log("Calendar finished");
+}
 
  function goToEvent4() {
 
