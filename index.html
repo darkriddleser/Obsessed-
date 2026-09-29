@@ -2178,10 +2178,37 @@ body {
 
 .cabin-scene.show { opacity: 1; }
 
+.cabin-scene {
+  position: relative;
+}
+
 .cabin-svg {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* Αν υπάρχει αληθινή φωτογραφία (cabin.jpg), μπαίνει πάνω από το σχέδιο */
+.cabin-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.8) contrast(1.05) saturate(.8);
+}
+
+/* Κόκκος φιλμ και σκοτάδι στις άκρες για πιο κινηματογραφική εικόνα */
+.cabin-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 55%, transparent 45%, rgba(0,0,0,.7) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");
+  opacity: .35;
+  mix-blend-mode: overlay;
 }
 
 /* Το φως στο παράθυρο τρεμοπαίζει */
@@ -2238,51 +2265,12 @@ body {
 
 .obsessed-image.show { opacity: 1; }
 
-/* Αίμα που γεμίζει την οθόνη */
-.blood-layer {
+/* Αίμα που γεμίζει την οθόνη (canvas) */
+.blood-canvas {
   position: fixed;
   inset: 0;
   z-index: 1100;
   pointer-events: none;
-  overflow: hidden;
-}
-
-.blood-drip {
-  position: absolute;
-  top: 0;
-  width: var(--w);
-  height: 0;
-  border-radius: 0 0 var(--w) var(--w);
-  background: linear-gradient(#2e0000, #7a0a0a);
-  animation: dripDown var(--d) cubic-bezier(.55,0,.8,.4) var(--delay) forwards;
-}
-
-@keyframes dripDown {
-  to { height: var(--h); }
-}
-
-.blood-curtain {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100%;
-  background: linear-gradient(#260000, #6a0606 70%, #860b0b);
-  transform: translateY(-115%);
-  animation: bloodFlood 3s cubic-bezier(.6,0,.85,.5) 1.4s forwards;
-}
-
-.blood-curtain svg {
-  position: absolute;
-  left: 0;
-  bottom: -58px;
-  width: 100%;
-  height: 60px;
-  fill: #860b0b;
-}
-
-@keyframes bloodFlood {
-  to { transform: translateY(0); }
 }
 
 .blackout {
@@ -2948,7 +2936,7 @@ body {
 
     <div class="chapter-number">05</div>
 
-    <h2 id="storyTitle5" class="story-title">ΤΟ ΣΠΙΤΙ ΣΤΟ ΔΑΣΟΣ</h2>
+    <h2 id="storyTitle5" class="story-title">OBSESSED</h2>
 
     <!-- Ο Henry έξω από την καλύβα στο δάσος -->
     <div id="cabinScene" class="cabin-scene">
@@ -3026,6 +3014,9 @@ body {
           <!-- Κοντινά δέντρα -->
           <g fill="#010203"><polygon points="5.0,139.5 14.7,210.7 9.4,191.3 24.5,281.9 13.8,262.5 34.2,353.1 18.2,333.8 44.0,424.3 22.5,405.0 53.7,495.6 10.8,495.6 8.9,495.6 8.9,526.5 1.1,526.5 1.1,495.6 -43.7,495.6 -16.9,476.2 -34.0,424.3 -12.5,405.0 -24.2,353.1 -8.2,333.8 -14.5,281.9 -3.8,262.5 -4.7,210.7 -0.8,495.6"/><polygon points="395.0,179.9 405.0,244.1 399.5,226.7 415.0,308.3 404.0,290.8 425.0,372.5 408.5,355.0 435.0,436.6 413.0,419.2 444.9,500.8 401.0,500.8 399.0,500.8 399.0,528.7 391.0,528.7 391.0,500.8 345.1,500.8 372.5,483.4 355.0,436.6 377.0,419.2 365.0,372.5 381.5,355.0 375.0,308.3 386.0,290.8 385.0,244.1 389.0,500.8"/></g>
         </svg>
+        <!-- Αληθινή φωτογραφία: βάλε ένα αρχείο cabin.jpg στον ίδιο φάκελο -->
+        <img class="cabin-photo" src="cabin.jpg" alt="" onerror="this.remove()">
+
     </div>
 
     <div id="cabinCaption" class="cabin-caption"></div>
@@ -3039,25 +3030,7 @@ body {
 
 
 <!-- EVENT 05 - Αίμα που γεμίζει την οθόνη -->
-<div id="bloodLayer" class="blood-layer hidden">
-  <span class="blood-drip" style="left:4%; --w:10px; --h:55vh; --d:1.6s; --delay:0s;"></span>
-  <span class="blood-drip" style="left:13%; --w:6px; --h:38vh; --d:1.3s; --delay:0.3s;"></span>
-  <span class="blood-drip" style="left:24%; --w:14px; --h:70vh; --d:1.8s; --delay:0.1s;"></span>
-  <span class="blood-drip" style="left:37%; --w:8px; --h:45vh; --d:1.4s; --delay:0.5s;"></span>
-  <span class="blood-drip" style="left:49%; --w:12px; --h:62vh; --d:1.7s; --delay:0.2s;"></span>
-  <span class="blood-drip" style="left:61%; --w:7px; --h:40vh; --d:1.2s; --delay:0.4s;"></span>
-  <span class="blood-drip" style="left:72%; --w:16px; --h:75vh; --d:1.9s; --delay:0s;"></span>
-  <span class="blood-drip" style="left:84%; --w:9px; --h:50vh; --d:1.5s; --delay:0.35s;"></span>
-  <span class="blood-drip" style="left:94%; --w:12px; --h:66vh; --d:1.7s; --delay:0.15s;"></span>
-  <div class="blood-curtain">
-    <svg viewBox="0 0 100 10" preserveAspectRatio="none">
-      <path d="M0 0 H100 V2 C98 2 97 4 97 7 C97 9.5 95 9.5 95 7 C95 4 93 2 88 2 C84 2 83 3 83 5
-               C83 7 81 7 81 5 C81 3 78 2 70 2 C64 2 63 4 63 8 C63 10 60 10 60 8 C60 4 58 2 50 2
-               C44 2 43 3 43 5 C43 6.5 41 6.5 41 5 C41 3 38 2 30 2 C24 2 23 4 23 7 C23 9 20 9 20 7
-               C20 4 18 2 10 2 C5 2 4 3 4 4.5 C4 6 2 6 2 4.5 C2 3 1 2 0 2 Z"/>
-    </svg>
-  </div>
-</div>
+<canvas id="bloodCanvas" class="blood-canvas hidden"></canvas>
 
 <!-- EVENT 05 - Σκοτάδι -->
 <div id="blackout" class="blackout hidden"></div>
@@ -4668,7 +4641,7 @@ function resetEvent5() {
   caption.classList.remove("show", "hidden");
   caption.innerHTML = "";
 
-  document.getElementById("bloodLayer").classList.add("hidden");
+  stopBloodEffect();
 
   const blackout = document.getElementById("blackout");
   blackout.classList.remove("show");
@@ -4693,7 +4666,6 @@ function goToEvent5() {
 
   const scene = document.getElementById("cabinScene");
   const caption = document.getElementById("cabinCaption");
-  const blood = document.getElementById("bloodLayer");
   const blackout = document.getElementById("blackout");
   const image = document.getElementById("obsessedImage");
 
@@ -4705,23 +4677,21 @@ function goToEvent5() {
     caption.classList.add("show");
   }, 2200);
 
-  // 2. Ξαφνικά η οθόνη γεμίζει αίμα
-  eventTimeout(() => {
-    blood.classList.remove("hidden");
-  }, 8000);
+  // 2. Το αίμα αρχίζει σιγά σιγά από πάνω και γεμίζει την οθόνη (10 δευτ.)
+  eventTimeout(() => startBloodEffect(10), 8000);
 
   // 3. Όλα σβήνουν
   eventTimeout(() => {
     blackout.classList.remove("hidden");
     eventTimeout(() => blackout.classList.add("show"), 30);
-  }, 12400);
+  }, 17600);
 
   // 4. Ανοίγει καθαρά η εικόνα OBSESSED
   eventTimeout(() => {
 
     scene.classList.add("hidden");
     caption.classList.add("hidden");
-    blood.classList.add("hidden");
+    stopBloodEffect();
 
     image.src = OBSESSED_IMAGE;
     image.classList.remove("hidden");
@@ -4731,8 +4701,185 @@ function goToEvent5() {
     eventTimeout(() => image.classList.add("show"), 400);
     eventTimeout(() => blackout.classList.add("hidden"), 1600);
 
-  }, 14400);
+  }, 19800);
 }
+
+
+// =========================================
+// EVENT 05 - ΑΙΜΑ (ρεαλιστικές σταγόνες σε canvas)
+// =========================================
+
+let bloodFrame = null;
+
+function stopBloodEffect() {
+
+  if (bloodFrame) cancelAnimationFrame(bloodFrame);
+  bloodFrame = null;
+
+  const canvas = document.getElementById("bloodCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.classList.add("hidden");
+}
+
+function startBloodEffect(duration) {
+
+  const canvas = document.getElementById("bloodCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvas.classList.remove("hidden");
+
+  // Σταγόνες: διαφορετικό πάχος, ταχύτητα και στιγμή που ξεκινούν
+  const count = Math.max(10, Math.round(W / 20));
+  const drips = [];
+
+  for (let i = 0; i < count; i++) {
+    const thick = Math.random() < 0.2;
+    drips.push({
+      x: (i + 0.15 + Math.random() * 0.7) * (W / count),
+      w: thick ? 9 + Math.random() * 7 : 3 + Math.random() * 6,
+      len: 0,
+      delay: Math.random() * duration * 0.35,
+      speed: 18 + Math.random() * 45,
+      phase: Math.random() * 10,
+      shade: Math.floor(Math.random() * 25)
+    });
+  }
+
+  const FLOOD_START = duration * 0.5;
+  const start = performance.now();
+  let last = start;
+
+  function wave(x, t, amp) {
+    return amp * (Math.sin(x * 0.021 + t * 1.2) * 0.6 + Math.sin(x * 0.063 + 2.1 + t * 0.7) * 0.4);
+  }
+
+  function drawDrip(d, top, tipY) {
+
+    const w = d.w;
+    const r = w * 0.62;
+    const neck = w * 0.42;
+
+    // Σώμα της σταγόνας
+    const g = ctx.createLinearGradient(0, 0, 0, tipY);
+    g.addColorStop(0, `rgb(${58 + d.shade},3,6)`);
+    g.addColorStop(0.7, `rgb(${112 + d.shade},9,13)`);
+    g.addColorStop(1, `rgb(${138 + d.shade},12,17)`);
+
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(d.x - w * 1.4, 0);
+    ctx.bezierCurveTo(d.x - w * 0.9, top + 4, d.x - neck, top + 10, d.x - neck, tipY - r);
+    ctx.arc(d.x, tipY - r, r, Math.PI, 0, true);
+    ctx.bezierCurveTo(d.x + neck, top + 10, d.x + w * 0.9, top + 4, d.x + w * 1.4, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // Γυαλάδα (το φως πάνω στο υγρό)
+    ctx.strokeStyle = "rgba(255,150,150,.16)";
+    ctx.lineWidth = Math.max(1, w * 0.14);
+    ctx.beginPath();
+    ctx.moveTo(d.x - w * 0.18, top + 6);
+    ctx.lineTo(d.x - w * 0.18, tipY - r * 1.2);
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,210,210,.28)";
+    ctx.beginPath();
+    ctx.ellipse(d.x - r * 0.35, tipY - r * 1.15, r * 0.22, r * 0.32, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function frame(now) {
+
+    const t = (now - start) / 1000;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Το αίμα μαζεύεται σιγά σιγά στο πάνω μέρος
+    const poolH = Math.min(1, t / (duration * 0.3)) * 16;
+
+    // Πλημμύρα: στο δεύτερο μισό κατεβαίνει όλο και πιο γρήγορα
+    let floodY = 0;
+    if (t > FLOOD_START) {
+      const k = Math.min(1, (t - FLOOD_START) / (duration - FLOOD_START));
+      floodY = k * k * k * (H + 90);
+    }
+
+    // Σταγόνες που τρέχουν: σταματούν και ξεκινούν, βαραίνουν όσο μακραίνουν
+    for (const d of drips) {
+
+      if (t < d.delay) continue;
+
+      const stickSlip = 0.2 + 0.8 * Math.max(0, Math.sin(t * 1.6 + d.phase));
+      const heavier = 1 + (d.len / H) * 2;
+      d.len += d.speed * stickSlip * heavier * dt;
+
+      const tipY = poolH + 4 + d.len;
+      if (tipY < floodY + 10) continue;
+
+      drawDrip(d, poolH, tipY);
+    }
+
+    // Η λίμνη αίματος στο πάνω μέρος
+    const pool = ctx.createLinearGradient(0, 0, 0, poolH + 6);
+    pool.addColorStop(0, "#3a0003");
+    pool.addColorStop(1, "#6e080c");
+    ctx.fillStyle = pool;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(W, 0);
+    for (let x = W; x >= 0; x -= 8) ctx.lineTo(x, poolH + wave(x, t, 3));
+    ctx.closePath();
+    ctx.fill();
+
+    // Το κύμα που καλύπτει όλη την οθόνη
+    if (floodY > 0) {
+      const flood = ctx.createLinearGradient(0, 0, 0, floodY + 20);
+      flood.addColorStop(0, "#240002");
+      flood.addColorStop(0.8, "#5c0609");
+      flood.addColorStop(1, "#7e0b10");
+      ctx.fillStyle = flood;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(W, 0);
+      for (let x = W; x >= 0; x -= 6) ctx.lineTo(x, floodY + wave(x, t, 16));
+      ctx.closePath();
+      ctx.fill();
+
+      // Σταγόνες που κρέμονται από την άκρη του κύματος
+      for (const d of drips) {
+        const extra = 8 + ((d.phase * 37) % 45) * (0.6 + 0.4 * Math.sin(t * 1.3 + d.phase));
+        ctx.save();
+        ctx.translate(0, floodY + wave(d.x, t, 16) - 6);
+        drawDrip(d, 4, extra);
+        ctx.restore();
+      }
+    }
+
+    if (t < duration) {
+      bloodFrame = requestAnimationFrame(frame);
+    } else {
+      ctx.fillStyle = "#240002";
+      ctx.fillRect(0, 0, W, H);
+      bloodFrame = null;
+    }
+  }
+
+  bloodFrame = requestAnimationFrame(frame);
+}
+
 
 
 // =========================================
@@ -5080,7 +5227,7 @@ function updateLanguage() {
 
     //-------------------------- chapter 5 -----------------------------//
 
-    document.getElementById("storyTitle5").textContent = "ΤΟ ΣΠΙΤΙ ΣΤΟ ΔΑΣΟΣ";
+    document.getElementById("storyTitle5").textContent = "OBSESSED";
   }
 
 
@@ -5170,7 +5317,7 @@ function updateLanguage() {
 
     //-------------------------- chapter 5 -----------------------------//
 
-    document.getElementById("storyTitle5").textContent = "THE HOUSE IN THE WOODS";
+    document.getElementById("storyTitle5").textContent = "OBSESSED";
   }
 
 }
