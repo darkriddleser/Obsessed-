@@ -6,7 +6,7 @@
 <title>OBSESSED</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=GFS+Didot&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=GFS+Didot&family=Manrope:wght@400;500;700;800&display=swap');
 
 * {
   box-sizing: border-box;
@@ -1208,55 +1208,264 @@ body {
 
 
 /* =========================
-   EVENT 04 - ΓΡΑΦΕΙΟ HENRY
+   EVENT 04 - ΓΡΑΦΕΙΟ HENRY (δωμάτιο)
 ========================= */
 
 .desk-scene {
   position: relative;
   width: 100%;
-  height: 58vh;
-  min-height: 380px;
+  aspect-ratio: 400 / 340;
   margin-top: 3vh;
   overflow: hidden;
   border-radius: 4px;
   opacity: 0;
   transition: opacity 2s ease;
-
-  background:
-    radial-gradient(ellipse at 50% 40%,
-      rgba(255,190,110,.22) 0%,
-      rgba(255,170,90,.08) 35%,
-      transparent 65%),
-    repeating-linear-gradient(92deg,
-      rgba(0,0,0,.18) 0 2px,
-      transparent 2px 9px),
-    linear-gradient(160deg, #3a2417, #1f130c 60%, #120b07);
-
-  box-shadow: inset 0 0 80px rgba(0,0,0,.9);
 }
 
 .desk-scene.show { opacity: 1; }
 
+/* Σκοτάδι στις άκρες του δωματίου */
+.desk-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 48% 48%,
+    transparent 35%,
+    rgba(0,0,0,.75) 100%
+  );
+}
+
+.room-svg,
+.light-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.light-svg {
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Η ταλαιπωρημένη λάμπα τρεμοπαίζει */
+.lamp-beam,
+.lamp-glow,
+.lamp-bulb {
+  animation: lampFlicker 7s infinite;
+}
+
+@keyframes lampFlicker {
+  0%, 60%, 66%, 100% { opacity: 1; }
+  61%  { opacity: .35; }
+  62%  { opacity: .9; }
+  64%  { opacity: .25; }
+  65%  { opacity: .85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lamp-beam, .lamp-glow, .lamp-bulb { animation: none; }
+}
+
+/* Κοινά για όλα τα αντικείμενα */
 .desk-item {
   position: absolute;
+  z-index: 2;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 8px 18px rgba(0,0,0,.75);
   transition: filter .5s ease;
 }
 
-.desk-item.seen { filter: brightness(.7); }
+.desk-item.seen { filter: brightness(.65); }
 
-/* Φωτογραφία */
-.photo-frame {
-  right: 7%;
-  top: 5%;
-  width: 25%;
+/* Αντικείμενα ξαπλωμένα πάνω στο γραφείο (προοπτική) */
+.flat {
+  transform:
+    translate(-50%, -50%)
+    matrix(1, 0, -0.55, 0.45, 0, 0)
+    rotate(var(--r, 0deg));
+  transform-origin: center;
+  box-shadow: 2px 3px 5px rgba(0,0,0,.55);
+}
+
+/* Αντικείμενα όρθια πάνω στο γραφείο */
+.upright {
+  transform: translateX(-50%);
+}
+
+/* --- Σημειώσεις Henry --- */
+.desk-notes {
+  left: 32%;
+  top: 47%;
+  width: 17%;
   aspect-ratio: 3 / 4;
-  padding: 5px;
+  --r: 6deg;
+  background:
+    repeating-linear-gradient(to bottom,
+      transparent 0 6px,
+      rgba(60,90,140,.35) 6px 7px),
+    #e2dac6;
+  box-shadow:
+    2px 2px 0 #cfc5ad,
+    4px 4px 0 #b9ae93,
+    5px 7px 8px rgba(0,0,0,.6);
+}
+
+/* Σύμβολο σκαριφημένο πάνω στις σημειώσεις */
+.desk-notes .vodou-symbol {
+  position: absolute;
+  right: 8%;
+  bottom: 8%;
+  width: 45%;
+  height: auto;
+  color: #7a1414;
+  stroke-width: 6;
+}
+
+/* --- Εφημερίδα / μαρτυρία --- */
+.newspaper-clip {
+  left: 51%;
+  top: 54%;
+  width: 24%;
+  aspect-ratio: 4 / 3;
+  --r: -4deg;
+  padding: 5% 6%;
+  background: #d9d3c1;
+  color: #1a1510;
+  font-family: "Times New Roman", serif;
+  overflow: hidden;
+}
+
+.clip-masthead {
+  font-size: 6px;
+  letter-spacing: 1px;
+  text-align: center;
+  border-bottom: 1px solid #1a1510;
+  padding-bottom: 2px;
+}
+
+.clip-lines {
+  margin-top: 5px;
+  height: 70%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(26,21,16,.45) 0 1.5px,
+    transparent 1.5px 5px
+  );
+}
+
+/* --- Φυλλάδιο μέντιουμ --- */
+.medium-flyer {
+  left: 73%;
+  top: 52%;
+  width: 12%;
+  aspect-ratio: 2 / 3;
+  --r: 12deg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, #3b1414, #150606);
+  border: 1px solid #6b5426;
+  color: #d8c48f;
+  font-family: "Cinzel", serif;
+}
+
+.flyer-symbol { font-size: 16px; line-height: 1; }
+.flyer-name   { margin-top: 3px; font-size: 5px; letter-spacing: .5px; }
+
+/* --- Φάκελοι λογαριασμών --- */
+.envelopes {
+  left: 14%;
+  top: 55%;
+  width: 16%;
+  aspect-ratio: 3 / 2;
+  --r: -10deg;
+  box-shadow: none;
+}
+
+.envelopes span {
+  position: absolute;
+  inset: 0;
+  background: #cfc5ad;
+  border: 1px solid #9c917a;
+  box-shadow: 2px 3px 5px rgba(0,0,0,.55);
+}
+
+.envelopes span:nth-child(1) { transform: rotate(-9deg) translate(-4px, 3px); }
+.envelopes span:nth-child(2) { transform: rotate(6deg) translate(3px, -2px); }
+.envelopes span:nth-child(3) {
+  transform: rotate(-2deg);
+  background:
+    linear-gradient(35deg, transparent 49%, rgba(0,0,0,.25) 50%, transparent 51%),
+    linear-gradient(-35deg, transparent 49%, rgba(0,0,0,.25) 50%, transparent 51%),
+    #d8cfb8;
+}
+
+/* Κόκκινη σφραγίδα "ΑΠΛΗΡΩΤΟ" στον πάνω φάκελο */
+.envelopes span:nth-child(3)::after {
+  content: "";
+  position: absolute;
+  right: 10%;
+  top: 14%;
+  width: 26%;
+  height: 22%;
+  border: 1.5px solid rgba(150,20,20,.8);
+}
+
+/* --- Κλειστός υπολογιστής --- */
+.laptop {
+  left: 54%;
+  top: 41%;
+  width: 26%;
+  aspect-ratio: 3 / 2;
+  --r: -3deg;
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,.14) 0%,
+      transparent 35%),
+    linear-gradient(#34363b, #1c1d20);
+  border: 1px solid #0c0c0e;
+  box-shadow:
+    0 2px 0 #0e0e10,
+    3px 5px 8px rgba(0,0,0,.7);
+}
+
+/* Μικρό φωτάκι λειτουργίας */
+.laptop::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: #6bd08a;
+  box-shadow: 0 0 5px #6bd08a;
+  animation: laptopPulse 3s infinite ease-in-out;
+}
+
+@keyframes laptopPulse {
+  0%, 100% { opacity: .25; }
+  50%      { opacity: 1; }
+}
+
+/* --- Κάδρο Karen (όρθιο) --- */
+.photo-frame {
+  left: 86%;
+  bottom: 61%;
+  width: 11%;
+  aspect-ratio: 3 / 4;
+  padding: 3px;
   background: #2a1c12;
   border: 2px solid #6d5230;
-  transform: rotate(4deg);
+  box-shadow: 3px 4px 6px rgba(0,0,0,.7);
 }
 
 .photo-frame img {
@@ -1267,114 +1476,100 @@ body {
   filter: sepia(.4) brightness(.85);
 }
 
-/* Εφημερίδα (μικρή) */
-.newspaper-clip {
-  left: 7%;
-  top: 10%;
-  width: 56%;
-  padding: 12px 12px 16px;
-  background: #d9d3c1;
-  color: #1a1510;
-  text-align: left;
-  font-family: "Times New Roman", serif;
-  transform: rotate(-6deg);
+/* --- Μπουκάλι κρασί (όρθιο) --- */
+.wine-bottle {
+  left: 79%;
+  bottom: 58%;
+  width: 5.5%;
+  aspect-ratio: 1 / 4;
 }
 
-.clip-masthead {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-align: center;
-  border-bottom: 1px solid #1a1510;
-  padding-bottom: 4px;
+.wine-bottle::before {             /* σώμα */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 66%;
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(90deg, #0d1a0e, #2f4d2e 40%, #0d1a0e);
+  box-shadow: 3px 4px 6px rgba(0,0,0,.7);
 }
 
-.clip-headline {
-  margin-top: 6px;
-  font-weight: bold;
-  font-size: 13px;
-  line-height: 1.2;
+.wine-bottle::after {              /* λαιμός */
+  content: "";
+  position: absolute;
+  left: 33%;
+  right: 33%;
+  top: 0;
+  height: 38%;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(90deg, #0d1a0e, #2a4429, #0d1a0e);
 }
 
-.clip-lines {
-  margin-top: 8px;
-  height: 46px;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(26,21,16,.4) 0 2px,
-    transparent 2px 7px
-  );
-}
-
-/* Ξερά τριαντάφυλλα */
-.dead-roses {
-  left: 10%;
-  top: 52%;
-  font-size: 44px;
-  box-shadow: none;
-  filter: grayscale(.6) sepia(.5) brightness(.7);
-  transform: rotate(-25deg);
-}
-
-/* Φυλλάδιο (μικρό) */
-.medium-flyer {
+.wine-label {
+  position: absolute;
+  left: 8%;
   right: 8%;
-  top: 40%;
-  width: 36%;
-  aspect-ratio: 2 / 3;
-  padding: 12px 8px;
+  bottom: 18%;
+  height: 20%;
+  z-index: 1;
+  background: #d8cba8;
+}
+
+/* --- Ποτήρια (όρθια) --- */
+.glasses {
+  left: 67%;
+  bottom: 56%;
+  width: 11%;
+  aspect-ratio: 2 / 1.5;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 50% 30%, #3b1414, #150606);
-  border: 1px solid #6b5426;
-  color: #d8c48f;
-  font-family: "Cinzel", serif;
-  transform: rotate(7deg);
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
-.flyer-symbol { font-size: 28px; }
-.flyer-title  { margin-top: 8px; font-size: 8px; letter-spacing: 1.5px; }
-.flyer-name   { margin-top: 8px; font-size: 9px; letter-spacing: 1px; }
-
-/* Φάκελοι */
-.envelopes {
-  left: 7%;
-  bottom: 6%;
-  width: 42%;
-  height: 52px;
-  box-shadow: none;
+.glass {
+  position: relative;
+  width: 40%;
+  height: 100%;
 }
 
-.envelopes span {
+.glass .bowl {
   position: absolute;
-  inset: 0;
-  background: #cfc5ad;
-  border: 1px solid #9c917a;
-  box-shadow: 0 4px 10px rgba(0,0,0,.6);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 55%;
+  border: 1px solid rgba(230,225,215,.55);
+  border-top: none;
+  border-radius: 0 0 50% 50% / 0 0 70% 70%;
+  background: rgba(255,255,255,.06);
 }
 
-.envelopes span:nth-child(1) { transform: rotate(-8deg) translate(-6px, 4px); }
-.envelopes span:nth-child(2) { transform: rotate(5deg) translate(4px, -3px); }
-.envelopes span:nth-child(3) {
-  transform: rotate(-2deg);
-  background:
-    linear-gradient(35deg, transparent 49%, rgba(0,0,0,.2) 50%, transparent 51%),
-    linear-gradient(-35deg, transparent 49%, rgba(0,0,0,.2) 50%, transparent 51%),
-    #d8cfb8;
+.glass.wine .bowl {
+  background: linear-gradient(transparent 55%, rgba(110,10,20,.8) 55%);
 }
 
-/* Λεκές από ποτήρι */
-.glass-stain {
+.glass::before {                   /* πόδι */
+  content: "";
   position: absolute;
-  right: 30%;
-  bottom: 5%;
-  width: 58px;
-  height: 58px;
+  left: 50%;
+  top: 55%;
+  width: 1.5px;
+  height: 40%;
+  margin-left: -.75px;
+  background: rgba(230,225,215,.55);
+}
+
+.glass::after {                    /* βάση */
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 0;
+  height: 2px;
   border-radius: 50%;
-  border: 3px solid rgba(120,70,25,.35);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  background: rgba(230,225,215,.55);
 }
 
 /* Hint κάτω από το γραφείο */
@@ -1392,7 +1587,10 @@ body {
 
 .desk-hint.grief-active { color: rgba(240,228,205,.92); }
 
-/* Μεγεθυμένη προβολή */
+/* =========================
+   EVENT 04 - ΜΕΓΕΘΥΜΕΝΗ ΠΡΟΒΟΛΗ
+========================= */
+
 .desk-viewer {
   position: fixed;
   inset: 0;
@@ -1411,6 +1609,8 @@ body {
 .desk-viewer-content {
   width: 100%;
   max-width: 370px;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .viewer-tip {
@@ -1421,6 +1621,7 @@ body {
   color: rgba(230,215,190,.55);
 }
 
+/* Εφημερίδα */
 .viewer-newspaper {
   padding: 22px 20px;
   background: #dcd6c4;
@@ -1473,6 +1674,74 @@ body {
   border: 2px solid rgba(140,20,20,.85);
   border-radius: 50%;
   transform: rotate(-3deg);
+}
+
+/* Σημειώσεις Henry (μεγάλες) */
+.viewer-notes {
+  padding: 22px 20px 26px 44px;
+  text-align: left;
+  color: #1d2233;
+  background:
+    linear-gradient(to right,
+      transparent 30px,
+      rgba(170,40,40,.45) 30px 32px,
+      transparent 32px),
+    repeating-linear-gradient(to bottom,
+      transparent 0 25px,
+      rgba(60,90,140,.22) 25px 26px),
+    #e2dac6;
+  box-shadow: 0 12px 40px rgba(0,0,0,.9);
+  transform: rotate(1deg);
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.notes-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.notes-symbols {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+  color: #7a1414;
+}
+
+.notes-symbols .vodou-symbol {
+  width: 46px;
+  height: 46px;
+}
+
+.notes-symbols .vodou-symbol:nth-child(2) { transform: rotate(-8deg); opacity: .8; }
+.notes-symbols .vodou-symbol:nth-child(3) { transform: rotate(6deg); opacity: .6; }
+
+/* Οθόνη υπολογιστή */
+.laptop-screen {
+  aspect-ratio: 16 / 10;
+  padding: 14px;
+  border: 10px solid #1c1d20;
+  border-radius: 10px;
+  background: #050607;
+  box-shadow: 0 12px 40px rgba(0,0,0,.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6f7a70;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+}
+
+.laptop-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  margin-left: 4px;
+  vertical-align: middle;
+  background: #6f7a70;
+  animation: laptopPulse 1s infinite steps(1);
 }
 
 /* Φυλλάδιο (μεγάλο, γυρίζει) */
@@ -1533,36 +1802,6 @@ body {
   line-height: 1.55;
 }
 
-.smudge {
-  color: transparent;
-  background: rgba(29,34,51,.55);
-  filter: blur(2px);
-  border-radius: 3px;
-}
-
-.desk-riddle {
-  margin-top: 22px;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.desk-riddle.show { opacity: 1; }
-
-.henry-hope {
-  min-height: 30px;
-  margin-top: 22px;
-  font-family: "GFS Didot", serif;
-  font-style: italic;
-  font-size: 21px;
-  color: #e6ddcf;
-  opacity: 0;
-  transition: opacity 3s ease;
-}
-
-.henry-hope.show { opacity: 1; }
-
-
-/* Σύμβολο που αντέγραψε ο Henry στο πίσω μέρος */
 .flyer-symbol-copy {
   width: 72px;
   height: 72px;
@@ -1580,186 +1819,221 @@ body {
   stroke-linejoin: round;
 }
 
-
-/* =========================
-   EVENT 04 - ΓΡΑΦΕΙΟ: ΦΑΣΗ VODOU
-========================= */
-
-/* Τα αντικείμενα του πένθους σβήνουν */
-.grief-obj {
-  transition: opacity 2s ease, filter .5s ease;
-}
-
-.desk-scene.vodou-phase .grief-obj {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Τα αντικείμενα του Vodou εμφανίζονται */
-.vodou-obj {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 2.5s ease 1.2s, filter .5s ease;
-}
-
-.desk-scene.vodou-phase .vodou-obj {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Το φως της λάμπας γίνεται κόκκινο */
-.desk-scene::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at 50% 55%,
-    rgba(140,20,10,.28),
-    rgba(40,0,0,.38) 70%
-  );
-  opacity: 0;
-  transition: opacity 3s ease;
-}
-
-.desk-scene.vodou-phase::after { opacity: 1; }
-
-/* Σύμβολο με κιμωλία πάνω στο ξύλο */
-.chalk-veve {
-  left: 6%;
-  top: 44%;
-  width: 34%;
-  aspect-ratio: 1;
-  box-shadow: none;
-  color: rgba(235,228,210,.55);
-  transform: rotate(-8deg);
-}
-
-.chalk-veve .vodou-symbol {
-  stroke-width: 3;
-  stroke-dasharray: 7 3;
-}
-
-/* Μαύρο κερί */
-.candle {
-  left: 46%;
-  bottom: 8%;
-  width: 22px;
-  height: 58px;
-  border-radius: 3px 3px 2px 2px;
-  background: linear-gradient(90deg, #0c0a0a, #2a2222 45%, #0c0a0a);
-  box-shadow: 0 6px 12px rgba(0,0,0,.7);
-}
-
-.candle::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -22px;
-  width: 12px;
-  height: 22px;
-  margin-left: -6px;
-  border-radius: 50% 50% 45% 45%;
-  background: radial-gradient(
-    ellipse at 50% 70%,
-    #fff4c8 0%,
-    #ffb347 40%,
-    rgba(255,90,20,.6) 70%,
-    transparent 75%
-  );
-  box-shadow: 0 0 18px 6px rgba(255,150,60,.35);
-  transform-origin: 50% 100%;
-  animation: candleFlicker 1.8s infinite alternate ease-in-out;
-}
-
-@keyframes candleFlicker {
-  0%   { transform: scale(1) rotate(-2deg); opacity: .95; }
-  50%  { transform: scale(1.08, .94) rotate(2deg); opacity: 1; }
-  100% { transform: scale(.94, 1.06) rotate(-1deg); opacity: .85; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .candle::before { animation: none; }
-}
-
-/* Μπουκάλι ρούμι */
-.rum-bottle {
-  right: 5%;
-  bottom: 4%;
-  width: 34px;
-  height: 78px;
-  border-radius: 8px 8px 5px 5px;
-  background: linear-gradient(90deg, #2a1204, #6b3410 40%, #3a1a06);
-  box-shadow: 0 8px 14px rgba(0,0,0,.7);
-}
-
-.rum-bottle::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -20px;
-  width: 12px;
-  height: 22px;
-  margin-left: -6px;
-  border-radius: 3px 3px 0 0;
-  background: linear-gradient(90deg, #2a1204, #5a2c0d, #2a1204);
-}
-
-.rum-bottle::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  right: 4px;
-  top: 26px;
-  height: 26px;
-  background: #d8cba8;
-}
-
-/* Κάρτα του Βαρόνου (μικρή) */
-.baron-card {
-  left: 36%;
-  top: 28%;
-  width: 22%;
-  aspect-ratio: 2 / 3;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0d0b0a;
-  border: 1px solid #7a6330;
-  color: #d9c48c;
-  transform: rotate(-10deg);
-}
-
-.baron-card .vodou-symbol {
-  width: 85%;
-  height: auto;
-}
-
-/* Κάρτα του Βαρόνου (μεγάλη) */
-.baron-front {
-  background: radial-gradient(circle at 50% 35%, #1d1512, #070505 75%);
-  border: 1px solid #7a6330;
-  color: #d9c48c;
-  text-align: center;
-}
-
-.baron-front .vodou-symbol {
-  width: 58%;
-  height: auto;
-}
-
-.baron-name {
-  margin-top: 18px;
-  font-family: "Cinzel", serif;
-  font-size: 18px;
-  letter-spacing: 4px;
-}
-
 /* Τα λόγια του Henry με κόκκινο μελάνι */
 .henry-ink {
   color: #8b1414;
   font-size: 18px;
+}
+
+.henry-hope {
+  min-height: 30px;
+  margin-top: 22px;
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 21px;
+  color: #e6ddcf;
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.henry-hope.show { opacity: 1; }
+
+
+/* =========================
+   EVENT 04 - ΥΠΟΛΟΓΙΣΤΗΣ: CURIOSITY LUST
+========================= */
+
+.desk-viewer-content.wide {
+  max-width: 760px;
+}
+
+.laptop-frame {
+  border: 10px solid #1c1d20;
+  border-bottom-width: 14px;
+  border-radius: 10px;
+  background: #000;
+  box-shadow: 0 12px 40px rgba(0,0,0,.9);
+  overflow: hidden;
+  cursor: default;
+}
+
+.browser {
+  display: flex;
+  flex-direction: column;
+  height: min(74vh, 620px);
+  background: #333;
+  color: #f2f2f2;
+  text-align: left;
+  font-family: "Manrope", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Καρτέλες */
+.browser-tabs {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 6px 10px 0;
+  background: #000;
+}
+
+.browser-dot {
+  align-self: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #6e1a33;
+}
+
+.browser-tab {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 12px;
+  border-radius: 7px 7px 0 0;
+  background: #333;
+  font-size: 12px;
+}
+
+.tab-x   { color: #777; font-size: 13px; }
+.tab-plus { align-self: center; font-size: 20px; line-height: 1; padding-bottom: 4px; }
+
+/* Γραμμή διεύθυνσης */
+.browser-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.browser-nav {
+  color: #ccc;
+  font-size: 14px;
+  letter-spacing: 4px;
+  white-space: nowrap;
+}
+
+.browser-url {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #c4c5c7;
+  color: #555;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.browser-url svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: #222;
+  stroke-width: 2.5;
+}
+
+/* Η σελίδα του forum */
+.site {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 16px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site::-webkit-scrollbar { width: 8px; }
+.site::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
+
+.site-nav {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0e6282;
+}
+
+.site-nav span { padding: 3px 9px; }
+
+.site-nav .active {
+  border: 1.5px solid #cfcfcf;
+  border-radius: 20px;
+}
+
+.site-logo {
+  margin: 4px 0 14px;
+  font-size: clamp(30px, 9vw, 56px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: #0e6282;
+}
+
+.forum-topic {
+  margin: 0 0 14px;
+  font-size: clamp(19px, 5vw, 28px);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.comments-title {
+  margin: 20px 0 10px;
+  font-size: 16px;
+}
+
+.forum-entry {
+  margin-bottom: 14px;
+}
+
+.forum-entry.reply {
+  margin: 10px 0 0 26px;
+}
+
+.forum-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #bdbdbd;
+}
+
+.forum-avatar {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: #e8e8e8;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+.forum-user.bold {
+  font-weight: 700;
+  color: #cfcfcf;
+}
+
+.forum-text {
+  margin: 4px 0 0 29px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.forum-reply-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  vertical-align: -3px;
+  fill: none;
+  stroke: #0e6282;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 
@@ -2231,54 +2505,142 @@ body {
     <!-- ===== ΓΡΑΦΕΙΟ HENRY ===== -->
     <div id="deskScene" class="desk-scene hidden">
 
-      <!-- Vodou: σύμβολο με κιμωλία (κάτω από όλα) -->
-      <div class="desk-item vodou-obj chalk-veve" onclick="tapGriefItem('chalk')">
-        <svg class="vodou-symbol" viewBox="0 0 100 100">
-          <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78
-                   M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86"/>
-        </svg>
-      </div>
+      <!-- Δωμάτιο και γραφείο (τοίχος, πάτωμα, πόδια, επιφάνεια) -->
+      <svg class="room-svg" viewBox="0 0 400 340" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0b0806"/>
+            <stop offset="1" stop-color="#1d140d"/>
+          </linearGradient>
+          <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#150e09"/>
+            <stop offset="1" stop-color="#050302"/>
+          </linearGradient>
+          <linearGradient id="topGrad" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#3b2415"/>
+            <stop offset=".5" stop-color="#553620"/>
+            <stop offset="1" stop-color="#2a190e"/>
+          </linearGradient>
+          <radialGradient id="lampGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="rgb(255,205,130)" stop-opacity=".38"/>
+            <stop offset="1" stop-color="rgb(255,205,130)" stop-opacity="0"/>
+          </radialGradient>
+          <clipPath id="deskClip">
+            <polygon points="20,190 300,190 380,120 100,120"/>
+          </clipPath>
+        </defs>
 
-      <!-- Φωτογραφία Karen & Henry (μένει πάντα) -->
-      <div class="desk-item photo-frame" onclick="tapGriefItem('photo')">
-        <img src="front.png" alt="">
-      </div>
+        <!-- Τοίχος & πάτωμα -->
+        <rect x="0" y="0" width="400" height="175" fill="url(#wallGrad)"/>
+        <rect x="0" y="175" width="400" height="165" fill="url(#floorGrad)"/>
+        <line x1="0" y1="175" x2="400" y2="175" stroke="rgba(0,0,0,.6)" stroke-width="2"/>
 
-      <div id="newspaperClip" class="desk-item newspaper-clip" onclick="openDeskItem('newspaper')">
-        <div class="clip-masthead">THE EVENING CHRONICLE</div>
-        <div id="clipThumbHeadline" class="clip-headline"></div>
-        <div class="clip-lines"></div>
-      </div>
+        <!-- Σκιά στο πάτωμα -->
+        <ellipse cx="200" cy="296" rx="185" ry="24" fill="rgba(0,0,0,.6)"/>
 
-      <!-- Πένθος -->
-      <div class="desk-item grief-obj dead-roses" onclick="tapGriefItem('roses')">🥀</div>
+        <!-- Πίσω πόδια -->
+        <rect x="104" y="134" width="11" height="126" fill="#170d06"/>
+        <rect x="364" y="134" width="12" height="126" fill="#1f1209"/>
 
-      <div id="mediumFlyer" class="desk-item medium-flyer" onclick="openDeskItem('flyer')">
-        <div class="flyer-symbol">☽&#xFE0E;</div>
-        <div id="flyerThumbTitle" class="flyer-title"></div>
-        <div class="flyer-name">MADAME CÉLESTE</div>
-      </div>
+        <!-- Μπροστινά πόδια -->
+        <rect x="24" y="204" width="14" height="124" fill="#2e1c10"/>
+        <rect x="34" y="204" width="4" height="124" fill="#1b1008"/>
+        <rect x="284" y="204" width="14" height="124" fill="#2e1c10"/>
+        <rect x="294" y="204" width="4" height="124" fill="#1b1008"/>
 
-      <div class="desk-item grief-obj envelopes" onclick="tapGriefItem('mail')">
+        <!-- Πλαϊνή πλευρά -->
+        <polygon points="300,190 380,120 380,136 300,206" fill="#1f130a"/>
+
+        <!-- Μπροστινή πλευρά με συρτάρι -->
+        <polygon points="20,190 300,190 300,206 20,206" fill="#3a2414"/>
+        <rect x="118" y="193" width="84" height="10" fill="none" stroke="rgba(0,0,0,.45)"/>
+        <circle cx="160" cy="198" r="1.8" fill="#8a6a3a"/>
+
+        <!-- Επιφάνεια γραφείου -->
+        <polygon points="20,190 300,190 380,120 100,120" fill="url(#topGrad)"/>
+        <g clip-path="url(#deskClip)" stroke="rgba(0,0,0,.2)" stroke-width="1">
+          <path d="M0 182 H400 M0 170 H400 M0 158 H400 M0 146 H400 M0 134 H400 M0 126 H400"/>
+        </g>
+
+        <!-- Φως της λάμπας πάνω στο γραφείο -->
+        <ellipse class="lamp-glow" cx="195" cy="160" rx="130" ry="42"
+                 fill="url(#lampGlow)" clip-path="url(#deskClip)"/>
+      </svg>
+
+      <!-- ===== Αντικείμενα ===== -->
+
+      <!-- Φάκελοι λογαριασμών που δεν άνοιξε ποτέ -->
+      <div class="desk-item flat envelopes" onclick="tapGriefItem('mail')">
         <span></span><span></span><span></span>
       </div>
 
-      <div class="glass-stain grief-obj" onclick="tapGriefItem('glass')"></div>
-
-      <!-- Vodou -->
-      <div class="desk-item vodou-obj candle" onclick="tapGriefItem('candle')"></div>
-
-      <div class="desk-item vodou-obj rum-bottle" onclick="tapGriefItem('rum')"></div>
-
-      <div id="baronCard" class="desk-item vodou-obj baron-card" onclick="openDeskItem('baron')">
-        <svg class="vodou-symbol" viewBox="0 0 100 120">
-          <path d="M36 40 V14 H64 V40 M24 40 H76"/>
-          <path d="M34 48 H66 C66 74 60 88 50 88 C40 88 34 74 34 48 Z"/>
-          <circle cx="43" cy="60" r="5"/><circle cx="57" cy="60" r="5"/>
-          <path d="M50 66 L47 72 H53 Z M42 79 H58 M45 76 V82 M50 76 V82 M55 76 V82"/>
-          <path d="M50 94 V116 M42 102 H58"/>
+      <!-- Σημειώσεις Henry -->
+      <div id="deskNotes" class="desk-item flat desk-notes" onclick="openDeskItem('notes')">
+        <svg class="vodou-symbol" viewBox="0 0 100 100">
+          <path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78"/>
         </svg>
       </div>
+
+      <!-- Κλειστός υπολογιστής -->
+      <div id="deskLaptop" class="desk-item flat laptop" onclick="openDeskItem('laptop')"></div>
+
+      <!-- Μαρτυρία: εφημερίδα -->
+      <div id="newspaperClip" class="desk-item flat newspaper-clip" onclick="openDeskItem('newspaper')">
+        <div class="clip-masthead">CHRONICLE</div>
+        <div class="clip-lines"></div>
+      </div>
+
+      <!-- Φυλλάδιο μέντιουμ -->
+      <div id="mediumFlyer" class="desk-item flat medium-flyer" onclick="openDeskItem('flyer')">
+        <div class="flyer-symbol">☽&#xFE0E;</div>
+        <div class="flyer-name">CÉLESTE</div>
+      </div>
+
+      <!-- Ποτήρια -->
+      <div class="desk-item upright glasses" onclick="tapGriefItem('glasses')">
+        <span class="glass wine"><span class="bowl"></span></span>
+        <span class="glass"><span class="bowl"></span></span>
+      </div>
+
+      <!-- Μπουκάλι κρασί -->
+      <div class="desk-item upright wine-bottle" onclick="tapGriefItem('wine')">
+        <span class="wine-label"></span>
+      </div>
+
+      <!-- Κάδρο Karen -->
+      <div class="desk-item upright photo-frame" onclick="tapGriefItem('photo')">
+        <img src="front.png" alt="">
+      </div>
+
+      <!-- Ταλαιπωρημένη λάμπα και το φως της (πάνω από τα αντικείμενα) -->
+      <svg class="light-svg" viewBox="0 0 400 340" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="rgb(255,215,150)" stop-opacity=".3"/>
+            <stop offset="1" stop-color="rgb(255,215,150)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <polygon class="lamp-beam" points="148,64 186,60 300,186 70,192" fill="url(#beamGrad)"/>
+
+        <!-- Βάση -->
+        <ellipse cx="118" cy="128" rx="15" ry="4.5" fill="#2b2622"/>
+        <ellipse cx="118" cy="126.5" rx="12" ry="3" fill="#3a342e"/>
+
+        <!-- Βραχίονας -->
+        <path d="M118 126 L110 80 L148 46" stroke="#57504a" stroke-width="3.5"
+              fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="110" cy="80" r="3.2" fill="#3a342e"/>
+
+        <!-- Καπέλο λάμπας (χτυπημένο, σκουριασμένο) -->
+        <path d="M140 30 L165 33 L186 60 L148 64 Z" fill="#3b3a30" stroke="#1b1a15" stroke-width="1"/>
+        <path d="M158 38 L163 50" stroke="rgba(0,0,0,.55)" stroke-width="1.5"/>
+        <circle cx="150" cy="44" r="3" fill="#6b3b1c" opacity=".7"/>
+        <circle cx="172" cy="52" r="2" fill="#6b3b1c" opacity=".6"/>
+
+        <!-- Λάμπα -->
+        <ellipse class="lamp-bulb" cx="167" cy="62" rx="12" ry="3.5" fill="rgba(255,228,175,.95)"/>
+      </svg>
 
     </div>
 
@@ -3088,9 +3450,9 @@ function goToEvent4() {
 // EVENT 04 - ΓΡΑΦΕΙΟ HENRY
 // =========================================
 
-const deskSeen = { newspaper: false, flyer: false, baron: false };
+const deskSeen = { newspaper: false, flyer: false, notes: false };
 let griefHintTimer = null;
-let deskPhase = "grief";   // "grief" → "vodou" → "done"
+let deskDone = false;
 
 // Το σύμβολο του Βαρόνου (σταυρός πάνω σε τάφο)
 const baronSymbol =
@@ -3098,24 +3460,13 @@ const baronSymbol =
   '<path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 ' +
   'M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86"/></svg>';
 
-// Η μορφή του Βαρόνου: ψηλό καπέλο, κρανίο, σταυρός
-const baronFigure =
-  '<svg class="vodou-symbol" viewBox="0 0 100 120">' +
-  '<path d="M36 40 V14 H64 V40 M24 40 H76"/>' +
-  '<path d="M34 48 H66 C66 74 60 88 50 88 C40 88 34 74 34 48 Z"/>' +
-  '<circle cx="43" cy="60" r="5"/><circle cx="57" cy="60" r="5"/>' +
-  '<path d="M50 66 L47 72 H53 Z M42 79 H58 M45 76 V82 M50 76 V82 M55 76 V82"/>' +
-  '<path d="M50 94 V116 M42 102 H58"/></svg>';
-
 function deskText() {
 
   if (selectedLanguage === "gr") {
     return {
       hint: "Άγγιξε τα αντικείμενα στο γραφείο.",
-      vodouHint: "Τις εβδομάδες μετά τη συνεδρία, το γραφείο του άλλαξε.",
       closeTip: "Άγγιξε για να κλείσει.",
       flyerTip: "Άγγιξε το φυλλάδιο για να το γυρίσεις · έξω για να κλείσει.",
-      cardTip: "Άγγιξε την κάρτα για να τη γυρίσεις · έξω για να κλείσει.",
       dateline: "ΠΕΜΠΤΗ 16 ΜΑΪΟΥ 2019",
       headline: "ΕΠΕΣΤΡΕΨΕ ΜΕΤΑ ΑΠΟ 17 ΛΕΠΤΑ ΚΛΙΝΙΚΟΥ ΘΑΝΑΤΟΥ",
       article:
@@ -3135,23 +3486,25 @@ function deskText() {
         "Πριν φύγω, χάραξε ένα σύμβολο στο τραπέζι.<br>" +
         "«Αυτός κρατά την πόρτα», είπε.<br>Το αντέγραψα:" +
         "<div class='flyer-symbol-copy'>" + baronSymbol + "</div>",
-      baronBack:
-        "«Ο Βαρόνος είναι ο πρώτος νεκρός κάθε νεκροταφείου.<br>" +
-        "Κρατά την πόρτα ανάμεσα στους ζωντανούς και τους νεκρούς.<br><br>" +
-        "Τίποτα δεν περνά χωρίς την άδειά του.<br>" +
-        "Και η άδειά του έχει πάντα τίμημα.»<br><br>" +
-        "— C.M.<br><br>" +
+      notes:
+        "<div class='notes-title'>Baron Samedi</div>" +
+        "— ο πρώτος νεκρός κάθε νεκροταφείου<br>" +
+        "— κρατά την πόρτα ανάμεσα σε ζωντανούς και νεκρούς<br>" +
+        "— τίποτα δεν περνά χωρίς την άδειά του<br>" +
+        "— η άδειά του έχει ΠΑΝΤΑ τίμημα (Céleste)" +
+        "<div class='notes-symbols'>" + baronSymbol + baronSymbol + baronSymbol + "</div>" +
+        "Μαύρα κεριά. Ρούμι. Κιμωλία.<br>" +
+        "Η Margaret γύρισε. Γιατί όχι κι εκείνη;<br><br>" +
         "<span class='henry-ink'>Ό,τι κι αν κοστίσει.</span>",
+      laptopTip: "Σύρε για να διαβάσεις · άγγιξε έξω για να κλείσει.",
       hope: "Ίσως μπορεί να γυρίσει."
     };
   }
 
   return {
     hint: "Touch the objects on the desk.",
-    vodouHint: "In the weeks after the séance, his desk changed.",
     closeTip: "Tap to close.",
     flyerTip: "Tap the flyer to turn it over · outside to close.",
-    cardTip: "Tap the card to turn it over · outside to close.",
     dateline: "THURSDAY, MAY 16, 2019",
     headline: "WOMAN RETURNS AFTER 17 MINUTES OF CLINICAL DEATH",
     article:
@@ -3171,35 +3524,32 @@ function deskText() {
       "Before I left, she carved a symbol into the table.<br>" +
       "“He holds the door,” she said.<br>I copied it:" +
       "<div class='flyer-symbol-copy'>" + baronSymbol + "</div>",
-    baronBack:
-      "“The Baron is the first of the dead in every cemetery.<br>" +
-      "He holds the door between the living and the dead.<br><br>" +
-      "Nothing passes without his permission.<br>" +
-      "And his permission always has a price.”<br><br>" +
-      "— C.M.<br><br>" +
+    notes:
+      "<div class='notes-title'>Baron Samedi</div>" +
+      "— the first of the dead in every cemetery<br>" +
+      "— holds the door between the living and the dead<br>" +
+      "— nothing passes without his permission<br>" +
+      "— his permission ALWAYS has a price (Céleste)" +
+      "<div class='notes-symbols'>" + baronSymbol + baronSymbol + baronSymbol + "</div>" +
+      "Black candles. Rum. Chalk.<br>" +
+      "Margaret came back. Why not her?<br><br>" +
       "<span class='henry-ink'>Whatever it costs.</span>",
+    laptopTip: "Scroll to read · tap outside to close.",
     hope: "Maybe she can come back."
   };
 }
 
-function currentDeskHint() {
-  const t = deskText();
-  if (deskPhase === "grief") return t.hint;
-  if (deskPhase === "vodou") return t.vodouHint;
-  return "";
-}
-
 function resetDeskScene() {
 
-  deskPhase = "grief";
+  deskDone = false;
   deskSeen.newspaper = false;
   deskSeen.flyer = false;
-  deskSeen.baron = false;
+  deskSeen.notes = false;
 
   document.getElementById("calendarScene").classList.remove("hidden", "fade-out");
 
   const desk = document.getElementById("deskScene");
-  desk.classList.remove("show", "vodou-phase");
+  desk.classList.remove("show");
   desk.classList.add("hidden");
   desk.querySelectorAll(".desk-item").forEach(item => item.classList.remove("seen"));
 
@@ -3218,13 +3568,10 @@ function resetDeskScene() {
 
 function showDeskScene() {
 
-  const t = deskText();
   const calendarScene = document.getElementById("calendarScene");
   const desk = document.getElementById("deskScene");
 
-  document.getElementById("clipThumbHeadline").textContent = t.headline;
-  document.getElementById("flyerThumbTitle").textContent = t.flyerTitle;
-  document.getElementById("deskHint").textContent = t.hint;
+  document.getElementById("deskHint").textContent = deskText().hint;
 
   calendarScene.classList.add("fade-out");
 
@@ -3241,6 +3588,7 @@ function openDeskItem(type) {
   const viewer = document.getElementById("deskViewer");
   const content = document.getElementById("deskViewerContent");
 
+  // ===== ΜΑΡΤΥΡΙΑ (ΕΦΗΜΕΡΙΔΑ) =====
   if (type === "newspaper") {
 
     content.innerHTML = `
@@ -3254,35 +3602,47 @@ function openDeskItem(type) {
 
     deskSeen.newspaper = true;
     document.getElementById("newspaperClip").classList.add("seen");
+  }
 
-  } else {
-
-    // Φυλλάδιο ή κάρτα του Βαρόνου: και τα δύο γυρίζουν
-    const isFlyer = type === "flyer";
-
-    const front = isFlyer
-      ? `<div class="flyer-face flyer-front">
-           <div class="f-title">${t.flyerTitle}</div>
-           <div class="f-symbol">☽&#xFE0E;</div>
-           <div class="f-name">Madame Céleste Marchand</div>
-           <div class="f-quote">${t.flyerQuote}</div>
-           <div class="f-details">${t.flyerDetails}</div>
-         </div>`
-      : `<div class="flyer-face baron-front">
-           ${baronFigure}
-           <div class="baron-name">BARON SAMEDI</div>
-         </div>`;
-
-    const back = isFlyer ? t.flyerBack : t.baronBack;
+  // ===== ΣΗΜΕΙΩΣΕΙΣ HENRY =====
+  if (type === "notes") {
 
     content.innerHTML = `
-      <div class="flyer-card" onclick="flipCard(event, '${type}')">
+      <div class="viewer-notes">${t.notes}</div>
+      <div class="viewer-tip">${t.closeTip}</div>`;
+
+    deskSeen.notes = true;
+    document.getElementById("deskNotes").classList.add("seen");
+  }
+
+  // ===== ΥΠΟΛΟΓΙΣΤΗΣ: το forum Curiosity Lust =====
+  if (type === "laptop") {
+
+    content.innerHTML = `
+      ${buildForumSite()}
+      <div class="viewer-tip">${t.laptopTip}</div>`;
+  }
+
+  // Ο υπολογιστής ανοίγει σε πιο φαρδύ παράθυρο
+  content.classList.toggle("wide", type === "laptop");
+
+  // ===== ΦΥΛΛΑΔΙΟ ΜΕΝΤΙΟΥΜ (γυρίζει) =====
+  if (type === "flyer") {
+
+    content.innerHTML = `
+      <div class="flyer-card" onclick="flipCard(event, 'flyer')">
         <div id="cardInner" class="flyer-inner">
-          ${front}
-          <div class="flyer-face flyer-back">${back}</div>
+          <div class="flyer-face flyer-front">
+            <div class="f-title">${t.flyerTitle}</div>
+            <div class="f-symbol">☽&#xFE0E;</div>
+            <div class="f-name">Madame Céleste Marchand</div>
+            <div class="f-quote">${t.flyerQuote}</div>
+            <div class="f-details">${t.flyerDetails}</div>
+          </div>
+          <div class="flyer-face flyer-back">${t.flyerBack}</div>
         </div>
       </div>
-      <div class="viewer-tip">${isFlyer ? t.flyerTip : t.cardTip}</div>`;
+      <div class="viewer-tip">${t.flyerTip}</div>`;
   }
 
   viewer.classList.remove("hidden");
@@ -3291,7 +3651,7 @@ function openDeskItem(type) {
 
 function flipCard(event, type) {
 
-  // Να μην κλείσει το viewer όταν γυρίζουμε την κάρτα
+  // Να μην κλείσει το viewer όταν γυρίζουμε το φυλλάδιο
   event.stopPropagation();
 
   const inner = document.getElementById("cardInner");
@@ -3300,8 +3660,7 @@ function flipCard(event, type) {
   // Μετράει ως "διαβασμένο" μόνο όταν δει την πίσω πλευρά
   if (inner.classList.contains("flipped")) {
     deskSeen[type] = true;
-    document.getElementById(type === "flyer" ? "mediumFlyer" : "baronCard")
-      .classList.add("seen");
+    document.getElementById("mediumFlyer").classList.add("seen");
   }
 }
 
@@ -3309,22 +3668,16 @@ function tapGriefItem(type) {
 
   const lines = selectedLanguage === "gr"
     ? {
-        photo:  "Της μιλούσε κάθε βράδυ. Εκείνη δεν απαντούσε ποτέ.",
-        roses:  "Τα τελευταία τριαντάφυλλα που της πήρε. Δεν τα πέταξε ποτέ.",
-        mail:   "Λογαριασμοί. Συλλυπητήρια. Κανένας φάκελος δεν ανοίχτηκε.",
-        glass:  "Ένα ποτήρι κάθε βράδυ. Μετά δύο. Μετά σταμάτησε να μετράει.",
-        chalk:  "Το σύμβολο από το τραπέζι της Céleste. Το ζωγράφισε με κιμωλία στο γραφείο του. Ξανά και ξανά.",
-        candle: "Ένα μαύρο κερί. Το άναβε κάθε βράδυ, όπως του είπε η Céleste. Δεν το άφηνε ποτέ να σβήσει.",
-        rum:    "Ρούμι. Ο Henry δεν έπινε ποτέ ρούμι. Η Céleste είπε ότι ο Βαρόνος το αγαπά."
+        photo:   "Της μιλούσε κάθε βράδυ. Εκείνη δεν απαντούσε ποτέ.",
+        mail:    "Λογαριασμοί. Ειδοποιήσεις. Κανένας φάκελος δεν ανοίχτηκε ποτέ.",
+        wine:    "Το κρασί που της άρεσε. Το άνοιγε κάθε Παρασκευή, όπως τότε.",
+        glasses: "Δύο ποτήρια. Έβαζε πάντα δύο."
       }
     : {
-        photo:  "He talked to her every night. She never answered.",
-        roses:  "The last roses he bought her. He never threw them away.",
-        mail:   "Bills. Condolences. Not a single envelope opened.",
-        glass:  "One glass every night. Then two. Then he stopped counting.",
-        chalk:  "The symbol from Céleste's table. He drew it in chalk on his desk. Again and again.",
-        candle: "A black candle. He lit it every night, as Céleste told him. He never let it go out.",
-        rum:    "Rum. Henry never drank rum. Céleste said the Baron loves it."
+        photo:   "He talked to her every night. She never answered.",
+        mail:    "Bills. Final notices. Not a single envelope was ever opened.",
+        wine:    "The wine she loved. He opened it every Friday, like before.",
+        glasses: "Two glasses. He always poured two."
       };
 
   const hint = document.getElementById("deskHint");
@@ -3335,7 +3688,7 @@ function tapGriefItem(type) {
   if (griefHintTimer) clearTimeout(griefHintTimer);
 
   griefHintTimer = eventTimeout(() => {
-    hint.textContent = currentDeskHint();
+    hint.textContent = deskDone ? "" : deskText().hint;
     hint.classList.remove("grief-active");
   }, 4500);
 }
@@ -3347,31 +3700,11 @@ function closeDeskItem() {
   viewer.classList.remove("show");
   eventTimeout(() => viewer.classList.add("hidden"), 600);
 
-  // Πένθος → Vodou: όταν έχει δει εφημερίδα και φυλλάδιο
-  if (deskPhase === "grief" && deskSeen.newspaper && deskSeen.flyer) {
-    deskPhase = "vodou";
-    eventTimeout(startVodouPhase, 900);
-    return;
-  }
-
-  // Vodou → ελπίδα: όταν έχει διαβάσει την κάρτα του Βαρόνου
-  if (deskPhase === "vodou" && deskSeen.baron) {
-    deskPhase = "done";
+  // Όταν έχει δει μαρτυρία, φυλλάδιο και σημειώσεις → ελπίδα
+  if (!deskDone && deskSeen.newspaper && deskSeen.flyer && deskSeen.notes) {
+    deskDone = true;
     eventTimeout(showHenryHope, 900);
   }
-}
-
-function startVodouPhase() {
-
-  const hint = document.getElementById("deskHint");
-
-  // Τα αντικείμενα του πένθους φεύγουν, έρχονται τα αντικείμενα του Vodou
-  document.getElementById("deskScene").classList.add("vodou-phase");
-
-  hint.textContent = deskText().vodouHint;
-  hint.classList.add("grief-active");
-
-  eventTimeout(() => hint.classList.remove("grief-active"), 4000);
 }
 
 function showHenryHope() {
@@ -3388,6 +3721,142 @@ function showHenryHope() {
 
 function onDeskSolved() {
   showResearchScene();
+}
+
+
+// =========================================
+// EVENT 04 - ΥΠΟΛΟΓΙΣΤΗΣ: CURIOSITY LUST
+// =========================================
+
+const forumAvatar =
+  '<svg class="forum-avatar" viewBox="0 0 24 24">' +
+  '<circle cx="12" cy="12" r="11"/>' +
+  '<circle cx="12" cy="9.5" r="4" fill="currentColor"/>' +
+  '<path d="M5.5 19.5 C7 14.5 17 14.5 18.5 19.5 Z" fill="currentColor"/></svg>';
+
+const forumReplyIcon =
+  '<svg class="forum-reply-icon" viewBox="0 0 24 24">' +
+  '<path d="M5 5 V13 H19 M15 9 L19 13 L15 17"/></svg>';
+
+function forumData() {
+
+  const gr = selectedLanguage === "gr";
+  const date = day => gr
+    ? `Ημερομηνία: ${day} Απριλίου 2023`
+    : `Date: April ${day}, 2023`;
+
+  return {
+    topic: gr
+      ? "Θέμα: Βοήθεια με ένα παράξενο σύμβολο"
+      : "Topic: Help with a strange design.",
+
+    post: {
+      user: "StvnBnnt78", bold: true, date: date(24),
+      text: gr
+        ? "Καλησπέρα σε όλους! Βρήκα στο υπόγειό μου, σε ένα μέρος που δεν ήξερα καν ότι υπήρχε, ένα παράξενο σύμβολο που μοιάζει με σταυρό, αλλά σε κάθε άκρη του υπάρχουν δύο μυτερές προεξοχές σαν κέρατα. Ξέρει κανείς τι μπορεί να είναι;"
+        : "Good evening, everyone! I found in my basement, in a place I didn’t even know existed, a strange design that looks like a cross, but at each end, there are two sharp points like horns. Does anyone know what it could be?"
+    },
+
+    comments: [
+      {
+        user: "StranFanatic", date: date(24),
+        text: gr ? "Ακούγεται ενδιαφέρον." : "Sounds interesting."
+      },
+      {
+        user: "CrypticSolver", date: date(25),
+        text: gr ? "Να είσαι προσεκτικός με τέτοια σύμβολα." : "Be careful with such symbols.",
+        replies: [
+          {
+            user: "StvnBnnt78", bold: true, date: date(25),
+            text: gr ? "Γιατί το λες αυτό; Τι εννοείς;" : "Why are you saying that? What do you mean?"
+          },
+          {
+            user: "CrypticSolver", date: date(25),
+            text: gr
+              ? "Στείλε μου ένα προσωπικό μήνυμα με φωτογραφία του συμβόλου για να σου πω περισσότερα."
+              : "Send me a private message with a photo of the symbol so I can tell you more."
+          }
+        ]
+      },
+      {
+        user: "HenryJn", bold: true, date: date(25),
+        text: gr ? "Πού βρίσκεται αυτό το μέρος; Ποια είναι η διεύθυνσή σου;" : "Where is this place located? What is your address?",
+        replies: [
+          {
+            user: "StvnBnnt78", bold: true, date: date(25),
+            text: gr ? "Βρίσκεται στην οδό Elmore, στη Νέα Ορλεάνη." : "It is located on Elmore Street in New Orleans."
+          },
+          {
+            user: "HenryJn", bold: true, date: date(25),
+            text: gr ? "Νομίζω ότι μπορώ να σε βοηθήσω. Σου στέλνω μήνυμα." : "I think I can help you. I’m sending you a message."
+          }
+        ]
+      }
+    ]
+  };
+}
+
+function forumEntry(entry, isReply) {
+
+  const replies = (entry.replies || []).map(r => forumEntry(r, true)).join("");
+
+  return `
+    <div class="forum-entry ${isReply ? "reply" : ""}">
+      <div class="forum-meta">
+        ${forumAvatar}
+        <span class="forum-user ${entry.bold ? "bold" : ""}">${entry.user}</span>
+        <span>| ${entry.date}</span>
+      </div>
+      <div class="forum-text">${isReply ? forumReplyIcon : ""}${entry.text}</div>
+      ${replies}
+    </div>`;
+}
+
+function buildForumSite() {
+
+  const f = forumData();
+
+  return `
+    <div class="laptop-frame" onclick="event.stopPropagation()">
+      <div class="browser">
+
+        <div class="browser-tabs">
+          <span class="browser-dot"></span>
+          <div class="browser-tab">Curiosity Lust <span class="tab-x">✕</span></div>
+          <span class="tab-plus">+</span>
+        </div>
+
+        <div class="browser-bar">
+          <span class="browser-nav">←→⟳</span>
+          <div class="browser-url">
+            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg>
+            curiosity.lust@cur.com
+          </div>
+        </div>
+
+        <div class="site">
+
+          <nav class="site-nav">
+            <span class="active">Home</span>
+            <span>Categories</span>
+            <span>FAQ</span>
+            <span>Login</span>
+          </nav>
+
+          <h1 class="site-logo">Curiosity Lust</h1>
+
+          <h2 class="forum-topic">${f.topic}</h2>
+
+          ${forumEntry(f.post, false)}
+
+          <div class="comments-title">Comments:</div>
+
+          ${f.comments.map(c => forumEntry(c, false)).join("")}
+
+        </div>
+
+      </div>
+    </div>`;
 }
 
 
