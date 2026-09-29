@@ -5376,7 +5376,14 @@ function nextEvent() {
     const babyCry = document.getElementById("babyCry");
     if (babyCry) babyCry.loop = true;
     playSound("babyCry", 1);
+
+    // Για να ακούγεται καθαρά το κλάμα, χαμηλώνουν οι άλλοι ήχοι
+    fadeAudioTo("ecgAudio", 0.55, 1500);
+    setBackgroundVolume("event2", 0.08, 1500);
   }, 8000);
+
+  // Η καρδιά σταμάτησε: ο ήχος του καρδιογραφήματος χαμηλώνει ακόμα περισσότερο
+  eventTimeout(() => fadeAudioTo("ecgAudio", 0.2, 2500), 14000);
 
   eventTimeout(() => fadeOutAudio("babyCry", 2000), 19000);
 
