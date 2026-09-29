@@ -1678,42 +1678,44 @@ body {
 
 /* Σημειώσεις Henry (μεγάλες) */
 .viewer-notes {
-  padding: 22px 20px 26px 44px;
+  padding: 14px 14px 16px 36px;
   text-align: left;
   color: #1d2233;
   background:
     linear-gradient(to right,
-      transparent 30px,
-      rgba(170,40,40,.45) 30px 32px,
-      transparent 32px),
+      transparent 24px,
+      rgba(170,40,40,.45) 24px 26px,
+      transparent 26px),
     repeating-linear-gradient(to bottom,
-      transparent 0 25px,
-      rgba(60,90,140,.22) 25px 26px),
+      transparent 0 20px,
+      rgba(60,90,140,.22) 20px 21px),
     #e2dac6;
   box-shadow: 0 12px 40px rgba(0,0,0,.9);
   transform: rotate(1deg);
   font-family: "GFS Didot", serif;
   font-style: italic;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 .notes-title {
-  font-size: 20px;
-  margin-bottom: 8px;
+  font-size: 17px;
+  margin-bottom: 4px;
 }
 
 .notes-symbols {
   display: flex;
-  gap: 10px;
-  margin: 12px 0;
+  gap: 8px;
+  margin: 6px 0;
   color: #7a1414;
 }
 
 .notes-symbols .vodou-symbol {
-  width: 46px;
-  height: 46px;
+  width: 32px;
+  height: 32px;
 }
+
+.viewer-notes .henry-ink { font-size: 16px; }
 
 .notes-symbols .vodou-symbol:nth-child(2) { transform: rotate(-8deg); opacity: .8; }
 .notes-symbols .vodou-symbol:nth-child(3) { transform: rotate(6deg); opacity: .6; }
@@ -2034,6 +2036,82 @@ body {
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+
+/* =========================
+   EVENT 04 - ΚΛΕΙΔΩΜΑ ΥΠΟΛΟΓΙΣΤΗ (σύμβολο)
+========================= */
+
+.lock-screen {
+  height: min(74vh, 620px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 30%, #1d2a36, #07090c 75%);
+  color: #dfe6ec;
+  font-family: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  text-align: center;
+}
+
+.lock-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+.lock-avatar .forum-avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.lock-user {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.lock-label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #9aa7b2;
+}
+
+.lock-symbols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: min(100%, 320px);
+}
+
+.lock-symbol {
+  aspect-ratio: 1;
+  padding: 9px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  color: #dfe6ec;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .3s ease, color .3s ease, opacity .3s ease;
+}
+
+.lock-symbol.wrong {
+  border-color: #b83232;
+  color: #b83232;
+  opacity: .45;
+}
+
+.lock-symbol.correct {
+  border-color: #5fa873;
+  color: #5fa873;
+}
+
+.lock-message {
+  min-height: 20px;
+  margin-top: 4px;
+  font-size: 13px;
 }
 
 
@@ -3486,12 +3564,32 @@ let deskDone = false;
 let finalPhase = false;
 let finalForumOpened = false;
 let finalDone = false;
+let laptopUnlocked = false;
 
 // Το σύμβολο του Βαρόνου (σταυρός πάνω σε τάφο)
 const baronSymbol =
   '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
   '<path d="M50 10 V70 M34 26 H66 M30 70 H70 V86 H30 Z M22 86 H78 ' +
   'M20 40 V56 M14 46 H26 M80 40 V56 M74 46 H86"/></svg>';
+
+// Σύμβολα για τον κωδικό του υπολογιστή (σωστό: baron)
+const lockSymbols = {
+  baron: baronSymbol,
+  sun:
+    '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
+    '<circle cx="50" cy="50" r="16"/>' +
+    '<path d="M50 14 V26 M50 74 V86 M14 50 H26 M74 50 H86 ' +
+    'M25 25 L33 33 M67 67 L75 75 M75 25 L67 33 M33 67 L25 75"/></svg>',
+  heart:
+    '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
+    '<path d="M50 80 C20 58 18 34 34 28 C43 25 49 32 50 38 ' +
+    'C51 32 57 25 66 28 C82 34 80 58 50 80 Z M26 86 L76 18"/></svg>',
+  snake:
+    '<svg class="vodou-symbol" viewBox="0 0 100 100">' +
+    '<path d="M12 60 C22 40 32 40 40 56 C48 72 58 72 66 54 C72 42 80 40 86 48"/>' +
+    '<circle cx="87" cy="49" r="3"/>' +
+    '<path d="M30 24 V34 M50 20 V30 M70 24 V34"/></svg>'
+};
 
 function deskText() {
 
@@ -3533,6 +3631,9 @@ function deskText() {
       finalDate: "ΑΠΡΙΛΙΟΣ 2023",
       finalHint: "Τέσσερα χρόνια αργότερα. Ο Henry δεν σταμάτησε ποτέ να ψάχνει. Άγγιξε τον υπολογιστή.",
       finalLine: "Elmore Street. Νέα Ορλεάνη.",
+      lockLabel: "Κωδικός πρόσβασης: διάλεξε το σύμβολο",
+      lockWrong: "Λάθος κωδικός.",
+      lockCorrect: "Καλώς ήρθες, Henry.",
       hope: "Ίσως μπορεί να γυρίσει."
     };
   }
@@ -3574,6 +3675,9 @@ function deskText() {
     finalDate: "APRIL 2023",
     finalHint: "Four years later. Henry never stopped searching. Touch the computer.",
     finalLine: "Elmore Street. New Orleans.",
+    lockLabel: "Password: choose the symbol",
+    lockWrong: "Wrong password.",
+    lockCorrect: "Welcome, Henry.",
     hope: "Maybe she can come back."
   };
 }
@@ -3584,6 +3688,7 @@ function resetDeskScene() {
   finalPhase = false;
   finalForumOpened = false;
   finalDone = false;
+  laptopUnlocked = false;
 
   const finalDate = document.getElementById("finalDate");
   finalDate.classList.remove("show");
@@ -3642,10 +3747,6 @@ function openDeskItem(type) {
     return;
   }
 
-  if (type === "laptop") {
-    finalForumOpened = true;
-  }
-
   // ===== ΜΑΡΤΥΡΙΑ (ΕΦΗΜΕΡΙΔΑ) =====
   if (type === "newspaper") {
 
@@ -3673,12 +3774,12 @@ function openDeskItem(type) {
     document.getElementById("deskNotes").classList.add("seen");
   }
 
-  // ===== ΥΠΟΛΟΓΙΣΤΗΣ: το forum Curiosity Lust =====
+  // ===== ΥΠΟΛΟΓΙΣΤΗΣ: κλείδωμα με σύμβολο → forum Curiosity Lust =====
   if (type === "laptop") {
 
-    content.innerHTML = `
-      ${buildForumSite()}
-      <div class="viewer-tip">${t.laptopTip}</div>`;
+    content.innerHTML = laptopUnlocked
+      ? `${buildForumSite()}<div class="viewer-tip">${t.laptopTip}</div>`
+      : `${buildLockScreen()}<div class="viewer-tip">${t.closeTip}</div>`;
   }
 
   // Ο υπολογιστής ανοίγει σε πιο φαρδύ παράθυρο
@@ -3730,14 +3831,14 @@ function tapGriefItem(type) {
         mail:    "Λογαριασμοί. Ειδοποιήσεις. Κανένας φάκελος δεν ανοίχτηκε ποτέ.",
         wine:    "Το κρασί που της άρεσε. Το άνοιγε κάθε Παρασκευή, όπως τότε.",
         glasses: "Δύο ποτήρια. Έβαζε πάντα δύο.",
-        laptop:  "Ο υπολογιστής του. Δεν τον είχε ανοίξει από τότε."
+        laptop:  "Ο υπολογιστής του. Κλειδωμένος. Δεν τον είχε ανοίξει από τότε."
       }
     : {
         photo:   "He talked to her every night. She never answered.",
         mail:    "Bills. Final notices. Not a single envelope was ever opened.",
         wine:    "The wine she loved. He opened it every Friday, like before.",
         glasses: "Two glasses. He always poured two.",
-        laptop:  "His computer. He hadn't opened it since."
+        laptop:  "His computer. Locked. He hadn't opened it since."
       };
 
   const hint = document.getElementById("deskHint");
@@ -3863,6 +3964,60 @@ function forumData() {
       }
     ]
   };
+}
+
+// Οθόνη κλειδώματος: ο κωδικός είναι το σύμβολο του Βαρόνου
+function buildLockScreen() {
+
+  const t = deskText();
+  const order = Object.keys(lockSymbols).sort(() => Math.random() - 0.5);
+
+  return `
+    <div class="laptop-frame" onclick="event.stopPropagation()">
+      <div class="lock-screen">
+        <div class="lock-avatar">${forumAvatar}</div>
+        <div class="lock-user">Henry</div>
+        <div class="lock-label">${t.lockLabel}</div>
+        <div class="lock-symbols">
+          ${order.map(key => `
+            <button class="lock-symbol" id="lock-${key}" onclick="tryLockSymbol('${key}')">
+              ${lockSymbols[key]}
+            </button>`).join("")}
+        </div>
+        <div id="lockMessage" class="lock-message"></div>
+      </div>
+    </div>`;
+}
+
+function tryLockSymbol(key) {
+
+  if (laptopUnlocked) return;
+
+  const t = deskText();
+  const button = document.getElementById("lock-" + key);
+  const message = document.getElementById("lockMessage");
+
+  if (key === "baron") {
+
+    laptopUnlocked = true;
+    finalForumOpened = true;
+
+    button.classList.add("correct");
+    message.style.color = "#5fa873";
+    message.textContent = t.lockCorrect;
+
+    // Ξεκλειδώνει και ανοίγει το forum
+    eventTimeout(() => {
+      document.getElementById("deskViewerContent").innerHTML =
+        `${buildForumSite()}<div class="viewer-tip">${t.laptopTip}</div>`;
+    }, 1300);
+
+  } else {
+
+    button.classList.add("wrong");
+    message.style.color = "#e06060";
+    message.textContent = t.lockWrong;
+  }
 }
 
 function forumEntry(entry, isReply) {
