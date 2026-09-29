@@ -3870,6 +3870,9 @@ function startEvent4Calendar() {
   const totalDays = Math.round((CALENDAR_END - CALENDAR_START) / 86400000);
   let delay = 900;
 
+  // Υπόβαθρο: 4.mp3 όσο περνούν οι μέρες
+  setBackground("event4");
+
   // Καθαρή εκκίνηση
   document.querySelectorAll(".torn-sheet").forEach(s => s.remove());
   document.getElementById("calendarStub").style.clipPath = "";
@@ -3950,6 +3953,9 @@ function startEvent4Calendar() {
 }
 
 function onCalendarFinished() {
+
+  // Σταμάτησαν οι μέρες: το υπόβαθρο αλλάζει σε 4_2.mp3
+  setBackground("event4b", BG_VOLUME, 3500);
 
   // Στιγμή σιωπής και μετά ο κόκκινος κύκλος
   eventTimeout(() => {
@@ -5694,14 +5700,19 @@ const BG_VOLUME = 0.45;
 // loopAt: λίγο πριν σβήσει το τέλος του αρχείου ξεκινά ξανά από την αρχή
 // με crossfade, ώστε να μην υπάρχει ποτέ σιωπή
 const BG_TRACKS = {
-  event1: { src: "1.mp3", loopAt: 77 },
-  event2: { src: "2.mp3", loopAt: 39.5 }
+  event1:  { src: "1.mp3",   loopAt: 77 },
+  event2:  { src: "2.mp3",   loopAt: 39.5 },
+  event3:  { src: "3.mp3",   loopAt: 78.5 },
+  event4:  { src: "4.mp3",   loopAt: 56.5 },   // όσο περνούν οι μέρες στο ημερολόγιο
+  event4b: { src: "4_2.mp3", loopAt: 55 }      // από τη στιγμή που σταματά το ημερολόγιο
 };
 
-// Ποιο υπόβαθρο παίζει σε κάθε οθόνη (οι υπόλοιπες μένουν χωρίς υπόβαθρο προς το παρόν)
+// Ποια υπόβαθρα επιτρέπονται σε κάθε οθόνη (το πρώτο είναι αυτό που ξεκινά)
 const SCREEN_BACKGROUNDS = {
-  storyScreen1: "event1",
-  storyScreen2: "event2"
+  storyScreen1: ["event1"],
+  storyScreen2: ["event2"],
+  storyScreen3: ["event3"],
+  storyScreen4: ["event4", "event4b"]
 };
 
 const bgState = {};
@@ -5826,9 +5837,12 @@ function syncBackground() {
                    "storyScreen3", "storyScreen4", "storyScreen5"];
 
   const visible = screens.find(id => !document.getElementById(id).classList.contains("hidden"));
-  const name = SCREEN_BACKGROUNDS[visible] || null;
+  const allowed = SCREEN_BACKGROUNDS[visible] || [];
 
-  if (name !== currentBg) setBackground(name);
+  // Αν παίζει ήδη ένα από τα επιτρεπτά της οθόνης, το αφήνουμε
+  if (currentBg && allowed.includes(currentBg)) return;
+
+  setBackground(allowed[0] || null);
 }
 
 initBackgrounds();
