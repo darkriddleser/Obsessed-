@@ -2470,28 +2470,59 @@ body {
   .pool-candle.lit .flame, .pool-glow.lit { animation: none; }
 }
 
-/* Η εικόνα OBSESSED (τέλος Event 5) */
+/* Η εικόνα OBSESSED (τέλος Event 5): πιάνει όλη την οθόνη, χωρίς scroll */
 .obsessed-art {
-  position: relative;
-  width: min(100%, calc((100svh - 170px) * 0.5628));
-  aspect-ratio: 941 / 1672;
-  margin: 18px auto 0;
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
   overflow: hidden;
+  background: #000;
+  touch-action: none;
+  overscroll-behavior: none;
   opacity: 0;
   transition: opacity 3s ease;
 }
 
 .obsessed-art.show { opacity: 1; }
 
+/* Θολό φόντο στα πλαϊνά (υπολογιστής) */
+.obsessed-backdrop {
+  position: absolute;
+  inset: -80px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(30px) brightness(.28);
+}
+
 .obsessed-zoom {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  width: max(100%, min(56.28svh, 112vw));
+  aspect-ratio: 941 / 1672;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
   animation: obsessedZoom 30s ease-in-out infinite alternate;
 }
 
 @keyframes obsessedZoom {
-  from { transform: scale(1); }
-  to   { transform: scale(1.06) translateY(-1%); }
+  from { transform: translate(-50%, -50%) scale(1); }
+  to   { transform: translate(-50%, -51%) scale(1.06); }
+}
+
+@media (min-width: 768px) and (min-aspect-ratio: 3/4) {
+  .obsessed-zoom {
+    width: auto;
+    height: 100%;
+    -webkit-mask-image:
+      linear-gradient(transparent 0, #000 5%, #000 95%, transparent 100%),
+      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(transparent 0, #000 5%, #000 95%, transparent 100%),
+      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    mask-composite: intersect;
+  }
 }
 
 .obsessed-image {
@@ -2502,8 +2533,13 @@ body {
   -webkit-user-drag: none;
 }
 
-/* Στο τέλος κρύβεται ο διάλογος για να χωράει η εικόνα */
-#storyScreen5.final #cabinDialogue { display: none; }
+/* Όσο φαίνεται η τελική εικόνα, η σελίδα δεν κάνει scroll */
+html.final-lock,
+html.final-lock body {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+}
 
 /* Κόκκινο φως στα παράθυρα και την πόρτα: τρεμοπαίζει σαν φωτιά */
 .ob-light {
@@ -3847,9 +3883,11 @@ body {
     <audio id="footstepsAudio" src="footsteps.mp3" preload="auto"></audio>
     <audio id="knockAudio" src="knock.mp3" preload="auto"></audio>
     <audio id="doorAudio" src="doorcreak.mp3" preload="auto"></audio>
+    <audio id="endAudio" src="5_2.mp3" preload="auto"></audio>
 
     <!-- Η εικόνα OBSESSED (η πηγή μπαίνει από τη JavaScript) -->
     <div id="obsessedArt" class="obsessed-art hidden">
+      <div id="obsessedBackdrop" class="obsessed-backdrop"></div>
       <div class="obsessed-zoom">
         <img id="obsessedImage" class="obsessed-image" alt="OBSESSED">
 
@@ -4129,11 +4167,15 @@ function playSound(id, volume, options = {}) {
     audio.muted = false;
     audio.currentTime = 0;
     audio.volume = Math.max(0, Math.min(1, volume));
-    audio.play().catch(error => audioErrors.push("Δεν έπαιξε: " + id + " " + error.message));
+    if (options.onEnded) audio.onended = () => { audio.onended = null; options.onEnded(); };
+    audio.play().catch(error => {
+      audioErrors.push("Δεν έπαιξε: " + id + " " + error.message);
+      if (options.onEnded) { audio.onended = null; options.onEnded(); }
+    });
     return;
   }
 
-  if (!audioCtx) return;
+  if (!audioCtx) { if (options.onEnded) options.onEnded(); return; }
 
   // Μέχρι να φορτώσει ο ήχος, κρατάμε τι ζητήθηκε
   const pending = { pending: true, initial: volume, target: volume, fadeMs: 0 };
@@ -4141,7 +4183,8 @@ function playSound(id, volume, options = {}) {
 
   loadBuffer(soundSources(id)).then(buffer => {
 
-    if (!buffer || voices[id] !== pending) return;
+    if (!buffer) { if (options.onEnded) options.onEnded(); return; }
+    if (voices[id] !== pending) return;
 
     const gain = audioCtx.createGain();
     gain.gain.value = pending.initial;
@@ -4157,7 +4200,11 @@ function playSound(id, volume, options = {}) {
     const voice = { source, gain };
     voices[id] = voice;
 
-    source.onended = () => { if (voices[id] === voice) delete voices[id]; };
+    source.onended = () => {
+      const natural = voices[id] === voice;
+      if (natural) delete voices[id];
+      if (natural && options.onEnded) options.onEnded();
+    };
 
     if (pending.target !== pending.initial) {
       rampParam(gain.gain, pending.target, pending.fadeMs);
@@ -5932,6 +5979,8 @@ function resetEvent5() {
   const art = document.getElementById("obsessedArt");
   art.classList.remove("show");
   art.classList.add("hidden");
+  document.documentElement.classList.remove("final-lock");
+  finalBackground = null;
 }
 
 function goToEvent5() {
@@ -6263,11 +6312,29 @@ function showObsessedImage() {
   image.src = OBSESSED_IMAGE;
 
   const art = document.getElementById("obsessedArt");
+  document.getElementById("obsessedBackdrop").style.backgroundImage =
+    "url('" + OBSESSED_IMAGE + "'), url('" + OBSESSED_IMAGE_ALT + "')";
   art.classList.remove("hidden");
+  document.documentElement.classList.add("final-lock");
+  window.scrollTo(0, 0);
 
   blackout.classList.remove("show");
 
-  eventTimeout(() => art.classList.add("show"), 400);
+  // Η μουσική του Event 5 σβήνει, ακούγεται το 5_2 και μετά ξεκινά το 0_4
+  finalBackground = null;
+  setBackground(null, 0, 1500);
+
+  eventTimeout(() => {
+    art.classList.add("show");
+    playSound("endAudio", 1, {
+      loop: false,
+      onEnded: () => {
+        if (!document.getElementById("storyScreen5").classList.contains("final")) return;
+        finalBackground = "start";
+        setBackground("start", BG_VOLUME, 2500);
+      }
+    });
+  }, 400);
   eventTimeout(() => blackout.classList.add("hidden"), 1600);
 }
 
@@ -6943,7 +7010,7 @@ const SCREEN_BACKGROUNDS = {
 const SCREEN_SOUNDS = {
   storyScreen2: ["ecgAudio", "babyCry"],
   storyScreen3: ["fireAudio"],
-  storyScreen5: ["cricketsAudio", "footstepsAudio", "knockAudio", "doorAudio"]
+  storyScreen5: ["cricketsAudio", "footstepsAudio", "knockAudio", "doorAudio", "endAudio"]
 };
 
 const SCREEN_ORDER = ["languageScreen", "videoScreen", "storyScreen1", "storyScreen2",
@@ -7111,11 +7178,19 @@ function setBackgroundVolume(name, volume, duration) {
 }
 
 // Βρίσκει ποια οθόνη φαίνεται και βάζει το σωστό υπόβαθρο
+// Στο τέλος (εικόνα OBSESSED): πρώτα σιωπή για τον ήχο 5_2, μετά το 0_4
+let finalBackground = null;
+
 function syncBackground() {
 
   preloadSounds();
 
-  const allowed = SCREEN_BACKGROUNDS[visibleScreen()] || [];
+  let allowed = SCREEN_BACKGROUNDS[visibleScreen()] || [];
+
+  if (document.getElementById("storyScreen5").classList.contains("final") &&
+      !document.getElementById("storyScreen5").classList.contains("hidden")) {
+    allowed = finalBackground ? [finalBackground] : [];
+  }
 
   // Αν παίζει ήδη ένα από τα επιτρεπτά της οθόνης, το αφήνουμε
   if (currentBg && allowed.includes(currentBg)) return;
