@@ -876,6 +876,11 @@ body {
 
   box-shadow: 0 10px 40px rgba(0,0,0,.95);
   touch-action: none;
+
+  /* Το παρατεταμένο άγγιγμα να μην ανοίγει μενού / επιλογή στο κινητό */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .hidden-evidence.show {
@@ -883,6 +888,8 @@ body {
 }
 
 .hidden-evidence img {
+  pointer-events: none;
+  -webkit-touch-callout: none;
   filter: brightness(1.35) contrast(1.05);
   width: 100%;
   height: 100%;
@@ -3371,8 +3378,28 @@ function wakeAudio() {
   if (keepAliveAudio && keepAliveAudio.paused) keepAliveAudio.play().catch(() => {});
 }
 
+// Όταν η σελίδα δεν φαίνεται (άλλη καρτέλα / εφαρμογή, κλειστή οθόνη) ο ήχος
+// σταματά, ώστε να μην ακούγεται μαζί με άλλη καρτέλα του ίδιου site
+let pausedElements = [];
+
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) wakeAudio();
+
+  if (document.hidden) {
+    if (audioCtx && audioCtx.state === "running") audioCtx.suspend();
+    if (keepAliveAudio) keepAliveAudio.pause();
+    pausedElements = [...document.querySelectorAll("audio")].filter(a => !a.paused);
+    pausedElements.forEach(a => a.pause());
+    return;
+  }
+
+  wakeAudio();
+  pausedElements.forEach(a => a.play().catch(() => {}));
+  pausedElements = [];
+});
+
+window.addEventListener("pagehide", () => {
+  if (audioCtx) audioCtx.suspend();
+  document.querySelectorAll("audio").forEach(a => a.pause());
 });
 
 ["touchend", "click"].forEach(type => {
@@ -5495,8 +5522,8 @@ let hotspotTimer = null;
 // Η περιοχή όπου βρίσκεται ο Henry με το μωρό
 function isOnHotspot(xPercent, yPercent) {
   return (
-    xPercent > 42 && xPercent < 58 &&
-    yPercent > 28 && yPercent < 48
+    xPercent > 39 && xPercent < 61 &&
+    yPercent > 25 && yPercent < 51
   );
 }
 
@@ -5508,15 +5535,15 @@ function cancelHotspotTimer() {
   }
 }
 
-function moveEvidenceLight(event) {
+function moveEvidenceLight(clientX, clientY) {
 
   const evidence = document.getElementById("hiddenEvidence");
   const darkness = document.getElementById("evidenceDarkness");
 
   const rect = evidence.getBoundingClientRect();
 
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
 
   const xPercent = (x / rect.width) * 100;
   const yPercent = (y / rect.height) * 100;
@@ -5556,13 +5583,28 @@ function moveEvidenceLight(event) {
 
 const hiddenEvidenceEl = document.getElementById("hiddenEvidence");
 
-hiddenEvidenceEl.addEventListener("pointerdown", moveEvidenceLight);
-hiddenEvidenceEl.addEventListener("pointermove", moveEvidenceLight);
+// Κινητό: άγγιγμα. Το preventDefault σταματά το κινητό από το να θεωρήσει
+// το παρατεταμένο άγγιγμα "κράτημα εικόνας" και να ακυρώσει τον φακό.
+function onEvidenceTouch(event) {
+  event.preventDefault();
+  const touch = event.touches[0];
+  if (touch) moveEvidenceLight(touch.clientX, touch.clientY);
+}
 
-// Αν σηκώσει το δάχτυλο ή βγει από τη φωτογραφία, η μέτρηση μηδενίζει
-hiddenEvidenceEl.addEventListener("pointerup", cancelHotspotTimer);
-hiddenEvidenceEl.addEventListener("pointerleave", cancelHotspotTimer);
-hiddenEvidenceEl.addEventListener("pointercancel", cancelHotspotTimer);
+hiddenEvidenceEl.addEventListener("touchstart", onEvidenceTouch, { passive: false });
+hiddenEvidenceEl.addEventListener("touchmove", onEvidenceTouch, { passive: false });
+hiddenEvidenceEl.addEventListener("touchend", event => {
+  event.preventDefault();
+  cancelHotspotTimer();
+}, { passive: false });
+
+// Υπολογιστής: ποντίκι
+hiddenEvidenceEl.addEventListener("mousedown", e => moveEvidenceLight(e.clientX, e.clientY));
+hiddenEvidenceEl.addEventListener("mousemove", e => moveEvidenceLight(e.clientX, e.clientY));
+hiddenEvidenceEl.addEventListener("mouseleave", cancelHotspotTimer);
+
+// Χωρίς μενού με δεξί κλικ / παρατεταμένο άγγιγμα
+hiddenEvidenceEl.addEventListener("contextmenu", e => e.preventDefault());
 
 
 // =========================================
