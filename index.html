@@ -6,7 +6,7 @@
 <title>OBSESSED</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=GFS+Didot&family=Manrope:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=GFS+Didot&family=Manrope:wght@400;500;700;800&family=Caveat:wght@500&family=Homemade+Apple&display=swap');
 
 * {
   box-sizing: border-box;
@@ -2633,6 +2633,293 @@ body {
 }
 
 .research-question.show { opacity: 1; }
+
+/* =========================
+   EVENT 03 - ΡΕΑΛΙΣΤΙΚΑ ΕΓΓΡΑΦΑ (κατάθεση & αναφορά)
+========================= */
+
+.henry-statement,
+.fire-report {
+  width: calc(100% - 24px);
+  max-width: 380px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: #1c1a16;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.henry-statement { transform: translate(-50%, -50%) rotate(-1.2deg); }
+.fire-report     { transform: translate(-50%, -50%) rotate(.9deg); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+.doc-paper {
+  position: relative;
+  padding: 16px 16px 14px;
+  background:
+    /* λεκές από καφέ */
+    radial-gradient(circle at 84% 86%, transparent 17px, rgba(120,80,30,.16) 18px, rgba(120,80,30,.07) 21px, transparent 23px),
+    /* τσάκιση στη μέση */
+    linear-gradient(to bottom, transparent 49.6%, rgba(0,0,0,.09) 50%, rgba(255,255,255,.25) 50.4%, transparent 51%),
+    /* κιτρίνισμα στις άκρες */
+    radial-gradient(ellipse at center, rgba(255,250,235,.0) 55%, rgba(120,90,40,.22) 100%),
+    #e9e2cf;
+  box-shadow:
+    0 14px 38px rgba(0,0,0,.9),
+    0 2px 4px rgba(0,0,0,.5);
+}
+
+.fire-report .doc-paper { background-color: #e4ddc8; }
+
+/* Συρραπτικό */
+.doc-staple {
+  position: absolute;
+  top: 9px;
+  left: 14px;
+  width: 22px;
+  height: 3px;
+  border-radius: 1px;
+  background: linear-gradient(#bbb, #777);
+  transform: rotate(-32deg);
+  box-shadow: 0 1px 1px rgba(0,0,0,.4);
+}
+
+.doc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 7px;
+  border-bottom: 2px solid #1c1a16;
+}
+
+.doc-seal {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  color: #1c1a16;
+}
+
+.doc-agency {
+  flex: 1;
+  text-align: center;
+  font-family: "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: .6px;
+  line-height: 1.25;
+}
+
+.doc-agency small {
+  display: block;
+  font-weight: normal;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+}
+
+.doc-title {
+  margin: 8px 0 6px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.doc-formno {
+  float: right;
+  font-size: 8px;
+  letter-spacing: .5px;
+  opacity: .7;
+}
+
+/* Πεδία φόρμας */
+.doc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #1c1a16;
+  border-bottom: none;
+  border-right: none;
+}
+
+.doc-cell {
+  padding: 3px 5px 4px;
+  border-right: 1px solid #1c1a16;
+  border-bottom: 1px solid #1c1a16;
+  min-width: 0;
+}
+
+.doc-cell.wide { grid-column: 1 / -1; }
+
+.doc-label {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  opacity: .7;
+}
+
+.doc-value {
+  font-weight: bold;
+  font-size: 11px;
+  word-break: break-word;
+}
+
+.doc-section {
+  margin: 8px 0 3px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7.5px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  opacity: .75;
+}
+
+/* Κείμενο γραμμένο με γραφομηχανή πάνω σε γραμμές */
+.doc-body {
+  padding: 2px 2px 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 15px, rgba(40,60,110,.22) 15px 16px);
+  line-height: 16px;
+  font-size: 11px;
+}
+
+.doc-body .ink-fade { opacity: .8; }
+
+/* Υπογραφές */
+.doc-signs {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.doc-sign {
+  flex: 1;
+  text-align: center;
+}
+
+.doc-sign .sig {
+  height: 26px;
+  font-family: "Homemade Apple", "Caveat", cursive;
+  font-size: 15px;
+  color: #1f2a55;
+  line-height: 26px;
+  white-space: nowrap;
+  transform: rotate(-4deg);
+}
+
+.doc-sign .line {
+  border-top: 1px solid #1c1a16;
+  padding-top: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  opacity: .75;
+}
+
+/* Σφραγίδες */
+.doc-stamp {
+  position: absolute;
+  padding: 3px 8px;
+  border: 2.5px solid rgba(160,25,25,.8);
+  border-radius: 4px;
+  color: rgba(160,25,25,.82);
+  font-family: Arial Black, Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-align: center;
+  line-height: 1.15;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  /* ανομοιόμορφο μελάνι */
+  -webkit-mask-image: repeating-linear-gradient(35deg, #000 0 3px, rgba(0,0,0,.75) 3px 4px, #000 4px 7px);
+          mask-image: repeating-linear-gradient(35deg, #000 0 3px, rgba(0,0,0,.75) 3px 4px, #000 4px 7px);
+}
+
+.doc-stamp small {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.stamp-received {
+  right: 18px;
+  bottom: 62px;
+  font-size: 10px;
+  transform: rotate(8deg);
+}
+
+/* Μικρά κινητά: τα έγγραφα λίγο πιο μικρά για να χωρούν */
+@media (max-height: 720px) {
+  .henry-statement { transform: translate(-50%, -46%) rotate(-1.2deg) scale(.9); }
+  .fire-report     { transform: translate(-50%, -46%) rotate(.9deg) scale(.88); }
+}
+
+.stamp-missing {
+  right: 10px;
+  bottom: 70px;
+  font-size: 17px;
+  padding: 4px 10px;
+  border-width: 3px;
+  transform: rotate(-11deg);
+}
+
+.stamp-investigation {
+  left: 50%;
+  top: 44%;
+  font-size: 9px;
+  color: rgba(25,40,120,.7);
+  border-color: rgba(25,40,120,.65);
+  transform: translateX(-50%) rotate(-4deg);
+  opacity: .8;
+}
+
+/* Σημείωση με μολύβι στο περιθώριο */
+.doc-pencil {
+  margin-top: 7px;
+  font-family: "Caveat", "GFS Didot", cursive;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.2;
+  color: rgba(60,60,65,.85);
+  transform: rotate(-1.5deg);
+}
+
+.doc-tip {
+  margin-top: 10px;
+  text-align: center;
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(230,215,190,.6);
+}
+
+/* Φακός: οδηγία για τον παίκτη */
+.evidence-hint {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 12px;
+  z-index: 3;
+  padding: 7px 10px;
+  border-radius: 3px;
+  background: rgba(0,0,0,.55);
+  color: rgba(235,225,205,.92);
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.evidence-hint.show { opacity: 1; }
+
 </style>
 </head>
 
@@ -2794,6 +3081,9 @@ body {
       >
 
       <div id="evidenceDarkness" class="evidence-darkness"></div>
+
+      <!-- Οδηγία φακού -->
+      <div id="evidenceHint" class="evidence-hint"></div>
 
     </div>
 
@@ -3637,6 +3927,9 @@ function resetEvent3() {
   // Reset φακού / κρυμμένης φωτογραφίας
   evidenceFound = false;
   hotspotTimer = null;
+  evidenceMoved = false;
+  document.getElementById("evidenceHint").classList.remove("show");
+  document.getElementById("evidenceHint").textContent = "";
   document.getElementById("hiddenEvidence").classList.remove("show");
   document.getElementById("hiddenEvidence").classList.add("hidden");
   document.getElementById("evidenceDarkness").classList.remove("found");
@@ -4043,6 +4336,11 @@ function showHiddenEvidence() {
     eventTimeout(() => {
       evidence.classList.add("show");
     }, 50);
+
+    // Πρώτη οδηγία: να κουνήσει τον φακό
+    eventTimeout(() => {
+      if (!evidenceMoved) setEvidenceHint("move");
+    }, 1800);
 
   }, 1000);
 }
@@ -5513,6 +5811,181 @@ function showObsessedImage() {
 
 
 
+
+// =========================================
+// EVENT 03 - ΚΑΤΑΘΕΣΗ HENRY & ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ (ρεαλιστικά έγγραφα)
+// =========================================
+
+const DOC_SEAL_SHERIFF =
+  '<svg class="doc-seal" viewBox="0 0 100 100" fill="none" stroke="currentColor">' +
+  '<circle cx="50" cy="50" r="46" stroke-width="3"/><circle cx="50" cy="50" r="38" stroke-width="1.5"/>' +
+  '<path d="M50 20 L57 40 L78 40 L61 52 L68 73 L50 60 L32 73 L39 52 L22 40 L43 40 Z" stroke-width="3" stroke-linejoin="round"/>' +
+  '</svg>';
+
+const DOC_SEAL_FIRE =
+  '<svg class="doc-seal" viewBox="0 0 100 100" fill="none" stroke="currentColor">' +
+  '<circle cx="50" cy="50" r="46" stroke-width="3"/>' +
+  '<path d="M50 14 L58 34 L80 26 L70 46 L88 58 L66 62 L68 84 L50 72 L32 84 L34 62 L12 58 L30 46 L20 26 L42 34 Z" stroke-width="2.5" stroke-linejoin="round"/>' +
+  '<path d="M50 40 C58 48 58 56 50 62 C42 56 42 48 50 40 Z" stroke-width="2.5"/>' +
+  '</svg>';
+
+function docCell(label, value, wide) {
+  return `<div class="doc-cell${wide ? " wide" : ""}"><span class="doc-label">${label}</span><span class="doc-value">${value}</span></div>`;
+}
+
+function buildStatementDoc() {
+
+  const gr = selectedLanguage === "gr";
+
+  const t = gr ? {
+    title: "ΚΑΤΑΘΕΣΗ ΜΑΡΤΥΡΑ",
+    caseNo: "Αρ. υπόθεσης", date: "Ημερομηνία / ώρα", name: "Ονοματεπώνυμο",
+    address: "Διεύθυνση", relation: "Σχέση με το συμβάν", relationV: "Ιδιοκτήτης / πατέρας",
+    section: "Δήλωση του καταθέτοντος",
+    body:
+      "Γύρισα σπίτι αργά το βράδυ. Η γυναίκα μου είχε πεθάνει " +
+      "λίγες ώρες πριν. Το μωρό κοιμόταν στο δωμάτιό του.<br>" +
+      "Η φωτιά ξέσπασε ξαφνικά. Εξαπλώθηκε πολύ γρήγορα.<br>" +
+      "Προσπάθησα να φτάσω στο μωρό... <span class='ink-fade'>αλλά δεν μπόρεσα.</span>",
+    signWitness: "Υπογραφή καταθέτοντος", signOfficer: "Αξιωματικός",
+    received: "ΕΛΗΦΘΗ", tip: "Άγγιξε το έγγραφο για να συνεχίσεις."
+  } : {
+    title: "WITNESS STATEMENT",
+    caseNo: "Case no.", date: "Date / time", name: "Full name",
+    address: "Address", relation: "Relation to incident", relationV: "Homeowner / father",
+    section: "Statement of witness",
+    body:
+      "I came home late that night. My wife had died a few " +
+      "hours earlier. The baby was asleep in the nursery.<br>" +
+      "The fire started suddenly. It spread too quickly.<br>" +
+      "I tried to reach the baby... <span class='ink-fade'>but I couldn't.</span>",
+    signWitness: "Signature of witness", signOfficer: "Officer",
+    received: "RECEIVED", tip: "Tap the document to continue."
+  };
+
+  return `
+    <div class="doc-paper">
+      <span class="doc-staple"></span>
+      <div class="doc-head">
+        ${DOC_SEAL_SHERIFF}
+        <div class="doc-agency">ASHFORD COUNTY<br>SHERIFF'S OFFICE<small>INVESTIGATIONS DIVISION</small></div>
+      </div>
+      <div class="doc-title">${t.title} <span class="doc-formno">FORM SO-114</span></div>
+      <div class="doc-grid">
+        ${docCell(t.caseNo, "18-0127-0413")}
+        ${docCell(t.date, "28/01/2018 · 06:15")}
+        ${docCell(t.name, "HENRY JEFFERSON", true)}
+        ${docCell(t.address, "14 WILLOW CREEK RD", true)}
+        ${docCell(t.relation, t.relationV, true)}
+      </div>
+      <div class="doc-section">${t.section}</div>
+      <div class="doc-body">${t.body}</div>
+      <div class="doc-signs">
+        <div class="doc-sign"><div class="sig">Henry Jefferson</div><div class="line">${t.signWitness}</div></div>
+        <div class="doc-sign"><div class="sig">R. Callahan</div><div class="line">${t.signOfficer} · #2231</div></div>
+      </div>
+      <div class="doc-stamp stamp-received">${t.received}<small>28 JAN 2018</small></div>
+    </div>
+    <div class="doc-tip">${t.tip}</div>`;
+}
+
+function buildReportDoc() {
+
+  const gr = selectedLanguage === "gr";
+
+  const t = gr ? {
+    title: "ΑΝΑΦΟΡΑ ΣΥΜΒΑΝΤΟΣ",
+    incident: "Αρ. συμβάντος", date: "Ημερομηνία", call: "Κλήση / άφιξη",
+    type: "Τύπος συμβάντος", typeV: "Πυρκαγιά κατοικίας",
+    location: "Τοποθεσία", locationV: "Οικία Jefferson · 14 Willow Creek Rd",
+    damage: "Ζημιές", damageV: "Ολική καταστροφή",
+    cause: "Αιτία", causeV: "Υπό διερεύνηση",
+    persons: "Άτομα που εμπλέκονται",
+    p1: "JEFFERSON, HENRY · ενήλικας · ελαφρά εγκαύματα, αρνήθηκε μεταφορά",
+    p2: "JEFFERSON (νεογνό) · 0 ημερών · <b>δεν εντοπίστηκε</b>",
+    narrative: "Περιγραφή",
+    narrativeV:
+      "Κατά την έρευνα του χώρου δεν εντοπίστηκε το νεογνό ούτε βρέθηκαν " +
+      "ανθρώπινα λείψανα που να αντιστοιχούν σε αυτό.",
+    pencil: "Πώς βγήκε από το δωμάτιο του μωρού με σχεδόν κανένα έγκαυμα;",
+    missing: "ΑΓΝΟΟΥΜΕΝΟ", missingSmall: "ΚΑΤΑΣΤΑΣΗ ΝΕΟΓΝΟΥ",
+    investigation: "ΥΠΟ ΔΙΕΡΕΥΝΗΣΗ",
+    tip: "Άγγιξε το έγγραφο για να συνεχίσεις."
+  } : {
+    title: "INCIDENT REPORT",
+    incident: "Incident no.", date: "Date", call: "Call / arrival",
+    type: "Incident type", typeV: "Residential structure fire",
+    location: "Location", locationV: "Jefferson residence · 14 Willow Creek Rd",
+    damage: "Damage", damageV: "Total loss",
+    cause: "Cause", causeV: "Under investigation",
+    persons: "Persons involved",
+    p1: "JEFFERSON, HENRY · adult · minor burns, refused transport",
+    p2: "JEFFERSON (infant) · 0 days · <b>not located</b>",
+    narrative: "Narrative",
+    narrativeV:
+      "During the search of the property, the newborn was not located, " +
+      "nor were any human remains corresponding to the infant recovered.",
+    pencil: "How did he get out of the nursery with barely a burn?",
+    missing: "MISSING", missingSmall: "INFANT STATUS",
+    investigation: "UNDER INVESTIGATION",
+    tip: "Tap the document to continue."
+  };
+
+  return `
+    <div class="doc-paper">
+      <span class="doc-staple"></span>
+      <div class="doc-head">
+        ${DOC_SEAL_FIRE}
+        <div class="doc-agency">ASHFORD COUNTY<br>FIRE DEPARTMENT<small>JOINT REPORT · SHERIFF'S OFFICE</small></div>
+      </div>
+      <div class="doc-title">${t.title} <span class="doc-formno">NFIRS-1</span></div>
+      <div class="doc-grid">
+        ${docCell(t.incident, "18-00417")}
+        ${docCell(t.date, "27/01/2018")}
+        ${docCell(t.call, "23:52 / 00:09")}
+        ${docCell(t.type, t.typeV)}
+        ${docCell(t.location, t.locationV, true)}
+        ${docCell(t.damage, t.damageV)}
+        ${docCell(t.cause, t.causeV)}
+      </div>
+      <div class="doc-section">${t.persons}</div>
+      <div class="doc-body">1. ${t.p1}<br>2. ${t.p2}</div>
+      <div class="doc-section">${t.narrative}</div>
+      <div class="doc-body">${t.narrativeV}</div>
+      <div class="doc-pencil">${t.pencil}</div>
+      <div class="doc-stamp stamp-missing"><small>${t.missingSmall}</small>${t.missing}</div>
+    </div>
+    <div class="doc-tip">${t.tip}</div>`;
+}
+
+// Φακός: οδηγίες για τον παίκτη
+let evidenceMoved = false;
+
+function setEvidenceHint(step) {
+
+  const hint = document.getElementById("evidenceHint");
+  const gr = selectedLanguage === "gr";
+
+  if (!step) {
+    hint.classList.remove("show");
+    return;
+  }
+
+  const text = {
+    move: gr ? "Σύρε το δάχτυλό σου για να φωτίσεις τη φωτογραφία."
+             : "Drag your finger to light up the photo.",
+    hold: gr ? "Όταν δεις κάτι, κράτα τον φακό σταθερό πάνω του."
+             : "When you see something, hold the light steady on it."
+  };
+
+  hint.classList.remove("show");
+  eventTimeout(() => {
+    hint.textContent = text[step];
+    hint.classList.add("show");
+  }, 350);
+}
+
+
 // =========================================
 // EVENT 03 - ΦΑΚΟΣ / ΚΡΥΜΜΕΝΟ ΣΤΟΙΧΕΙΟ
 // =========================================
@@ -5556,6 +6029,14 @@ function moveEvidenceLight(clientX, clientY) {
 
   if (evidenceFound) return;
 
+  // Μόλις κουνήσει τον φακό για πρώτη φορά: να τον κρατήσει πάνω σε ό,τι βρει
+  if (!evidenceMoved) {
+    evidenceMoved = true;
+    eventTimeout(() => {
+      if (!evidenceFound) setEvidenceHint("hold");
+    }, 1500);
+  }
+
   if (isOnHotspot(xPercent, yPercent)) {
 
     // Ξεκινά η μέτρηση μόνο αν δεν τρέχει ήδη
@@ -5568,6 +6049,7 @@ function moveEvidenceLight(clientX, clientY) {
 
         // Φωτίζεται ολόκληρη η φωτογραφία
         darkness.classList.add("found");
+        setEvidenceHint(null);
 
         // Μένει ορατή 5 δευτερόλεπτα και πάμε στο Event 04
         eventTimeout(() => {
@@ -5866,19 +6348,8 @@ function updateLanguage() {
 
     storyTitle3.textContent = "ΚΑΠΟΙΟΣ ΕΠΡΕΠΕ ΝΑ ΦΤΑΙΕΙ";
 
-    document.getElementById("henryStatement").innerHTML =
-      "<strong>ΕΠΙΣΗΜΗ ΚΑΤΑΘΕΣΗ</strong><br><br>" +
-      "ΧΕΝΡΙ ΤΖΕΦΕΡΣΟΝ<br><br>" +
-      "«Η φωτιά ξέσπασε ξαφνικά. Εξαπλώθηκε πολύ γρήγορα.<br><br>" +
-      "Προσπάθησα να φτάσω στο μωρό... αλλά δεν μπόρεσα.»";
-
-    document.getElementById("fireReport").innerHTML =
-      "<strong>ΑΝΑΦΟΡΑ ΠΥΡΟΣΒΕΣΤΙΚΗΣ / ΑΣΤΥΝΟΜΙΑΣ</strong><br><br>" +
-      "ΤΟΠΟΘΕΣΙΑ: ΟΙΚΙΑ ΤΖΕΦΕΡΣΟΝ<br>" +
-      "ΣΥΜΒΑΝ: ΠΥΡΚΑΓΙΑ ΚΑΤΟΙΚΙΑΣ<br><br>" +
-      "Η οικία υπέστη εκτεταμένες ζημιές από τη φωτιά.<br><br>" +
-      "Κατά την έρευνα του χώρου δεν εντοπίστηκε το νεογνό ούτε βρέθηκαν ανθρώπινα λείψανα που να αντιστοιχούν σε αυτό.<br><br>" +
-      "<strong>ΚΑΤΑΣΤΑΣΗ ΝΕΟΓΝΟΥ: ΑΓΝΟΟΥΜΕΝΟ</strong>";
+    document.getElementById("henryStatement").innerHTML = buildStatementDoc();
+    document.getElementById("fireReport").innerHTML = buildReportDoc();
 
     //-------------------------- chapter 4 -----------------------------//
 
@@ -5956,19 +6427,8 @@ function updateLanguage() {
 
     storyTitle3.textContent = "SOMEONE HAD TO BE TO BLAME";
 
-    document.getElementById("henryStatement").innerHTML =
-      "<strong>OFFICIAL STATEMENT</strong><br><br>" +
-      "HENRY JEFFERSON<br><br>" +
-      "“The fire started suddenly. It spread too quickly.<br><br>" +
-      "I tried to reach the baby... but I couldn't.”";
-
-    document.getElementById("fireReport").innerHTML =
-      "<strong>FIRE / POLICE REPORT</strong><br><br>" +
-      "LOCATION: JEFFERSON RESIDENCE<br>" +
-      "INCIDENT: RESIDENTIAL FIRE<br><br>" +
-      "The residence sustained extensive damage from the fire.<br><br>" +
-      "During the search of the property, the newborn was not located, nor were any human remains corresponding to the infant recovered.<br><br>" +
-      "<strong>INFANT STATUS: MISSING</strong>";
+    document.getElementById("henryStatement").innerHTML = buildStatementDoc();
+    document.getElementById("fireReport").innerHTML = buildReportDoc();
 
     //-------------------------- chapter 4 -----------------------------//
 
