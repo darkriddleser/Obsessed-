@@ -2470,25 +2470,120 @@ body {
   .pool-candle.lit .flame, .pool-glow.lit { animation: none; }
 }
 
-/* Η εικόνα OBSESSED */
-.obsessed-image {
-  display: block;
-  width: 100%;
-  max-height: 80vh;
-  object-fit: contain;
-  margin: 3vh auto 0;
+/* Η εικόνα OBSESSED (τέλος Event 5) */
+.obsessed-art {
+  position: relative;
+  width: min(100%, calc((100svh - 170px) * 0.5628));
+  aspect-ratio: 941 / 1672;
+  margin: 18px auto 0;
+  overflow: hidden;
   opacity: 0;
   transition: opacity 3s ease;
 }
 
-.obsessed-image.show { opacity: 1; }
+.obsessed-art.show { opacity: 1; }
 
-/* Στο τέλος: η εικόνα χωράει ολόκληρη στην οθόνη */
+.obsessed-zoom {
+  position: absolute;
+  inset: 0;
+  animation: obsessedZoom 30s ease-in-out infinite alternate;
+}
+
+@keyframes obsessedZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06) translateY(-1%); }
+}
+
+.obsessed-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Στο τέλος κρύβεται ο διάλογος για να χωράει η εικόνα */
 #storyScreen5.final #cabinDialogue { display: none; }
 
-#storyScreen5.final .obsessed-image {
-  max-height: calc(100svh - 170px);
-  margin-top: 18px;
+/* Κόκκινο φως στα παράθυρα και την πόρτα: τρεμοπαίζει σαν φωτιά */
+.ob-light {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,40,30,.75) 0%, rgba(255,0,0,.25) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  animation: obFire var(--d, 3s) infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes obFire {
+  0%, 100% { opacity: .35; }
+  12% { opacity: .7; }
+  20% { opacity: .45; }
+  33% { opacity: .8; }
+  47% { opacity: .4; }
+  58% { opacity: .65; }
+  71% { opacity: .3; }
+  85% { opacity: .75; }
+}
+
+/* Η λάμψη στον τίτλο */
+.ob-flare {
+  position: absolute;
+  left: 50.4%;
+  top: 28%;
+  width: 60%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,60,60,.5) 0%, rgba(200,0,0,.15) 22%, transparent 55%);
+  mix-blend-mode: screen;
+  animation: splashPulse 6s ease-in-out infinite;
+}
+
+/* Ομίχλη που κινείται αργά μπροστά στο σπίτι */
+.ob-fog {
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 18% 40% at 15% 50%, rgba(170,170,185,.22), transparent 70%),
+    radial-gradient(ellipse 22% 45% at 40% 60%, rgba(160,150,165,.18), transparent 70%),
+    radial-gradient(ellipse 16% 35% at 65% 45%, rgba(170,170,185,.2), transparent 70%),
+    radial-gradient(ellipse 20% 40% at 88% 55%, rgba(160,150,165,.18), transparent 70%);
+  filter: blur(6px);
+  animation: obFogDrift var(--d, 40s) linear infinite;
+}
+
+@keyframes obFogDrift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(25%); }
+}
+
+/* Αστραπή στον ουρανό, πού και πού */
+.ob-lightning {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 45%;
+  background: radial-gradient(ellipse 70% 60% at 60% 10%, rgba(200,210,255,.55), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: obLightning 13s infinite;
+}
+
+@keyframes obLightning {
+  0%, 70%, 100% { opacity: 0; }
+  71%   { opacity: .9; }
+  72%   { opacity: .1; }
+  73.5% { opacity: .7; }
+  76%   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .obsessed-zoom, .ob-light, .ob-flare, .ob-fog, .ob-lightning { animation: none; }
 }
 
 /* Η φωτογραφία με τη λίμνη αίματος */
@@ -3754,7 +3849,32 @@ body {
     <audio id="doorAudio" src="doorcreak.mp3" preload="auto"></audio>
 
     <!-- Η εικόνα OBSESSED (η πηγή μπαίνει από τη JavaScript) -->
-    <img id="obsessedImage" class="obsessed-image hidden" alt="OBSESSED">
+    <div id="obsessedArt" class="obsessed-art hidden">
+      <div class="obsessed-zoom">
+        <img id="obsessedImage" class="obsessed-image" alt="OBSESSED">
+
+        <div class="ob-lightning"></div>
+        <div class="ob-flare"></div>
+
+        <!-- αίμα από τα γράμματα (θέσεις σε % της εικόνας) -->
+        <div class="blood-flow" style="left:16.3%; top:31.5%; height:12%; --d:6s;"></div>
+        <div class="blood-flow" style="left:49.9%; top:31.5%; height:13.3%; --d:5s; --delay:-2s;"></div>
+        <div class="blood-flow" style="left:83.6%; top:31.5%; height:13.7%; --d:7s; --delay:-3.5s;"></div>
+        <div class="blood-drop" style="left:16.3%; top:43.2%; --d:7s; --delay:1.5s; --fall:2400%;"></div>
+        <div class="blood-drop" style="left:49.9%; top:44.5%; --d:6s; --delay:3s; --fall:2200%;"></div>
+        <div class="blood-drop" style="left:83.6%; top:44.9%; --d:8s; --delay:.5s; --fall:2300%;"></div>
+
+        <!-- φως στα παράθυρα και την πόρτα -->
+        <div class="ob-light" style="left:50.6%; top:58.5%; width:11%; height:7%; --d:3.2s;"></div>
+        <div class="ob-light" style="left:18.6%; top:72.4%; width:11%; height:7%; --d:2.7s; --delay:-1s;"></div>
+        <div class="ob-light" style="left:80.9%; top:72.2%; width:11%; height:7%; --d:3.6s; --delay:-2s;"></div>
+        <div class="ob-light" style="left:50.9%; top:71.8%; width:42%; height:15%; --d:4.2s; --delay:-.5s;"></div>
+
+        <!-- ομίχλη -->
+        <div class="ob-fog" style="top:60%; height:22%; --d:45s;"></div>
+        <div class="ob-fog" style="top:74%; height:20%; --d:32s; opacity:.8;"></div>
+      </div>
+    </div>
 
   </div>
 
@@ -5744,9 +5864,9 @@ function showFinalLine() {
 // =========================================
 
 // Η εικόνα OBSESSED. Άλλαξε το όνομα αν το αρχείο σου λέγεται αλλιώς.
-// Η τελική εικόνα OBSESSED (end.jpg ή end.png στον ίδιο φάκελο)
-const OBSESSED_IMAGE = "end.jpg";
-const OBSESSED_IMAGE_ALT = "end.png";
+// Η τελική εικόνα OBSESSED (obsessed.jpg ή obsessed.png στον ίδιο φάκελο)
+const OBSESSED_IMAGE = "obsessed.jpg";
+const OBSESSED_IMAGE_ALT = "obsessed.png";
 
 function event5Text() {
 
@@ -5809,9 +5929,9 @@ function resetEvent5() {
   blackout.classList.remove("show");
   blackout.classList.add("hidden");
 
-  const image = document.getElementById("obsessedImage");
-  image.classList.remove("show");
-  image.classList.add("hidden");
+  const art = document.getElementById("obsessedArt");
+  art.classList.remove("show");
+  art.classList.add("hidden");
 }
 
 function goToEvent5() {
@@ -6141,11 +6261,13 @@ function showObsessedImage() {
     if (!image.dataset.fallback) { image.dataset.fallback = 1; image.src = OBSESSED_IMAGE_ALT; }
   };
   image.src = OBSESSED_IMAGE;
-  image.classList.remove("hidden");
+
+  const art = document.getElementById("obsessedArt");
+  art.classList.remove("hidden");
 
   blackout.classList.remove("show");
 
-  eventTimeout(() => image.classList.add("show"), 400);
+  eventTimeout(() => art.classList.add("show"), 400);
   eventTimeout(() => blackout.classList.add("hidden"), 1600);
 }
 
