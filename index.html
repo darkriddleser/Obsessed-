@@ -3034,12 +3034,12 @@ body {
 /* Σταγόνα που φουσκώνει στην άκρη και πέφτει */
 .blood-drop {
   position: absolute;
-  width: 1.7%;
-  aspect-ratio: 1 / 1.35;
-  margin-left: -.85%;
+  width: .5%;
+  aspect-ratio: 1 / 2;
+  margin-left: -.25%;
   border-radius: 50% 50% 50% 50% / 38% 38% 62% 62%;
   background: radial-gradient(circle at 35% 60%, #ff5b5b 0%, #b30000 35%, #4a0000 100%);
-  box-shadow: 0 0 6px rgba(255,0,0,.45);
+  box-shadow: 0 0 2px rgba(255,0,0,.35);
   transform-origin: 50% 0;
   opacity: 0;
   animation: bloodDrop var(--d, 6s) cubic-bezier(.5,0,.9,.6) infinite;
@@ -3051,8 +3051,8 @@ body {
   8%   { opacity: 1; }
   45%  { transform: translateY(0) scale(1, 1); opacity: 1; }
   55%  { transform: translateY(10%) scale(.9, 1.25); opacity: 1; }
-  85%  { transform: translateY(var(--fall, 900%)) scale(.7, 1.8); opacity: .9; }
-  100% { transform: translateY(var(--fall, 900%)) scale(.7, 1.8); opacity: 0; }
+  85%  { transform: translateY(var(--fall, 900%)) scale(.45, 2.2); opacity: .9; }
+  100% { transform: translateY(var(--fall, 900%)) scale(.45, 2.2); opacity: 0; }
 }
 
 /* Υπολογιστής: όλη η εικόνα σε ύψος οθόνης, πλαϊνά με θολό φόντο */
@@ -3102,12 +3102,12 @@ body {
     <div class="blood-flow" style="left:80.3%; top:0; height:17%; --d:6.5s; --delay:-2.5s;"></div>
 
     <!-- σταγόνες στις άκρες -->
-    <div class="blood-drop" style="left:14.7%; top:53%; --d:7s; --delay:1s; --fall:1100%;"></div>
-    <div class="blood-drop" style="left:36.9%; top:46.4%; --d:5.5s; --delay:2.8s; --fall:1300%;"></div>
-    <div class="blood-drop" style="left:83.9%; top:58%; --d:8s; --delay:.3s; --fall:900%;"></div>
-    <div class="blood-drop" style="left:88.1%; top:54.5%; --d:6.5s; --delay:4s; --fall:1000%;"></div>
-    <div class="blood-drop" style="left:23.7%; top:7%; --d:6s; --delay:1.8s; --fall:1500%;"></div>
-    <div class="blood-drop" style="left:80.5%; top:16.8%; --d:7.5s; --delay:3.5s; --fall:1400%;"></div>
+    <div class="blood-drop" style="left:14.7%; top:53%; --d:7s; --delay:1s; --fall:2475%;"></div>
+    <div class="blood-drop" style="left:36.9%; top:46.4%; --d:5.5s; --delay:2.8s; --fall:2925%;"></div>
+    <div class="blood-drop" style="left:83.9%; top:58%; --d:8s; --delay:.3s; --fall:2025%;"></div>
+    <div class="blood-drop" style="left:88.1%; top:54.5%; --d:6.5s; --delay:4s; --fall:2250%;"></div>
+    <div class="blood-drop" style="left:23.7%; top:7%; --d:6s; --delay:1.8s; --fall:3375%;"></div>
+    <div class="blood-drop" style="left:80.5%; top:16.8%; --d:7.5s; --delay:3.5s; --fall:3150%;"></div>
   </div>
 
   <div class="language-content">
