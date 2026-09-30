@@ -61,7 +61,7 @@ body {
   content: "";
   position: absolute;
   inset: -80px;
-  background: url("obsessed_start.jpg") center / cover no-repeat;
+  background: url("start.png") center / cover no-repeat, url("start.jpg") center / cover no-repeat;
   filter: blur(30px) brightness(.28);
   pointer-events: none;
 }
@@ -3089,7 +3089,7 @@ body {
 <div id="languageScreen" class="screen">
 
   <div class="splash-art" aria-hidden="true">
-    <img src="obsessed_start.jpg" alt="">
+    <img src="start.png" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='start.jpg';}">
     <div class="splash-glow"></div>
     <div class="splash-beam"></div>
 
