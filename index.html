@@ -2483,6 +2483,14 @@ body {
 
 .obsessed-image.show { opacity: 1; }
 
+/* Στο τέλος: η εικόνα χωράει ολόκληρη στην οθόνη */
+#storyScreen5.final #cabinDialogue { display: none; }
+
+#storyScreen5.final .obsessed-image {
+  max-height: calc(100svh - 170px);
+  margin-top: 18px;
+}
+
 /* Η φωτογραφία με τη λίμνη αίματος */
 .pool-scene {
   position: relative;
@@ -5736,7 +5744,9 @@ function showFinalLine() {
 // =========================================
 
 // Η εικόνα OBSESSED. Άλλαξε το όνομα αν το αρχείο σου λέγεται αλλιώς.
-const OBSESSED_IMAGE = "file_00000000a95081f4ad0a889b8883d67c.png";
+// Η τελική εικόνα OBSESSED (end.jpg ή end.png στον ίδιο φάκελο)
+const OBSESSED_IMAGE = "end.jpg";
+const OBSESSED_IMAGE_ALT = "end.png";
 
 function event5Text() {
 
@@ -5766,6 +5776,8 @@ function event5Text() {
 }
 
 function resetEvent5() {
+
+  document.getElementById("storyScreen5").classList.remove("final");
 
   const scene = document.getElementById("cabinScene");
   scene.classList.remove("show", "hidden", "approach", "at-door", "door-open");
@@ -5813,6 +5825,9 @@ function goToEvent5() {
   updateLanguage();
   resetEvent5();
   window.scrollTo(0, 0);
+
+  // Η τελική εικόνα φορτώνει από τώρα, για να είναι έτοιμη στο τέλος
+  new Image().src = OBSESSED_IMAGE;
 
   const t = event5Text();
   const scene = document.getElementById("cabinScene");
@@ -6119,8 +6134,12 @@ function showObsessedImage() {
   document.getElementById("poolScene").classList.add("hidden");
   document.getElementById("cabinCaption").classList.add("hidden");
   document.getElementById("cabinDialogue").classList.remove("show");
+  document.getElementById("storyScreen5").classList.add("final");
   stopBloodPool();
 
+  image.onerror = () => {
+    if (!image.dataset.fallback) { image.dataset.fallback = 1; image.src = OBSESSED_IMAGE_ALT; }
+  };
   image.src = OBSESSED_IMAGE;
   image.classList.remove("hidden");
 
