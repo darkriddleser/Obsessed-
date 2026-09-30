@@ -2352,7 +2352,7 @@ body {
   line-height: 1.5;
   color: #e6ddcf;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity .6s ease;
 }
 
 .cabin-dialogue.show { opacity: 1; }
@@ -6025,27 +6025,25 @@ function goToEvent5() {
   }, 16000);
 
   // 4. Διάλογος
+  // (κάθε φράση σβήνει εντελώς πριν εμφανιστεί η επόμενη)
   eventTimeout(() => showDialogueLine(t.bennett1, false), 18000);
-  eventTimeout(() => showDialogueLine(t.henry1, true), 21000);
-  eventTimeout(() => showDialogueLine(t.bennett2, false), 24000);
+  eventTimeout(() => showDialogueLine(t.henry1, true), 21500);
+  eventTimeout(() => showDialogueLine(t.bennett2, false), 25000);
 
   // 5. Το υπόγειο
-  eventTimeout(enterBasement, 27500);
+  eventTimeout(enterBasement, 28600);
 }
 
 function showDialogueLine(text, isHenry) {
 
   const dialogue = document.getElementById("cabinDialogue");
 
-  dialogue.classList.remove("show");
+  dialogue.textContent = text;
+  dialogue.classList.toggle("henry", isHenry);
+  dialogue.classList.add("show");
 
-  eventTimeout(() => {
-    dialogue.textContent = text;
-    dialogue.classList.toggle("henry", isHenry);
-    dialogue.classList.add("show");
-  }, 350);
-
-  eventTimeout(() => dialogue.classList.remove("show"), 2800);
+  // μένει 2.6 δευτ. και σβήνει (0.6 δευτ.)
+  eventTimeout(() => dialogue.classList.remove("show"), 2600);
 }
 
 
