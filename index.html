@@ -608,98 +608,170 @@ body {
 }
 
 .hospital-document {
-  opacity: 0;
-  transition: opacity 3s ease;
   width: 100%;
   max-width: 390px;
   margin: 25px auto 40px;
-  padding: 28px 24px;
-
-  background:
-    linear-gradient(
-      rgba(255,255,255,.04),
-      rgba(0,0,0,.05)
-    ),
-    #d8d0ba;
-
-  color: #171512;
-
   text-align: left;
-
+  color: #1c1a16;
   font-family: "Courier New", monospace;
-  font-size: 13px;
-  line-height: 1.55;
-
-  border: 1px solid #8e8775;
-
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.8),
-    inset 0 0 35px rgba(70,55,30,.12);
-
-  transform: rotate(-0.4deg);
+  opacity: 0;
+  transform: rotate(-.6deg);
+  transition: opacity 3s ease;
 }
 
 .hospital-document.show {
   opacity: 1;
 }
 
-#hospitalName {
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 1px;
+/* Λευκό-γκριζωπό χαρτί νοσοκομείου, λίγο πιο «καθαρό» από της αστυνομίας */
+.doc-paper.hospital-paper {
+  background:
+    linear-gradient(to bottom, transparent 49.6%, rgba(0,0,0,.07) 50%, rgba(255,255,255,.3) 50.4%, transparent 51%),
+    radial-gradient(ellipse at center, rgba(255,255,255,0) 60%, rgba(110,100,70,.2) 100%),
+    #ece8dc;
 }
 
-#hospitalRecordTitle {
+/* Μεταλλικό κλιπ στο πάνω μέρος */
+.doc-clip {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 46px;
+  height: 14px;
+  margin-left: -23px;
+  border-radius: 3px 3px 6px 6px;
+  background: linear-gradient(#d4d4d4, #8a8a8a);
+  box-shadow: 0 2px 3px rgba(0,0,0,.6);
+}
+
+/* Πίνακας χρονολογίου */
+.hd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.hd-table th {
+  padding: 2px 4px;
+  border: 1px solid #1c1a16;
+  background: rgba(28,26,22,.08);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  font-weight: normal;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.hd-table td {
+  padding: 3px 4px;
+  border: 1px solid #1c1a16;
+  line-height: 1.3;
+}
+
+.hd-table .hd-time { width: 44px; font-weight: bold; }
+
+.hd-table .hd-init {
+  width: 34px;
+  font-family: "Caveat", cursive;
+  font-size: 14px;
+  color: #1f2a55;
   text-align: center;
+}
+
+/* Κατάσταση μητέρας (μαυρισμένη μέχρι τη σωστή απάντηση) */
+.hd-status {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.hd-redacted {
   font-weight: bold;
   font-size: 12px;
-  margin-top: 5px;
-  letter-spacing: .8px;
+  letter-spacing: -1px;
 }
 
-.hospital-document hr {
-  border: 0;
-  border-top: 1px solid rgba(30,25,20,.45);
-  margin: 17px 0;
+.hd-redacted.revealed {
+  letter-spacing: 1px;
+  color: #8b1414;
 }
 
-#hospitalTimeline {
-  line-height: 1.8;
+/* Ώρα θανάτου: ο παίκτης τη γράφει με το χέρι */
+.hd-tod {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-#hospitalMotherStatus {
-  margin-top: 4px;
-  font-weight: bold;
-}
+.hd-tod .doc-label { padding-bottom: 6px; white-space: nowrap; }
 
 #incidentTimeInput {
-  width: 55%;
-  padding: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 4px 0;
 
-  background: rgba(255,255,255,.35);
-  border: 1px solid #625c50;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #1c1a16;
+  border-radius: 0;
+  outline: none;
 
-  color: #171512;
+  color: #1f2a55;
   text-align: center;
 
+  font-family: "Caveat", cursive;
+  font-size: 26px;
+  line-height: 1;
+}
+
+#incidentTimeInput::placeholder {
+  color: rgba(28,26,22,.35);
   font-family: "Courier New", monospace;
   font-size: 16px;
 }
 
 #incidentTimeButton {
-  width: 43%;
-  padding: 10px 4px;
+  flex-shrink: 0;
+  padding: 7px 10px;
 
   background: #24211c;
   border: 1px solid #24211c;
+  border-radius: 2px;
 
-  color: #ddd5c1;
+  color: #e8e2d2;
 
-  font-family: "Courier New", monospace;
-  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
 
   cursor: pointer;
+}
+
+#incidentTimeMessage {
+  min-height: 16px;
+  margin-top: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+/* Σφραγίδα «ΑΠΕΒΙΩΣΕ»: πέφτει πάνω στο χαρτί με τη σωστή απάντηση */
+.stamp-deceased {
+  right: 18px;
+  top: 63%;
+  font-size: 19px;
+  padding: 4px 12px;
+  border-width: 3px;
+  opacity: 0;
+  transform: rotate(-12deg) scale(1.8);
+  transition: opacity .25s ease, transform .35s cubic-bezier(.3,1.6,.5,1);
+}
+
+.stamp-deceased.show {
+  opacity: 1;
+  transform: rotate(-12deg) scale(1);
 }
 
 
@@ -3291,6 +3363,29 @@ html.final-lock body {
   0%, 100% { opacity: .45; }
   50%      { opacity: .85; }
 }
+
+/* Ένδειξη επιστροφής ήχου */
+#soundHint {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  z-index: 6000;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border: 1px solid rgba(130,20,20,.7);
+  border-radius: 3px;
+  background: rgba(0,0,0,.8);
+  color: #e3dfd8;
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+#soundHint.show { opacity: 1; }
 </style>
 </head>
 
@@ -3389,42 +3484,7 @@ html.final-lock body {
 
     </div>
 
-    <div id="hospitalDocument" class="hospital-document hidden">
-
-      <div id="hospitalName"></div>
-      <div id="hospitalRecordTitle"></div>
-
-      <hr>
-
-      <div id="hospitalPatient"></div>
-      <div id="hospitalWard"></div>
-      <div id="hospitalRoom"></div>
-
-      <hr>
-
-      <div id="hospitalTimeline"></div>
-
-      <hr>
-
-      <div id="hospitalMotherStatus"></div>
-
-      <input
-        id="incidentTimeInput"
-        type="text"
-        placeholder="__:__"
-        maxlength="5"
-        inputmode="numeric"
-        pattern="[0-9]*"
-        autocomplete="off"
-      >
-
-      <button id="incidentTimeButton" onclick="checkIncidentTime()">
-        ΕΠΙΒΕΒΑΙΩΣΗ
-      </button>
-
-      <div id="incidentTimeMessage"></div>
-
-    </div>
+    <div id="hospitalDocument" class="hospital-document hidden"></div>
 
   </div>
 
@@ -4096,9 +4156,88 @@ function unlockAudio() {
 }
 
 // Αν το κινητό "κοιμίσει" τον ήχο (κλήση, αλλαγή εφαρμογής), ξυπνάει ξανά
-function wakeAudio() {
-  if (audioCtx && audioCtx.state !== "running") audioCtx.resume();
+// Αφού σβήσει η οθόνη του κινητού, το iPhone συχνά αφήνει τον ήχο "κολλημένο"
+// (το resume δεν δουλεύει). Τότε στο επόμενο άγγιγμα φτιάχνουμε καινούριο
+// AudioContext και ξαναβάζουμε τη μουσική της οθόνης.
+let audioNeedsRebuild = false;
+let lastAudioRebuild = 0;
+
+function rebuildAudioContext() {
+
+  lastAudioRebuild = Date.now();
+  audioNeedsRebuild = false;
+
+  const bgName = currentBg;
+  const bgVolume = currentBgState ? currentBgState.target : BG_VOLUME;
+
+  if (currentBgState) {
+    currentBgState.playing = false;
+    currentBgState.timers.forEach(clearTimeout);
+  }
+  currentBg = null;
+  currentBgState = null;
+
+  Object.keys(voices).forEach(id => delete voices[id]);
+
+  try { audioCtx.close(); } catch (e) {}
+  audioCtx = null;
+  masterGain = null;
+
+  unlockAudio();
+
+  if (bgName) setBackground(bgName, bgVolume, 1200);
+}
+
+function wakeAudio(event) {
+
+  const fromTouch = !!event;
+
+  // (<audio> χωρίς Web Audio: τα ξαναξεκινά ο χειρισμός visibilitychange / αγγίγματος)
+  if (!USE_WEBAUDIO || !audioCtx) return;
+
   if (keepAliveAudio && keepAliveAudio.paused) keepAliveAudio.play().catch(() => {});
+
+  if (audioCtx.state === "running") {
+    hideSoundHint();
+    return;
+  }
+
+  // Μέσα σε άγγιγμα: αν ο ήχος έχει κολλήσει, νέο AudioContext
+  if (fromTouch && (audioNeedsRebuild || audioCtx.state === "interrupted") &&
+      Date.now() - lastAudioRebuild > 1000) {
+    rebuildAudioContext();
+    hideSoundHint();
+    return;
+  }
+
+  audioCtx.resume().then(hideSoundHint).catch(() => {});
+
+  // Αν δεν ξυπνήσει σε λίγο, ζητάμε ένα άγγιγμα και φτιάχνουμε καινούριο
+  setTimeout(() => {
+    if (audioCtx && audioCtx.state !== "running" && !document.hidden) {
+      audioNeedsRebuild = true;
+      showSoundHint();
+    }
+  }, 700);
+}
+
+// Μικρή ένδειξη όταν χρειάζεται άγγιγμα για να επιστρέψει ο ήχος
+function showSoundHint() {
+  let hint = document.getElementById("soundHint");
+  if (!hint) {
+    hint = document.createElement("div");
+    hint.id = "soundHint";
+    document.body.appendChild(hint);
+  }
+  hint.textContent = selectedLanguage === "en"
+    ? "Tap the screen to bring the sound back"
+    : "Άγγιξε την οθόνη για να επιστρέψει ο ήχος";
+  hint.classList.add("show");
+}
+
+function hideSoundHint() {
+  const hint = document.getElementById("soundHint");
+  if (hint) hint.classList.remove("show");
 }
 
 // Όταν η σελίδα δεν φαίνεται (άλλη καρτέλα / εφαρμογή, κλειστή οθόνη) ο ήχος
@@ -4116,8 +4255,13 @@ document.addEventListener("visibilitychange", () => {
   }
 
   wakeAudio();
-  pausedElements.forEach(a => a.play().catch(() => {}));
-  pausedElements = [];
+  // <audio> που δεν ξαναξεκίνησαν μένουν στη λίστα για το επόμενο άγγιγμα
+  const retry = [];
+  pausedElements.forEach(a => a.play().catch(() => retry.push(a)));
+  setTimeout(() => {
+    pausedElements = retry;
+    if (retry.length) showSoundHint();
+  }, 300);
 });
 
 window.addEventListener("pagehide", () => {
@@ -4125,8 +4269,21 @@ window.addEventListener("pagehide", () => {
   document.querySelectorAll("audio").forEach(a => a.pause());
 });
 
+// Επιστροφή στη σελίδα από το ιστορικό του browser
+window.addEventListener("pageshow", event => {
+  if (event.persisted) wakeAudio();
+});
+
 ["touchend", "click"].forEach(type => {
-  document.addEventListener(type, wakeAudio, { passive: true });
+  document.addEventListener(type, event => {
+    if (!USE_WEBAUDIO && pausedElements.length) {
+      pausedElements.forEach(a => a.play().catch(() => {}));
+      pausedElements = [];
+      hideSoundHint();
+      return;
+    }
+    wakeAudio(event);
+  }, { passive: true });
 });
 
 
@@ -6354,6 +6511,101 @@ function docCell(label, value, wide) {
   return `<div class="doc-cell${wide ? " wide" : ""}"><span class="doc-label">${label}</span><span class="doc-value">${value}</span></div>`;
 }
 
+const DOC_SEAL_HOSPITAL =
+  '<svg class="doc-seal" viewBox="0 0 100 100" fill="none" stroke="currentColor">' +
+  '<circle cx="50" cy="50" r="46" stroke-width="3"/><circle cx="50" cy="50" r="39" stroke-width="1.2"/>' +
+  '<path d="M42 24 H58 V42 H76 V58 H58 V76 H42 V58 H24 V42 H42 Z" stroke-width="3" stroke-linejoin="round"/>' +
+  '</svg>';
+
+// EVENT 02 - Το νοσοκομειακό δελτίο (ρεαλιστικό έντυπο)
+function buildHospitalDoc() {
+
+  const gr = selectedLanguage === "gr";
+
+  const t = gr ? {
+    dept: "ΜΑΙΕΥΤΙΚΗ & ΓΥΝΑΙΚΟΛΟΓΙΚΗ ΚΛΙΝΙΚΗ",
+    title: "ΔΕΛΤΙΟ ΤΟΚΕΤΟΥ / ΕΠΕΙΓΟΝΤΟΣ",
+    patient: "Ασθενής", mrn: "Αρ. μητρώου", admitted: "Εισαγωγή",
+    ward: "Τμήμα / δωμάτιο", wardV: "ΜΑΙΕΥΤΙΚΗ · 214",
+    doctor: "Θεράπων ιατρός", kin: "Συγγενής", kinV: "HENRY JEFFERSON (σύζυγος)",
+    log: "Χρονολόγιο συμβάντων", time: "Ώρα", event: "Συμβάν", init: "Μον.",
+    rows: [
+      ["02:14", "Ασθενής σταθερή"],
+      ["02:16", "Εμβρυϊκή δυσχέρεια"],
+      ["02:17", "Τοκετός"],
+      ["02:18", "Κλάμα νεογνού / σταθερό"],
+      ["02:21", "Καρδιακή ανακοπή μητέρας"],
+      ["02:24", "Ανεπιτυχής ανάνηψη"]
+    ],
+    status: "Κατάσταση μητέρας", tod: "Ώρα θανάτου",
+    confirm: "ΕΠΙΒΕΒΑΙΩΣΗ", sign: "Υπογραφή ιατρού", nurse: "Νοσηλεύτρια βάρδιας",
+    stamp: "ΑΠΕΒΙΩΣΕ"
+  } : {
+    dept: "DEPARTMENT OF OBSTETRICS & GYNECOLOGY",
+    title: "DELIVERY / EMERGENCY RECORD",
+    patient: "Patient", mrn: "MRN", admitted: "Admitted",
+    ward: "Ward / room", wardV: "MATERNITY · 214",
+    doctor: "Attending physician", kin: "Next of kin", kinV: "HENRY JEFFERSON (husband)",
+    log: "Event log", time: "Time", event: "Event", init: "Init.",
+    rows: [
+      ["02:14", "Patient stable"],
+      ["02:16", "Fetal distress"],
+      ["02:17", "Delivery"],
+      ["02:18", "Infant crying / stable"],
+      ["02:21", "Maternal cardiac arrest"],
+      ["02:24", "Resuscitation unsuccessful"]
+    ],
+    status: "Mother status", tod: "Time of death",
+    confirm: "CONFIRM", sign: "Physician signature", nurse: "Charge nurse",
+    stamp: "DECEASED"
+  };
+
+  const initials = ["L.K.", "L.K.", "M.R.", "L.K.", "M.R.", "M.R."];
+
+  const rows = t.rows.map((r, i) =>
+    `<tr><td class="hd-time">${r[0]}</td><td>${r[1]}</td><td class="hd-init">${initials[i]}</td></tr>`
+  ).join("");
+
+  return `
+    <div class="doc-paper hospital-paper">
+      <span class="doc-clip"></span>
+      <div class="doc-head">
+        ${DOC_SEAL_HOSPITAL}
+        <div class="doc-agency">ST. MARY'S HOSPITAL<small>${t.dept}</small><small>ASHFORD COUNTY</small></div>
+      </div>
+      <div class="doc-title">${t.title} <span class="doc-formno">FORM OB-27</span></div>
+      <div class="doc-grid">
+        ${docCell(t.patient, "KAREN JEFFERSON", true)}
+        ${docCell(t.mrn, "0047-2291")}
+        ${docCell(t.admitted, "26/01/2018 · 22:40")}
+        ${docCell(t.ward, t.wardV)}
+        ${docCell(t.doctor, "DR. M. REYES")}
+        ${docCell(t.kin, t.kinV, true)}
+      </div>
+      <div class="doc-section">${t.log}</div>
+      <table class="hd-table">
+        <thead><tr><th>${t.time}</th><th>${t.event}</th><th>${t.init}</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="hd-status">
+        <span class="doc-label">${t.status}</span>
+        <span id="hospitalMotherStatus" class="hd-redacted">██████████</span>
+      </div>
+      <div class="hd-tod">
+        <span class="doc-label">${t.tod}</span>
+        <input id="incidentTimeInput" type="text" placeholder="__:__" maxlength="5"
+               inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        <button id="incidentTimeButton" onclick="checkIncidentTime()">${t.confirm}</button>
+      </div>
+      <div id="incidentTimeMessage"></div>
+      <div class="doc-signs">
+        <div class="doc-sign"><div class="sig">M. Reyes</div><div class="line">${t.sign}</div></div>
+        <div class="doc-sign"><div class="sig">L. Kowalski</div><div class="line">${t.nurse}</div></div>
+      </div>
+      <div id="hospitalDeceasedStamp" class="doc-stamp stamp-deceased">${t.stamp}<small>27 JAN 2018</small></div>
+    </div>`;
+}
+
 function buildStatementDoc() {
 
   const gr = selectedLanguage === "gr";
@@ -6694,9 +6946,10 @@ function nextEvent() {
 
 
 // Η άνω-κάτω τελεία μπαίνει μόνη της: ο παίκτης γράφει μόνο 0221
-const incidentInput = document.getElementById("incidentTimeInput");
+document.addEventListener("input", event => {
 
-incidentInput.addEventListener("input", event => {
+  if (event.target.id !== "incidentTimeInput") return;
+  const incidentInput = event.target;
 
   const digits = incidentInput.value.replace(/\D/g, "").slice(0, 4);
   const deleting = event.inputType && event.inputType.startsWith("delete");
@@ -6711,8 +6964,8 @@ incidentInput.addEventListener("input", event => {
 });
 
 // Enter = επιβεβαίωση
-incidentInput.addEventListener("keydown", event => {
-  if (event.key === "Enter") checkIncidentTime();
+document.addEventListener("keydown", event => {
+  if (event.target.id === "incidentTimeInput" && event.key === "Enter") checkIncidentTime();
 });
 
 function checkIncidentTime() {
@@ -6730,11 +6983,12 @@ function checkIncidentTime() {
     const motherStatus = document.getElementById("hospitalMotherStatus");
 
     motherStatus.textContent =
-      selectedLanguage === "gr"
-        ? "ΚΑΤΑΣΤΑΣΗ ΜΗΤΕΡΑΣ: ΑΠΕΒΙΩΣΕ"
-        : "MOTHER STATUS: DECEASED";
+      selectedLanguage === "gr" ? "ΑΠΕΒΙΩΣΕ" : "DECEASED";
+    motherStatus.classList.add("revealed");
 
-    input.style.borderColor = "#2f7d45";
+    input.readOnly = true;
+    input.blur();
+    document.getElementById("hospitalDeceasedStamp").classList.add("show");
 
     message.style.color = "#2f7d45";
     message.textContent =
@@ -6755,7 +7009,7 @@ function checkIncidentTime() {
       resetEvent3();
       playHenryAnger();
 
-    }, 2000);
+    }, 3200);
 
   } else {
 
@@ -6834,34 +7088,7 @@ function updateLanguage() {
       "Η μέρα που περίμεναν τόσο καιρό είχε επιτέλους φτάσει.<br><br>" +
       "Όμως ο Χένρι δεν επέστρεψε ποτέ στο σπίτι μαζί με την Κάρεν.";
 
-    document.getElementById("hospitalName").textContent =
-      "ST. MARY'S HOSPITAL";
-
-    document.getElementById("hospitalRecordTitle").textContent =
-      "ΔΕΛΤΙΟ ΤΟΚΕΤΟΥ / ΕΠΕΙΓΟΝΤΟΣ";
-
-    document.getElementById("hospitalPatient").textContent =
-      "ΑΣΘΕΝΗΣ: ΚΑΡΕΝ ΤΖΕΦΕΡΣΟΝ";
-
-    document.getElementById("hospitalWard").textContent =
-      "ΤΜΗΜΑ: ΜΑΙΕΥΤΙΚΗ";
-
-    document.getElementById("hospitalRoom").textContent =
-      "ΔΩΜΑΤΙΟ: 214";
-
-    document.getElementById("hospitalTimeline").innerHTML =
-      "02:14 — Ασθενής σταθερή<br>" +
-      "02:16 — Εμβρυϊκή δυσχέρεια<br>" +
-      "02:17 — Τοκετός<br>" +
-      "02:18 — Κλάμα νεογνού / σταθερό<br>" +
-      "02:21 — Καρδιακή ανακοπή μητέρας<br>" +
-      "02:24 — Ανεπιτυχής ανάνηψη";
-
-    document.getElementById("hospitalMotherStatus").textContent =
-      "ΚΑΤΑΣΤΑΣΗ ΜΗΤΕΡΑΣ: █████████";
-
-    document.getElementById("incidentTimeButton").textContent =
-      "ΕΠΙΒΕΒΑΙΩΣΗ";
+    document.getElementById("hospitalDocument").innerHTML = buildHospitalDoc();
 
     //-------------------------- chapter 3 -----------------------------//
 
@@ -6914,34 +7141,7 @@ function updateLanguage() {
       "The day they had been waiting for so long had finally arrived.<br><br>" +
       "But Henry never returned home with Karen.";
 
-    document.getElementById("hospitalName").textContent =
-      "ST. MARY'S HOSPITAL";
-
-    document.getElementById("hospitalRecordTitle").textContent =
-      "DELIVERY / EMERGENCY RECORD";
-
-    document.getElementById("hospitalPatient").textContent =
-      "PATIENT: KAREN JEFFERSON";
-
-    document.getElementById("hospitalWard").textContent =
-      "WARD: MATERNITY";
-
-    document.getElementById("hospitalRoom").textContent =
-      "ROOM: 214";
-
-    document.getElementById("hospitalTimeline").innerHTML =
-      "02:14 — Patient stable<br>" +
-      "02:16 — Fetal distress<br>" +
-      "02:17 — Delivery<br>" +
-      "02:18 — Infant crying / stable<br>" +
-      "02:21 — Maternal cardiac arrest<br>" +
-      "02:24 — Resuscitation unsuccessful";
-
-    document.getElementById("hospitalMotherStatus").textContent =
-      "MOTHER STATUS: █████████";
-
-    document.getElementById("incidentTimeButton").textContent =
-      "CONFIRM";
+    document.getElementById("hospitalDocument").innerHTML = buildHospitalDoc();
 
     //-------------------------- chapter 3 -----------------------------//
 
