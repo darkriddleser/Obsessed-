@@ -3243,17 +3243,20 @@ function loadBuffer(srcList) {
 
   if (!audioBuffers[key]) {
     audioBuffers[key] = (async () => {
+      const failed = [];
       for (const src of srcList) {
         try {
           const res = await fetch(src);
           if (!res.ok) throw new Error("HTTP " + res.status);
           return await decodeAudio(await res.arrayBuffer());
         } catch (e) {
-          const msg = "ΔΕΝ ΦΟΡΤΩΘΗΚΕ: " + src + " (" + (e.message || e) + ")";
-          if (!audioErrors.includes(msg)) audioErrors.push(msg);
-          if (String(e.message).includes("404")) missingFiles.add(key);
+          failed.push(decodeURIComponent(src) + " (" + (e.message || e) + ")");
         }
       }
+      const msg = "ΔΕΝ ΒΡΕΘΗΚΕ: " + failed.join(" / ");
+      if (!audioErrors.includes(msg)) audioErrors.push(msg);
+      // Κανένα από τα ονόματα δεν υπάρχει στον server: δεν το ξαναζητάμε
+      missingFiles.add(key);
       return null;
     })().then(buffer => {
       if (!buffer) delete audioBuffers[key];   // να ξαναδοκιμάσει αργότερα
@@ -3313,7 +3316,9 @@ function unlockAudio() {
 
   if (!USE_WEBAUDIO) {
     // Χωρίς Web Audio: "ξεκλειδώνουμε" κάθε <audio> μέσα στο άγγιγμα
-    document.querySelectorAll("audio").forEach(audio => {
+    const all = [...document.querySelectorAll("audio")];
+
+    all.forEach(audio => {
       audio.muted = true;
       const p = audio.play();
       if (p) p.then(() => {
@@ -3322,6 +3327,17 @@ function unlockAudio() {
         audio.muted = false;
       }).catch(() => { audio.muted = false; });
     });
+
+    // Σιγουριά: κανένας ήχος δεν μένει να παίζει από το ξεκλείδωμα
+    setTimeout(() => {
+      all.forEach(audio => {
+        if (audio.muted) {
+          audio.pause();
+          try { audio.currentTime = 0; } catch (e) {}
+          audio.muted = false;
+        }
+      });
+    }, 600);
     return;
   }
 
