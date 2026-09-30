@@ -3072,6 +3072,62 @@ body {
   .splash-art, .splash-glow, .splash-beam, .blood-flow, .blood-drop { animation: none; }
   .blood-drop { opacity: 0; }
 }
+
+/* =========================
+   ΠΥΛΗ ΕΙΣΟΔΟΥ (πριν την πρώτη οθόνη)
+   Το πρώτο άγγιγμα επιτρέπει στον browser να παίξει ήχο
+========================= */
+
+#enterGate {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+
+  background: #000;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: opacity 1.4s ease;
+}
+
+#enterGate.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gate-main {
+  font-family: "Cinzel", serif;
+  font-size: 15px;
+  letter-spacing: 5px;
+  color: #d9d2c8;
+  animation: gateBreath 3.2s ease-in-out infinite;
+}
+
+.gate-sub {
+  font-family: "Cinzel", serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: rgba(217,210,200,.45);
+}
+
+.gate-headphones {
+  margin-top: 26px;
+  font-family: "GFS Didot", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(200,60,60,.6);
+}
+
+@keyframes gateBreath {
+  0%, 100% { opacity: .35; }
+  50%      { opacity: 1; }
+}
 </style>
 </head>
 
@@ -3079,6 +3135,12 @@ body {
 
 
 <!-- ΠΡΩΤΗ ΟΘΟΝΗ -->
+
+<!-- Πύλη εισόδου: με το άγγιγμα ξεκινά η μουσική και εμφανίζεται η πρώτη οθόνη -->
+<div id="enterGate" role="button" aria-label="Enter">
+  <div class="gate-main">ΑΓΓΙΞΕ ΓΙΑ ΝΑ ΜΠΕΙΣ</div>
+  <div class="gate-sub">TAP TO ENTER</div>
+</div>
 
 <div id="languageScreen" class="screen">
 
@@ -4061,6 +4123,34 @@ function startMusicOnFirstTouch() {
 
 ["touchend", "click", "keydown"].forEach(type => {
   document.addEventListener(type, startMusicOnFirstTouch, { capture: true });
+});
+
+// Η πύλη εισόδου φεύγει με το πρώτο άγγιγμα και η μουσική ξεκινά μαζί με την εικόνα
+function openEnterGate() {
+  const gate = document.getElementById("enterGate");
+  if (!gate || gate.classList.contains("leaving")) return;
+  startMusicOnFirstTouch();
+  gate.classList.add("leaving");
+  setTimeout(() => gate.remove(), 1500);
+}
+
+document.getElementById("enterGate").addEventListener("click", openEnterGate);
+document.getElementById("enterGate").addEventListener("touchend", e => {
+  e.preventDefault();          // να μη γίνει και "κλικ" στα κουμπιά από κάτω
+  openEnterGate();
+});
+
+// Αν ο browser επιτρέπει ήχο χωρίς άγγιγμα (π.χ. υπολογιστής που έχει ξαναμπεί
+// στο site), η μουσική ξεκινά αμέσως και η πύλη δεν χρειάζεται
+window.addEventListener("load", () => {
+  if (!USE_WEBAUDIO) return;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const probe = new Ctx();
+    const allowed = probe.state === "running";
+    probe.close();
+    if (allowed) openEnterGate();
+  } catch (e) {}
 });
 
 
@@ -6649,7 +6739,7 @@ const BG_TRACKS = {
   start:   { src: "0_4.mp3", loopAt: 72.5 },
   // Από την επιλογή γλώσσας μέχρι το Event 1: δύο κομμάτια μαζί
   intro:   { layers: [ { src: "0.mp3",   loopAt: 100.3 },
-                       { src: "0_1.mp3", loopAt: 21.5, gain: 0.55 } ] },
+                       { src: "0_1.mp3", loopAt: 21.5, gain: 0.3 } ] },
   event1:  { src: "1.mp3",   loopAt: 77 },
   event2:  { src: "2.mp3",   loopAt: 39.5 },
   event3:  { src: "3.mp3",   loopAt: 78.5 },
