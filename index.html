@@ -53,30 +53,31 @@ body {
 
 #languageScreen {
   overflow: hidden;
+  background: #000;
+}
 
-  background-image:
-    linear-gradient(
-      rgba(0,0,0,.18),
-      rgba(0,0,0,.32)
-    ),
-    url("file_00000000a95081f4ad0a889b8883d67c.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* Θολό φόντο για τα πλαϊνά σε μεγάλες οθόνες */
+#languageScreen::before {
+  content: "";
+  position: absolute;
+  inset: -80px;
+  background: url("obsessed_start.jpg") center / cover no-repeat;
+  filter: blur(30px) brightness(.28);
+  pointer-events: none;
 }
 
 #languageScreen::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
 
   background:
     radial-gradient(
       ellipse at center,
-      transparent 20%,
-      rgba(0,0,0,.22) 60%,
-      rgba(0,0,0,.75) 100%
+      transparent 45%,
+      rgba(0,0,0,.35) 80%,
+      rgba(0,0,0,.7) 100%
     );
 
   pointer-events: none;
@@ -603,11 +604,7 @@ body {
     max-width: 650px;
   }
 
-  #languageScreen {
-    background-size: auto 100%;
-    background-position: center;
-    background-color: #000;
-  }
+
 }
 
 .hospital-document {
@@ -2935,6 +2932,152 @@ body {
 
 .evidence-hint.show { opacity: 1; }
 
+
+/* =========================
+   ΑΡΧΙΚΗ ΕΙΚΟΝΑ OBSESSED + ΚΙΝΟΥΜΕΝΟ ΑΙΜΑ
+========================= */
+
+.splash-art {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Γεμίζει την οθόνη, αλλά χωρίς να κόβεται ο τίτλος στα πλάγια */
+  width: max(100%, min(56.28svh, 112vw));
+  aspect-ratio: 941 / 1672;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: splashBreath 24s ease-in-out infinite alternate;
+}
+
+@keyframes splashBreath {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to   { transform: translate(-50%, -50%) scale(1.035); }
+}
+
+.splash-art img {
+  display: block;
+  -webkit-mask-image: linear-gradient(transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(transparent 0, #000 6%, #000 94%, transparent 100%);
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Η κόκκινη λάμψη πίσω από τον τίτλο πάλλεται σαν καρδιά */
+.splash-glow {
+  position: absolute;
+  left: 50.4%;
+  top: 34.6%;
+  width: 70%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,40,40,.55) 0%, rgba(200,0,0,.18) 22%, transparent 55%);
+  mix-blend-mode: screen;
+  animation: splashPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes splashPulse {
+  0%, 100% { opacity: .25; }
+  12%      { opacity: .85; }
+  24%      { opacity: .35; }
+  36%      { opacity: .7; }
+  60%      { opacity: .25; }
+}
+
+/* Η κάθετη ακτίνα τρεμοπαίζει */
+.splash-beam {
+  position: absolute;
+  left: 50.3%;
+  top: 0;
+  width: .7%;
+  height: 78%;
+  transform: translateX(-50%);
+  background: linear-gradient(transparent, rgba(255,70,70,.9) 44%, rgba(255,70,70,.9) 47%, transparent);
+  filter: blur(1.5px);
+  mix-blend-mode: screen;
+  animation: beamFlicker 5s infinite;
+}
+
+@keyframes beamFlicker {
+  0%, 100% { opacity: .2; }
+  40% { opacity: .45; }
+  42% { opacity: .1; }
+  43% { opacity: .55; }
+  70% { opacity: .3; }
+}
+
+/* Αίμα που κυλάει μέσα στα ρυάκια */
+.blood-flow {
+  position: absolute;
+  width: .9%;
+  transform: translateX(-50%);
+  border-radius: 40%;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(255,60,60,.0) 30%,
+    rgba(255,70,70,.85) 45%,
+    rgba(170,0,0,.0) 60%,
+    transparent 100%);
+  background-size: 100% 300%;
+  mix-blend-mode: screen;
+  filter: blur(.6px);
+  animation: bloodFlow var(--d, 5s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes bloodFlow {
+  from { background-position: 0 100%; }
+  to   { background-position: 0 0%; }
+}
+
+/* Σταγόνα που φουσκώνει στην άκρη και πέφτει */
+.blood-drop {
+  position: absolute;
+  width: 1.7%;
+  aspect-ratio: 1 / 1.35;
+  margin-left: -.85%;
+  border-radius: 50% 50% 50% 50% / 38% 38% 62% 62%;
+  background: radial-gradient(circle at 35% 60%, #ff5b5b 0%, #b30000 35%, #4a0000 100%);
+  box-shadow: 0 0 6px rgba(255,0,0,.45);
+  transform-origin: 50% 0;
+  opacity: 0;
+  animation: bloodDrop var(--d, 6s) cubic-bezier(.5,0,.9,.6) infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes bloodDrop {
+  0%   { transform: translateY(-40%) scale(.2, .2); opacity: 0; }
+  8%   { opacity: 1; }
+  45%  { transform: translateY(0) scale(1, 1); opacity: 1; }
+  55%  { transform: translateY(10%) scale(.9, 1.25); opacity: 1; }
+  85%  { transform: translateY(var(--fall, 900%)) scale(.7, 1.8); opacity: .9; }
+  100% { transform: translateY(var(--fall, 900%)) scale(.7, 1.8); opacity: 0; }
+}
+
+/* Υπολογιστής: όλη η εικόνα σε ύψος οθόνης, πλαϊνά με θολό φόντο */
+@media (min-width: 768px) and (min-aspect-ratio: 3/4) {
+  .splash-art {
+    width: auto;
+    height: 100%;
+  }
+
+  .splash-art img {
+    -webkit-mask-image:
+      linear-gradient(transparent 0, #000 6%, #000 94%, transparent 100%),
+      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(transparent 0, #000 6%, #000 94%, transparent 100%),
+      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-art, .splash-glow, .splash-beam, .blood-flow, .blood-drop { animation: none; }
+  .blood-drop { opacity: 0; }
+}
 </style>
 </head>
 
@@ -2944,6 +3087,28 @@ body {
 <!-- ΠΡΩΤΗ ΟΘΟΝΗ -->
 
 <div id="languageScreen" class="screen">
+
+  <div class="splash-art" aria-hidden="true">
+    <img src="obsessed_start.jpg" alt="">
+    <div class="splash-glow"></div>
+    <div class="splash-beam"></div>
+
+    <!-- ρυάκια αίματος (θέσεις σε % της εικόνας) -->
+    <div class="blood-flow" style="left:14.7%; top:39.5%; height:14%; --d:6s;"></div>
+    <div class="blood-flow" style="left:36.9%; top:39.5%; height:7.3%; --d:4.5s; --delay:-2s;"></div>
+    <div class="blood-flow" style="left:83.9%; top:39.5%; height:19%; --d:7s; --delay:-3s;"></div>
+    <div class="blood-flow" style="left:88.1%; top:39.5%; height:13%; --d:5.5s; --delay:-1s;"></div>
+    <div class="blood-flow" style="left:23.7%; top:0; height:7.5%; --d:5s; --delay:-4s;"></div>
+    <div class="blood-flow" style="left:80.3%; top:0; height:17%; --d:6.5s; --delay:-2.5s;"></div>
+
+    <!-- σταγόνες στις άκρες -->
+    <div class="blood-drop" style="left:14.7%; top:53%; --d:7s; --delay:1s; --fall:1100%;"></div>
+    <div class="blood-drop" style="left:36.9%; top:46.4%; --d:5.5s; --delay:2.8s; --fall:1300%;"></div>
+    <div class="blood-drop" style="left:83.9%; top:58%; --d:8s; --delay:.3s; --fall:900%;"></div>
+    <div class="blood-drop" style="left:88.1%; top:54.5%; --d:6.5s; --delay:4s; --fall:1000%;"></div>
+    <div class="blood-drop" style="left:23.7%; top:7%; --d:6s; --delay:1.8s; --fall:1500%;"></div>
+    <div class="blood-drop" style="left:80.5%; top:16.8%; --d:7.5s; --delay:3.5s; --fall:1400%;"></div>
+  </div>
 
   <div class="language-content">
 
