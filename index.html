@@ -3458,7 +3458,8 @@ function playSound(id, volume, options = {}) {
 
     const source = audioCtx.createBufferSource();
     source.buffer = buffer;
-    source.loop = !!options.loop;
+    const el = document.getElementById(id);
+    source.loop = options.loop !== undefined ? !!options.loop : !!(el && el.loop);
     source.connect(gain);
     source.start(0);
 
@@ -3951,7 +3952,7 @@ function playHenryAnger() {
       }, 50);
 
       fireVideo.currentTime = 0;
-      fireVideo.play();
+      fireVideo.play().catch(() => {});
 
       // Ο ήχος ανεβαίνει σιγά σιγά μαζί με την εικόνα, σε χαμηλότερη ένταση
       playSound("fireAudio", 0);
@@ -5520,10 +5521,11 @@ let evidenceFound = false;
 let hotspotTimer = null;
 
 // Η περιοχή όπου βρίσκεται ο Henry με το μωρό
+// (evidence1.png: ο Henry κρατά το μωρό, στο κέντρο της φωτογραφίας)
 function isOnHotspot(xPercent, yPercent) {
   return (
-    xPercent > 39 && xPercent < 61 &&
-    yPercent > 25 && yPercent < 51
+    xPercent > 32 && xPercent < 66 &&
+    yPercent > 30 && yPercent < 58
   );
 }
 
