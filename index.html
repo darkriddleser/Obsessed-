@@ -3193,10 +3193,87 @@ body {
 
 let selectedLanguage = "gr";
 
+// =========================================
+// ΜΗΧΑΝΗ ΗΧΟΥ ΓΙΑ ΚΙΝΗΤΑ
+// Στα iPhone η σελίδα δεν μπορεί να αλλάξει την ένταση ενός <audio>.
+// Περνάμε όλους τους ήχους από το Web Audio, όπου η ένταση δουλεύει παντού.
+// =========================================
+
+let audioCtx = null;
+
+const canUseWebAudio =
+  location.protocol.startsWith("http") &&
+  !!(window.AudioContext || window.webkitAudioContext);
+
+function initAudioEngine() {
+
+  // iPhone: να παίζει ο ήχος ακόμα κι αν το κινητό είναι στο αθόρυβο
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = "playback";
+  } catch (e) {}
+
+  if (!canUseWebAudio) return;
+
+  if (audioCtx) {
+    if (audioCtx.state !== "running") audioCtx.resume();
+    return;
+  }
+
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  audioCtx = new Ctx();
+  audioCtx.resume();
+
+  document.querySelectorAll("audio").forEach(connectAudio);
+}
+
+function connectAudio(audio) {
+
+  if (!audioCtx || audio._gain) return;
+
+  try {
+    const source = audioCtx.createMediaElementSource(audio);
+    const gain = audioCtx.createGain();
+    gain.gain.value = audio.volume;
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    audio._gain = gain;
+    audio.volume = 1;
+  } catch (e) {
+    console.log("Ο ήχος δεν συνδέθηκε:", audio.id, e);
+  }
+}
+
+function setVol(audio, value) {
+  const v = Math.max(0, Math.min(1, value));
+  if (audio._gain) audio._gain.gain.value = v;
+  else audio.volume = v;
+}
+
+function getVol(audio) {
+  return audio._gain ? audio._gain.gain.value : audio.volume;
+}
+
+// Αν το κινητό "κοιμίσει" τον ήχο (π.χ. όταν αλλάζει εφαρμογή), ξυπνάει ξανά
+function wakeAudio() {
+  if (audioCtx && audioCtx.state !== "running") audioCtx.resume();
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) wakeAudio();
+});
+
+["touchend", "click"].forEach(type => {
+  document.addEventListener(type, wakeAudio, { passive: true });
+});
+
+
 
 function enterExperience(language) {
 
   selectedLanguage = language;
+
+  // Ήχος για κινητά: ξεκινά μέσα στο άγγιγμα του παίκτη
+  initAudioEngine();
 
   // Ξεκλείδωμα audio για mobile browsers
   document.querySelectorAll("audio").forEach(audio => {
@@ -3279,7 +3356,7 @@ function resetMedia() {
     } catch (e) {}
 
     if (media.tagName === "AUDIO") {
-      media.volume = 1;
+      setVol(media, 1);
     }
 
   });
@@ -4922,12 +4999,12 @@ function fadeAudioTo(id, target, duration) {
   if (!audio || audio.paused) return;
 
   const steps = 20;
-  const step = (target - audio.volume) / steps;
+  const step = (target - getVol(audio)) / steps;
   let count = 0;
 
   const fade = eventInterval(() => {
     count++;
-    audio.volume = Math.min(1, Math.max(0, audio.volume + step));
+    setVol(audio, getVol(audio) + step);
     if (count >= steps) clearInterval(fade);
   }, duration / steps);
 }
@@ -4939,11 +5016,11 @@ function fadeOutAudio(id, duration) {
   if (!audio || audio.paused) return;
 
   const steps = 20;
-  const step = audio.volume / steps;
+  const step = getVol(audio) / steps;
 
   const fade = eventInterval(() => {
-    if (audio.volume > step) {
-      audio.volume = Math.max(0, audio.volume - step);
+    if (getVol(audio) > step) {
+      setVol(audio, getVol(audio) - step);
     } else {
       clearInterval(fade);
       audio.pause();
@@ -4957,7 +5034,7 @@ function playSound(id, volume) {
   if (!audio) return;
   audio.muted = false;
   audio.currentTime = 0;
-  audio.volume = volume;
+  setVol(audio, volume);
   audio.play().catch(error => console.log("Ήχος δεν έπαιξε:", id, error));
 }
 
@@ -5441,7 +5518,7 @@ function checkIncidentTime() {
     if (babyCry) {
       babyCry.pause();
       babyCry.currentTime = 0;
-      babyCry.volume = 1;
+      setVol(babyCry, 1);
     }
 
     const motherStatus = document.getElementById("hospitalMotherStatus");
@@ -5733,12 +5810,12 @@ function rampVolume(audio, target, duration, onDone) {
   clearInterval(bgRamps[audio.id]);
 
   const steps = Math.max(1, Math.round(duration / 50));
-  const start = audio.volume;
+  const start = getVol(audio);
   let n = 0;
 
   bgRamps[audio.id] = setInterval(() => {
     n++;
-    audio.volume = Math.min(1, Math.max(0, start + (target - start) * (n / steps)));
+    setVol(audio, start + (target - start) * (n / steps));
     if (n >= steps) {
       clearInterval(bgRamps[audio.id]);
       if (onDone) onDone();
@@ -5781,7 +5858,7 @@ function checkBgLoop(name, audio, ended) {
 
   const next = state.els[1 - state.cur];
   next.currentTime = 0;
-  next.volume = 0;
+  setVol(next, 0);
   next.play().catch(() => {});
   rampVolume(next, state.target, 2500);
 
@@ -5829,7 +5906,7 @@ function setBackground(name, volume = BG_VOLUME, fade = BG_CHANGE_FADE) {
   const audio = state.els[state.cur];
   audio.muted = false;
   audio.currentTime = 0;
-  audio.volume = 0;
+  setVol(audio, 0);
   audio.play().catch(error => console.log("Υπόβαθρο δεν έπαιξε:", name, error));
   rampVolume(audio, volume, fade);
 }
