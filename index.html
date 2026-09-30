@@ -3411,16 +3411,16 @@ html.final-lock body {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1);
-  transition: opacity 1s ease;
+  transform: scale(1.1);
+  transition: opacity 2.5s ease-in-out;
 }
 
 .intro-slides img.on {
   opacity: 1;
-  animation: introZoom var(--dur, 5s) ease-in-out forwards;
+  animation: introZoom var(--dur, 8s) linear forwards;
 }
 
-.intro-slides img.slow { transition-duration: 1.6s; }
+.intro-slides img.slow { transition-duration: 3s; }
 
 /* Όταν μένει μόνος: πιο κρύα, χωρίς ζεστασιά */
 .intro-slides img.cold { filter: saturate(.75) hue-rotate(-8deg) brightness(.95); }
@@ -3436,7 +3436,7 @@ html.final-lock body {
   background: #000;
   opacity: 1;
   pointer-events: none;
-  transition: opacity 1.2s ease;
+  transition: opacity 2.2s ease-in-out;
   box-shadow: inset 0 0 90px rgba(0,0,0,.9);
 }
 
@@ -3445,18 +3445,16 @@ html.final-lock body {
 .intro-dark.flicker {
   opacity: 0;
   transition: none;
-  animation: introFlicker 1s steps(1) forwards;
+  animation: introFlicker 1.5s ease-in-out forwards;
 }
 
 @keyframes introFlicker {
-  0%   { opacity: .1; }
-  15%  { opacity: .45; }
-  25%  { opacity: .05; }
-  40%  { opacity: .55; }
-  55%  { opacity: .2; }
-  70%  { opacity: .6; }
-  85%  { opacity: .3; }
-  100% { opacity: .5; }
+  0%   { opacity: 0; }
+  20%  { opacity: .15; }
+  35%  { opacity: .05; }
+  55%  { opacity: .22; }
+  70%  { opacity: .12; }
+  100% { opacity: .25; }
 }
 </style>
 </head>
@@ -7460,14 +7458,14 @@ let introSlidesRunning = false;
 
 // Η ιστορία: χορός → η γυναίκα χάνεται → μένει μόνος → επιστρέφει
 const INTRO_STEPS = [
-  { n: 6, dur: 5000, z0: 1.0,  z1: 1.1 },
-  { n: 7, dur: 4500, z0: 1.04, z1: 1.14 },
-  { n: 1, dur: 4800, z0: 1.02, z1: 1.16, then: "vanish" },
-  { n: 2, dur: 4400, z0: 1.12, z1: 1.02, cold: true, fromDark: true },
-  { n: 3, dur: 3800, z0: 1.0,  z1: 1.08, cold: true },
-  { n: 5, dur: 3800, z0: 1.08, z1: 1.0,  cold: true },
-  { n: 4, dur: 4200, z0: 1.0,  z1: 1.1,  cold: true },
-  { n: 8, dur: 5000, z0: 1.1,  z1: 1.02, slow: true, then: "end" }
+  { n: 6, dur: 4500 },
+  { n: 7, dur: 4500 },
+  { n: 1, dur: 4500, then: "vanish" },
+  { n: 2, dur: 4500, cold: true, fromDark: true },
+  { n: 3, dur: 4500, cold: true },
+  { n: 5, dur: 4500, cold: true },
+  { n: 4, dur: 4000, cold: true },
+  { n: 8, dur: 5000, slow: true, then: "end" }
 ];
 
 function introSlideImg(n) {
@@ -7512,9 +7510,10 @@ function startIntroSlides() {
 
     img.classList.remove("on", "cold", "slow");
     void img.offsetWidth;                      // ξανά από την αρχή το ζουμ
-    img.style.setProperty("--z0", s.z0);
-    img.style.setProperty("--z1", s.z1);
-    img.style.setProperty("--dur", (s.dur + 1500) + "ms");
+    // Όλες κάνουν αργό ζουμ άουτ
+    img.style.setProperty("--z0", 1.1);
+    img.style.setProperty("--z1", 1.0);
+    img.style.setProperty("--dur", (s.dur + 3500) + "ms");
     if (s.cold) img.classList.add("cold");
     if (s.slow) img.classList.add("slow");
     img.classList.add("on");
@@ -7527,7 +7526,7 @@ function startIntroSlides() {
 
     const prev = current;
     current = img;
-    if (prev && prev !== img) setTimeout(() => prev.classList.remove("on"), s.slow ? 1600 : 1000);
+    if (prev && prev !== img) setTimeout(() => prev.classList.remove("on"), s.slow ? 3000 : 2500);
 
     introSlidesTimer = setTimeout(() => {
 
@@ -7538,11 +7537,13 @@ function startIntroSlides() {
         dark.classList.remove("clear");
         dark.classList.add("flicker");
         introSlidesTimer = setTimeout(() => {
-          dark.classList.remove("flicker");
-          current.classList.remove("on");
-          step++;
-          introSlidesTimer = setTimeout(show, 500);
-        }, 1200);
+          dark.classList.remove("flicker");          // σβήνει αργά στο μαύρο
+          introSlidesTimer = setTimeout(() => {
+            current.classList.remove("on");
+            step++;
+            introSlidesTimer = setTimeout(show, 400);
+          }, 2400);
+        }, 1500);
         return;
       }
 
@@ -7553,7 +7554,7 @@ function startIntroSlides() {
           current = null;
           step = 0;
           introSlidesTimer = setTimeout(show, 300);
-        }, 1300);
+        }, 2400);
         return;
       }
 
