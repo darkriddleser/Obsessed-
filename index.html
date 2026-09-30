@@ -3395,6 +3395,69 @@ html.final-lock body {
   object-fit: cover;
   pointer-events: none;
 }
+
+/* Εισαγωγή από φωτογραφίες (video1–video8) */
+.intro-slides {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.intro-slides img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 1s ease;
+}
+
+.intro-slides img.on {
+  opacity: 1;
+  animation: introZoom var(--dur, 5s) ease-in-out forwards;
+}
+
+.intro-slides img.slow { transition-duration: 1.6s; }
+
+/* Όταν μένει μόνος: πιο κρύα, χωρίς ζεστασιά */
+.intro-slides img.cold { filter: saturate(.75) hue-rotate(-8deg) brightness(.95); }
+
+@keyframes introZoom {
+  from { transform: scale(var(--z0, 1)); }
+  to   { transform: scale(var(--z1, 1.1)); }
+}
+
+.intro-dark {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+  box-shadow: inset 0 0 90px rgba(0,0,0,.9);
+}
+
+.intro-dark.clear { opacity: 0; }
+
+.intro-dark.flicker {
+  opacity: 0;
+  transition: none;
+  animation: introFlicker 1s steps(1) forwards;
+}
+
+@keyframes introFlicker {
+  0%   { opacity: .1; }
+  15%  { opacity: .45; }
+  25%  { opacity: .05; }
+  40%  { opacity: .55; }
+  55%  { opacity: .2; }
+  70%  { opacity: .6; }
+  85%  { opacity: .3; }
+  100% { opacity: .5; }
+}
 </style>
 </head>
 
@@ -3581,6 +3644,13 @@ html.final-lock body {
 
     <video id="introVideo" src="intro.mp4" muted loop playsinline preload="auto"
            disablepictureinpicture></video>
+
+    <!-- Αν δεν υπάρχει το intro.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
+    <div id="introSlides" class="intro-slides hidden">
+      <img data-n="1" alt=""><img data-n="2" alt=""><img data-n="3" alt=""><img data-n="4" alt="">
+      <img data-n="5" alt=""><img data-n="6" alt=""><img data-n="7" alt=""><img data-n="8" alt="">
+      <div class="intro-dark"></div>
+    </div>
 
   </div>
 
@@ -7378,6 +7448,155 @@ function setBackgroundVolume(name, volume, duration) {
 }
 
 // Βρίσκει ποια οθόνη φαίνεται και βάζει το σωστό υπόβαθρο
+// =========================================
+// ΒΙΝΤΕΟ ΕΙΣΑΓΩΓΗΣ
+// Παίζει το intro.mp4. Αν λείπει ή δεν παίζει, οι φωτογραφίες
+// video1–video8 (.png ή .jpg) παίζουν με την ίδια ιστορία.
+// =========================================
+
+let introVideoOK = true;
+let introSlidesTimer = null;
+let introSlidesRunning = false;
+
+// Η ιστορία: χορός → η γυναίκα χάνεται → μένει μόνος → επιστρέφει
+const INTRO_STEPS = [
+  { n: 6, dur: 5000, z0: 1.0,  z1: 1.1 },
+  { n: 7, dur: 4500, z0: 1.04, z1: 1.14 },
+  { n: 1, dur: 4800, z0: 1.02, z1: 1.16, then: "vanish" },
+  { n: 2, dur: 4400, z0: 1.12, z1: 1.02, cold: true, fromDark: true },
+  { n: 3, dur: 3800, z0: 1.0,  z1: 1.08, cold: true },
+  { n: 5, dur: 3800, z0: 1.08, z1: 1.0,  cold: true },
+  { n: 4, dur: 4200, z0: 1.0,  z1: 1.1,  cold: true },
+  { n: 8, dur: 5000, z0: 1.1,  z1: 1.02, slow: true, then: "end" }
+];
+
+function introSlideImg(n) {
+  return document.querySelector('#introSlides img[data-n="' + n + '"]');
+}
+
+function loadIntroSlides() {
+  document.querySelectorAll("#introSlides img").forEach(img => {
+    if (img.getAttribute("src")) return;
+    const n = img.dataset.n;
+    const tries = ["video" + n + ".png", "video" + n + ".jpg", "video" + n + ".jpeg", "Video" + n + ".png", "Video" + n + ".jpg"];
+    let i = 0;
+    img.onerror = () => { i++; if (i < tries.length) img.src = tries[i]; };
+    img.src = tries[0];
+  });
+}
+
+function stopIntroSlides() {
+  introSlidesRunning = false;
+  clearTimeout(introSlidesTimer);
+}
+
+function startIntroSlides() {
+
+  if (introSlidesRunning) return;
+  introSlidesRunning = true;
+
+  const box = document.getElementById("introSlides");
+  const dark = box.querySelector(".intro-dark");
+  box.classList.remove("hidden");
+  loadIntroSlides();
+
+  let step = 0;
+  let current = null;
+
+  function show() {
+
+    if (!introSlidesRunning) return;
+
+    const s = INTRO_STEPS[step];
+    const img = introSlideImg(s.n);
+
+    img.classList.remove("on", "cold", "slow");
+    void img.offsetWidth;                      // ξανά από την αρχή το ζουμ
+    img.style.setProperty("--z0", s.z0);
+    img.style.setProperty("--z1", s.z1);
+    img.style.setProperty("--dur", (s.dur + 1500) + "ms");
+    if (s.cold) img.classList.add("cold");
+    if (s.slow) img.classList.add("slow");
+    img.classList.add("on");
+
+    // Από το σκοτάδι: στην αρχή της λούπας και όταν μένει μόνος
+    if (step === 0 || s.fromDark) {
+      dark.classList.remove("flicker");
+      requestAnimationFrame(() => dark.classList.add("clear"));
+    }
+
+    const prev = current;
+    current = img;
+    if (prev && prev !== img) setTimeout(() => prev.classList.remove("on"), s.slow ? 1600 : 1000);
+
+    introSlidesTimer = setTimeout(() => {
+
+      if (!introSlidesRunning) return;
+
+      if (s.then === "vanish") {
+        // Τα κεριά τρεμοπαίζουν και όλα σκοτεινιάζουν: η γυναίκα χάνεται
+        dark.classList.remove("clear");
+        dark.classList.add("flicker");
+        introSlidesTimer = setTimeout(() => {
+          dark.classList.remove("flicker");
+          current.classList.remove("on");
+          step++;
+          introSlidesTimer = setTimeout(show, 500);
+        }, 1200);
+        return;
+      }
+
+      if (s.then === "end") {
+        dark.classList.remove("clear");
+        introSlidesTimer = setTimeout(() => {
+          current.classList.remove("on");
+          current = null;
+          step = 0;
+          introSlidesTimer = setTimeout(show, 300);
+        }, 1300);
+        return;
+      }
+
+      step++;
+      show();
+
+    }, s.dur);
+  }
+
+  show();
+}
+
+function syncIntroVideo() {
+
+  const video = document.getElementById("introVideo");
+  if (!video) return;
+
+  const visible = visibleScreen() === "videoScreen";
+
+  if (!visible) {
+    video.pause();
+    stopIntroSlides();
+    return;
+  }
+
+  if (introVideoOK) {
+    video.play().catch(() => {
+      // Αν δεν μπορεί να παίξει, περνάμε στις φωτογραφίες
+      if (video.error || video.networkState === 3) useIntroSlides();
+    });
+  } else {
+    startIntroSlides();
+  }
+}
+
+function useIntroSlides() {
+  introVideoOK = false;
+  document.getElementById("introVideo").classList.add("hidden");
+  if (visibleScreen() === "videoScreen") startIntroSlides();
+}
+
+document.getElementById("introVideo").addEventListener("error", useIntroSlides);
+
 // Στο τέλος (εικόνα OBSESSED): πρώτα σιωπή για τον ήχο 5_2, μετά το 0_4
 let finalBackground = null;
 
@@ -7386,11 +7605,7 @@ function syncBackground() {
   preloadSounds();
 
   // Το βίντεο της εισαγωγής παίζει μόνο όσο φαίνεται η οθόνη του
-  const introVideo = document.getElementById("introVideo");
-  if (introVideo) {
-    if (visibleScreen() === "videoScreen") introVideo.play().catch(() => {});
-    else introVideo.pause();
-  }
+  syncIntroVideo();
 
   let allowed = SCREEN_BACKGROUNDS[visibleScreen()] || [];
 
