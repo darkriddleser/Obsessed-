@@ -3789,7 +3789,7 @@ function unlockAudio() {
     // Χωρίς Web Audio: "ξεκλειδώνουμε" κάθε <audio> μέσα στο άγγιγμα
     // (η μουσική της αρχής ξεκινά αμέσως, δεν την "ξεκλειδώνουμε")
     const all = [...document.querySelectorAll("audio")]
-      .filter(audio => !audio.id.startsWith("bg-intro"));
+      .filter(audio => !audio.id.startsWith("bg-intro") && !audio.id.startsWith("bg-start"));
 
     all.forEach(audio => {
       audio.muted = true;
@@ -4046,13 +4046,21 @@ function enterExperience(language) {
   updateLanguage();
 }
 
-// Αν ο παίκτης αγγίξει οπουδήποτε στην πρώτη οθόνη, ξεκινά ήδη η μουσική
-["touchend", "click"].forEach(type => {
-  document.getElementById("languageScreen").addEventListener(type, () => {
-    if (currentBg) return;
-    unlockAudio();
-    syncBackground();
-  });
+// Μουσική πρώτης οθόνης: ο browser δεν αφήνει ήχο πριν από την πρώτη
+// επαφή του παίκτη, οπότε ξεκινά με το πρώτο άγγιγμα / κλικ / πλήκτρο
+let firstTouchDone = false;
+
+function startMusicOnFirstTouch() {
+  if (firstTouchDone) return;
+  firstTouchDone = true;
+  ["touchend", "click", "keydown"].forEach(type =>
+    document.removeEventListener(type, startMusicOnFirstTouch, { capture: true }));
+  unlockAudio();
+  syncBackground();
+}
+
+["touchend", "click", "keydown"].forEach(type => {
+  document.addEventListener(type, startMusicOnFirstTouch, { capture: true });
 });
 
 
@@ -6637,9 +6645,11 @@ const BG_VOLUME = 0.45;
 // loopAt: λίγο πριν σβήσει το τέλος του αρχείου ξεκινά ξανά από την αρχή
 // με crossfade, ώστε να μην υπάρχει ποτέ σιωπή
 const BG_TRACKS = {
-  // Από την αρχή μέχρι το Event 1: δύο κομμάτια που παίζουν μαζί
+  // Πρώτη οθόνη (επιλογή γλώσσας)
+  start:   { src: "0_4.mp3", loopAt: 72.5 },
+  // Από την επιλογή γλώσσας μέχρι το Event 1: δύο κομμάτια μαζί
   intro:   { layers: [ { src: "0.mp3",   loopAt: 100.3 },
-                       { src: "0_1.mp3", loopAt: 21.5 } ] },
+                       { src: "0_1.mp3", loopAt: 21.5, gain: 0.55 } ] },
   event1:  { src: "1.mp3",   loopAt: 77 },
   event2:  { src: "2.mp3",   loopAt: 39.5 },
   event3:  { src: "3.mp3",   loopAt: 78.5 },
@@ -6649,7 +6659,7 @@ const BG_TRACKS = {
 
 // Ποια υπόβαθρα επιτρέπονται σε κάθε οθόνη (το πρώτο είναι αυτό που ξεκινά)
 const SCREEN_BACKGROUNDS = {
-  languageScreen: ["intro"],
+  languageScreen: ["start"],
   videoScreen:  ["intro"],
   storyScreen1: ["event1"],
   storyScreen2: ["event2"],
@@ -6708,11 +6718,12 @@ function preloadSounds() {
 }
 
 // ---- Web Audio: ένα κομμάτι της λούπας, με crossfade στο επόμενο ----
-function scheduleBgSegment(state, buffer, startAt, fadeIn, layerLoopAt) {
+function scheduleBgSegment(state, buffer, startAt, fadeIn, layerLoopAt, layerGain = 1) {
 
   const loopAt = Math.min(layerLoopAt, buffer.duration);
 
   const gain = audioCtx.createGain();
+  gain.gain.value = layerGain;
   gain.connect(state.bus);
 
   const source = audioCtx.createBufferSource();
@@ -6721,13 +6732,13 @@ function scheduleBgSegment(state, buffer, startAt, fadeIn, layerLoopAt) {
 
   if (fadeIn) {
     gain.gain.setValueAtTime(0, startAt);
-    gain.gain.linearRampToValueAtTime(1, startAt + BG_LOOP_FADE);
+    gain.gain.linearRampToValueAtTime(layerGain, startAt + BG_LOOP_FADE);
   }
 
   source.start(startAt);
 
   const next = startAt + loopAt - BG_LOOP_FADE;
-  gain.gain.setValueAtTime(1, next);
+  gain.gain.setValueAtTime(layerGain, next);
   gain.gain.linearRampToValueAtTime(0, next + BG_LOOP_FADE);
   source.stop(next + BG_LOOP_FADE + 0.1);
 
@@ -6735,7 +6746,7 @@ function scheduleBgSegment(state, buffer, startAt, fadeIn, layerLoopAt) {
   source.onended = () => { state.sources = state.sources.filter(s => s !== source); };
 
   state.timers.push(setTimeout(() => {
-    if (state.playing) scheduleBgSegment(state, buffer, next, true, layerLoopAt);
+    if (state.playing) scheduleBgSegment(state, buffer, next, true, layerLoopAt, layerGain);
   }, Math.max(0, next - audioCtx.currentTime - 2) * 1000));
 }
 
@@ -6787,7 +6798,7 @@ function setBackground(name, volume = BG_VOLUME, fade = BG_CHANGE_FADE) {
       el.volume = 0;
       el.muted = false;
       el.play().catch(error => audioErrors.push("Υπόβαθρο: " + name + " " + error.message));
-      rampElement(el, volume, fade);
+      rampElement(el, volume * el.layerGain, fade);
     });
     return;
   }
@@ -6806,7 +6817,7 @@ function setBackground(name, volume = BG_VOLUME, fade = BG_CHANGE_FADE) {
     rampParam(state.bus.gain, state.target, fade);
     const startAt = audioCtx.currentTime + 0.05;
     buffers.forEach((buffer, i) => {
-      if (buffer) scheduleBgSegment(state, buffer, startAt, false, layers[i].loopAt);
+      if (buffer) scheduleBgSegment(state, buffer, startAt, false, layers[i].loopAt, layers[i].gain ?? 1);
     });
   });
 }
@@ -6820,7 +6831,7 @@ function setBackgroundVolume(name, volume, duration) {
   state.target = volume;
 
   if (!USE_WEBAUDIO) {
-    (state.els || []).forEach(el => rampElement(el, volume, duration));
+    (state.els || []).forEach(el => rampElement(el, volume * el.layerGain, duration));
     return;
   }
 
@@ -6848,6 +6859,7 @@ if (!USE_WEBAUDIO) {
       audio.id = "bg-" + name + "-" + i;
       audio.className = "bg-audio";
       audio.src = layer.src;
+      audio.layerGain = layer.gain ?? 1;
       audio.loop = true;
       audio.preload = "auto";
       document.body.appendChild(audio);
