@@ -2439,13 +2439,13 @@ body {
   background: #000;
   opacity: .94;
   pointer-events: none;
-  transition: opacity 1.8s ease;
+  transition: opacity 3s ease;
 }
 
 .pool-glow {
   position: absolute;
   z-index: 2;
-  width: 95%;
+  width: 30%;
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translate(-50%, -62%);
@@ -2456,8 +2456,11 @@ body {
   mix-blend-mode: screen;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity 1.2s ease, width 3s ease;
 }
+
+/* Όταν ανάψουν και τα τρία, το φως απλώνεται σε όλο το υπόγειο */
+.pool-scene.all-lit .pool-glow { width: 95%; }
 
 .pool-glow.lit {
   opacity: 1;
@@ -3456,6 +3459,44 @@ html.final-lock body {
   70%  { opacity: .12; }
   100% { opacity: .25; }
 }
+
+/* Εικονίδια σχεδιασμένα (φαίνονται σε κάθε υπολογιστή, όχι σύμβολα γραμματοσειράς) */
+.moon-icon { width: 1em; height: 1em; display: inline-block; vertical-align: middle; }
+
+.browser-nav { display: inline-flex; gap: 8px; align-items: center; letter-spacing: 0; }
+
+.browser-nav svg,
+.tab-x svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+
+.tab-x { display: inline-flex; }
+.tab-x svg { width: 11px; height: 11px; }
+
+/* Κλείδωμα υπολογιστή: τα σύμβολα με σταθερό μέγεθος, για να φαίνονται σε κάθε browser (Safari/Firefox/Chrome) */
+.lock-symbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 56px;
+}
+
+.lock-symbol .vodou-symbol {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 52px;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
 </style>
 </head>
 
@@ -3870,7 +3911,7 @@ html.final-lock body {
 
       <!-- Φυλλάδιο μέντιουμ -->
       <div id="mediumFlyer" class="desk-item flat medium-flyer" onclick="openDeskItem('flyer')">
-        <div class="flyer-symbol">☽&#xFE0E;</div>
+        <div class="flyer-symbol"><svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 3.2A9 9 0 1 0 15.5 20.8 7.2 7.2 0 0 1 15.5 3.2Z" fill="currentColor"/></svg></div>
         <div class="flyer-name">CÉLESTE</div>
       </div>
 
@@ -5600,7 +5641,7 @@ function openDeskItem(type) {
         <div id="cardInner" class="flyer-inner">
           <div class="flyer-face flyer-front">
             <div class="f-title">${t.flyerTitle}</div>
-            <div class="f-symbol">☽&#xFE0E;</div>
+            <div class="f-symbol"><svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 3.2A9 9 0 1 0 15.5 20.8 7.2 7.2 0 0 1 15.5 3.2Z" fill="currentColor"/></svg></div>
             <div class="f-name">Madame Céleste Marchand</div>
             <div class="f-quote">${t.flyerQuote}</div>
             <div class="f-details">${t.flyerDetails}</div>
@@ -5853,12 +5894,12 @@ function buildForumSite() {
 
         <div class="browser-tabs">
           <span class="browser-dot"></span>
-          <div class="browser-tab">Curiosity Lust <span class="tab-x">✕</span></div>
+          <div class="browser-tab">Curiosity Lust <span class="tab-x"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7 L17 17 M17 7 L7 17"/></svg></span></div>
           <span class="tab-plus">+</span>
         </div>
 
         <div class="browser-bar">
-          <span class="browser-nav">←→⟳</span>
+          <span class="browser-nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 H5 M11 6 L5 12 L11 18"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 A7 7 0 1 1 16.9 7 M19 4 V8 H15"/></svg></span>
           <div class="browser-url">
             <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg>
             curiosity.lust@cur.com
@@ -6184,6 +6225,7 @@ function resetEvent5() {
   candlesLit.clear();
 
   document.getElementById("poolDark").style.opacity = "";
+  document.getElementById("poolScene").classList.remove("all-lit");
   [0, 1, 2].forEach(i => {
     document.getElementById("poolCandle" + i).classList.remove("lit");
     document.getElementById("poolGlow" + i).classList.remove("lit");
@@ -6304,7 +6346,7 @@ const POOL_FLATTEN = 0.32;
 const POOL_FLOOR_TOP = 0.6;
 
 // Πόσο σκοτάδι μένει ανάλογα με τα αναμμένα κεριά (0, 1, 2, 3)
-const POOL_DARK_LEVELS = [0.94, 0.72, 0.5, 0.22];
+const POOL_DARK_LEVELS = [0.94, 0.91, 0.88, 0.22];   // κάθε κερί φωτίζει λίγο γύρω του, όλο το υπόγειο φωτίζεται με το τρίτο
 
 let basementActive = false;
 const candlesLit = new Set();
@@ -6360,6 +6402,7 @@ function lightCandle(i) {
 
   // Όταν ανάψουν και τα τρία: αρχίζει το αίμα
   if (candlesLit.size === 3) {
+    document.getElementById("poolScene").classList.add("all-lit");
     basementActive = false;
     onCandlesLit();
   }
