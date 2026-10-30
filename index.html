@@ -3426,7 +3426,7 @@ html.final-lock body {
   object-fit: cover;
   opacity: 0;
   transform: scale(1.1);
-  transition: opacity 2.5s ease-in-out;
+  transition: opacity var(--fade, 2.5s) ease-in-out;
 }
 
 .intro-slides img.on {
@@ -3434,7 +3434,7 @@ html.final-lock body {
   animation: introZoom var(--dur, 8s) linear forwards;
 }
 
-.intro-slides img.slow { transition-duration: 3s; }
+.intro-slides img.slow { transition-duration: var(--fade-slow, 3s); }
 
 /* Όταν μένει μόνος: πιο κρύα, χωρίς ζεστασιά */
 .intro-slides img.cold { filter: saturate(.75) hue-rotate(-8deg) brightness(.95); }
@@ -3450,7 +3450,8 @@ html.final-lock body {
   background: #000;
   opacity: 1;
   pointer-events: none;
-  transition: opacity 2.2s ease-in-out;
+  transition: opacity var(--dark-fade, 2.2s) ease-in-out;
+  z-index: 1000000;
   box-shadow: inset 0 0 90px rgba(0,0,0,.9);
 }
 
@@ -3459,7 +3460,7 @@ html.final-lock body {
 .intro-dark.flicker {
   opacity: 0;
   transition: none;
-  animation: introFlicker 1.5s ease-in-out forwards;
+  animation: introFlicker var(--flicker, 1.5s) ease-in-out forwards;
 }
 
 @keyframes introFlicker {
@@ -3696,7 +3697,7 @@ html.final-lock body {
 
   <div class="video-frame">
 
-    <video id="introVideo" src="intro.mp4" muted playsinline preload="auto"
+    <video id="introVideo" src="intro.mp4" muted loop playsinline preload="auto"
            disablepictureinpicture></video>
 
     <!-- Αν δεν υπάρχει το intro.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
@@ -7551,6 +7552,8 @@ const INTRO_SPEED = 1.5;
 const INTRO_BUTTON_FALLBACK = 60000;
 
 let introFirstLoopDone = false;
+let introLastTime = 0;
+let introSlideLayer = 0;
 let introFallbackTimer = null;
 
 // Χρόνος για τις φωτογραφίες, προσαρμοσμένος στην ταχύτητα
@@ -7572,7 +7575,7 @@ function resetIntro() {
   document.getElementById("startButton").classList.add("intro-wait");
 
   const video = document.getElementById("introVideo");
-  video.loop = false;
+  introLastTime = 0;
   try { video.currentTime = 0; } catch (e) {}
 
   stopIntroSlides();
@@ -7627,6 +7630,12 @@ function startIntroSlides() {
   box.classList.remove("hidden");
   loadIntroSlides();
 
+  // Οι διάρκειες των fade ακολουθούν την ταχύτητα, ώστε κάθε αλλαγή να ολοκληρώνεται
+  box.style.setProperty("--fade", introMs(2500) + "ms");
+  box.style.setProperty("--fade-slow", introMs(3000) + "ms");
+  box.style.setProperty("--dark-fade", introMs(2200) + "ms");
+  box.style.setProperty("--flicker", introMs(1500) + "ms");
+
   let step = 0;
   let current = null;
 
@@ -7645,6 +7654,7 @@ function startIntroSlides() {
     img.style.setProperty("--dur", introMs(s.dur + 3500) + "ms");
     if (s.cold) img.classList.add("cold");
     if (s.slow) img.classList.add("slow");
+    img.style.zIndex = ++introSlideLayer;
     img.classList.add("on");
 
     // Από το σκοτάδι: στην αρχή της λούπας και όταν μένει μόνος
@@ -7733,16 +7743,15 @@ document.getElementById("introVideo").addEventListener("error", useIntroSlides);
 // Ο browser μηδενίζει την ταχύτητα όταν φορτώνει το βίντεο: την ξαναβάζουμε
 document.getElementById("introVideo").addEventListener("loadedmetadata", e => applyIntroSpeed(e.target));
 
-// Τελείωσε η πρώτη λούπα: εμφανίζεται το κουμπί και το βίντεο συνεχίζει σε λούπα
-document.getElementById("introVideo").addEventListener("ended", e => {
+// Τέλος πρώτης λούπας: ο χρόνος του βίντεο φτάνει στο τέλος ή γυρίζει στην αρχή.
+// Το βίντεο κάνει τη λούπα μόνο του (loop), οπότε δεν υπάρχει κόψιμο.
+document.getElementById("introVideo").addEventListener("timeupdate", e => {
   const video = e.target;
-  showStartButton();
-  video.loop = true;
-  try { video.currentTime = 0; } catch (err) {}
-  if (visibleScreen() === "videoScreen") {
-    applyIntroSpeed(video);
-    video.play().catch(() => {});
-  }
+  const t = video.currentTime;
+  const nearEnd = video.duration && t >= video.duration - 0.35;
+  const wrapped = introLastTime > 1 && t + 0.5 < introLastTime;
+  if (nearEnd || wrapped) showStartButton();
+  introLastTime = t;
 });
 
 // Στο τέλος (εικόνα OBSESSED): πρώτα σιωπή για τον ήχο 5_2, μετά το 0_4
