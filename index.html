@@ -3399,6 +3399,17 @@ html.final-lock body {
   pointer-events: none;
 }
 
+/* Το κουμπί "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ" εμφανίζεται μόλις τελειώσει η πρώτη λούπα του βίντεο */
+#startButton {
+  transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+#startButton.intro-wait {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* Εισαγωγή από φωτογραφίες (video1–video8) */
 .intro-slides {
   position: absolute;
@@ -3685,7 +3696,7 @@ html.final-lock body {
 
   <div class="video-frame">
 
-    <video id="introVideo" src="intro.mp4" muted loop playsinline preload="auto"
+    <video id="introVideo" src="intro.mp4" muted playsinline preload="auto"
            disablepictureinpicture></video>
 
     <!-- Αν δεν υπάρχει το intro.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
@@ -3704,7 +3715,7 @@ html.final-lock body {
 
   <button
     id="startButton"
-    class="start-button"
+    class="start-button intro-wait"
     onclick="nextScreen()">
   </button>
 
@@ -4575,6 +4586,9 @@ function enterExperience(language) {
   document
     .getElementById("languageScreen")
     .classList.add("hidden");
+
+  // Το βίντεο της εισαγωγής ξεκινά από την αρχή και το κουμπί περιμένει την πρώτη λούπα
+  resetIntro();
 
   document
     .getElementById("videoScreen")
@@ -7529,6 +7543,48 @@ let introVideoOK = true;
 let introSlidesTimer = null;
 let introSlidesRunning = false;
 
+// Πόσο πιο γρήγορα παίζει η εισαγωγή (1 = κανονικά, 1.5 = μιάμιση φορά πιο γρήγορα)
+const INTRO_SPEED = 1.5;
+
+// Αν για κάποιο λόγο η πρώτη λούπα δεν τελειώσει (π.χ. κόλλησε το βίντεο),
+// το κουμπί εμφανίζεται έτσι κι αλλιώς μετά από τόσα δευτερόλεπτα
+const INTRO_BUTTON_FALLBACK = 60000;
+
+let introFirstLoopDone = false;
+let introFallbackTimer = null;
+
+// Χρόνος για τις φωτογραφίες, προσαρμοσμένος στην ταχύτητα
+function introMs(ms) {
+  return ms / INTRO_SPEED;
+}
+
+function showStartButton() {
+  if (introFirstLoopDone) return;
+  introFirstLoopDone = true;
+  clearTimeout(introFallbackTimer);
+  document.getElementById("startButton").classList.remove("intro-wait");
+}
+
+function resetIntro() {
+
+  introFirstLoopDone = false;
+  clearTimeout(introFallbackTimer);
+  document.getElementById("startButton").classList.add("intro-wait");
+
+  const video = document.getElementById("introVideo");
+  video.loop = false;
+  try { video.currentTime = 0; } catch (e) {}
+
+  stopIntroSlides();
+
+  introFallbackTimer = setTimeout(showStartButton, INTRO_BUTTON_FALLBACK);
+}
+
+function applyIntroSpeed(video) {
+  video.defaultPlaybackRate = INTRO_SPEED;
+  video.playbackRate = INTRO_SPEED;
+}
+
 // Η ιστορία: χορός → η γυναίκα χάνεται → μένει μόνος → επιστρέφει
 const INTRO_STEPS = [
   { n: 6, dur: 4500 },
@@ -7586,7 +7642,7 @@ function startIntroSlides() {
     // Όλες κάνουν αργό ζουμ άουτ
     img.style.setProperty("--z0", 1.1);
     img.style.setProperty("--z1", 1.0);
-    img.style.setProperty("--dur", (s.dur + 3500) + "ms");
+    img.style.setProperty("--dur", introMs(s.dur + 3500) + "ms");
     if (s.cold) img.classList.add("cold");
     if (s.slow) img.classList.add("slow");
     img.classList.add("on");
@@ -7599,7 +7655,7 @@ function startIntroSlides() {
 
     const prev = current;
     current = img;
-    if (prev && prev !== img) setTimeout(() => prev.classList.remove("on"), s.slow ? 3000 : 2500);
+    if (prev && prev !== img) setTimeout(() => prev.classList.remove("on"), introMs(s.slow ? 3000 : 2500));
 
     introSlidesTimer = setTimeout(() => {
 
@@ -7614,9 +7670,9 @@ function startIntroSlides() {
           introSlidesTimer = setTimeout(() => {
             current.classList.remove("on");
             step++;
-            introSlidesTimer = setTimeout(show, 400);
-          }, 2400);
-        }, 1500);
+            introSlidesTimer = setTimeout(show, introMs(400));
+          }, introMs(2400));
+        }, introMs(1500));
         return;
       }
 
@@ -7626,15 +7682,17 @@ function startIntroSlides() {
           current.classList.remove("on");
           current = null;
           step = 0;
-          introSlidesTimer = setTimeout(show, 300);
-        }, 2400);
+          // Τελείωσε η πρώτη λούπα: εμφανίζεται το κουμπί
+          showStartButton();
+          introSlidesTimer = setTimeout(show, introMs(300));
+        }, introMs(2400));
         return;
       }
 
       step++;
       show();
 
-    }, s.dur);
+    }, introMs(s.dur));
   }
 
   show();
@@ -7654,6 +7712,7 @@ function syncIntroVideo() {
   }
 
   if (introVideoOK) {
+    applyIntroSpeed(video);
     video.play().catch(() => {
       // Αν δεν μπορεί να παίξει, περνάμε στις φωτογραφίες
       if (video.error || video.networkState === 3) useIntroSlides();
@@ -7670,6 +7729,21 @@ function useIntroSlides() {
 }
 
 document.getElementById("introVideo").addEventListener("error", useIntroSlides);
+
+// Ο browser μηδενίζει την ταχύτητα όταν φορτώνει το βίντεο: την ξαναβάζουμε
+document.getElementById("introVideo").addEventListener("loadedmetadata", e => applyIntroSpeed(e.target));
+
+// Τελείωσε η πρώτη λούπα: εμφανίζεται το κουμπί και το βίντεο συνεχίζει σε λούπα
+document.getElementById("introVideo").addEventListener("ended", e => {
+  const video = e.target;
+  showStartButton();
+  video.loop = true;
+  try { video.currentTime = 0; } catch (err) {}
+  if (visibleScreen() === "videoScreen") {
+    applyIntroSpeed(video);
+    video.play().catch(() => {});
+  }
+});
 
 // Στο τέλος (εικόνα OBSESSED): πρώτα σιωπή για τον ήχο 5_2, μετά το 0_4
 let finalBackground = null;
