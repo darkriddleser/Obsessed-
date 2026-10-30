@@ -4810,23 +4810,52 @@ function previousScreen() {
 }
 
 
+// =========================================
+// EVENT 01 - ΓΡΙΦΟΣ: ΚΟΚΚΙΝΑ ΤΡΙΑΝΤΑΦΥΛΛΑ
+// Δεκτές απαντήσεις: τριαντάφυλλα, ρόδα, λουλούδια, ανθοδέσμη/μπουκέτο,
+// με ή χωρίς "κόκκινα", με άρθρο, με ορθογραφικά λάθη, Greeklish και Αγγλικά
+// =========================================
+
 function checkRiddle1() {
 
   const input = document.getElementById("riddleAnswer1");
   const message = document.getElementById("riddleMessage1");
 
+  // Καθαρισμός: χωρίς τόνους, κενά, σημεία στίξης, κεφαλαία, τελικό ς → σ
   const answer = input.value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/ς/g, "σ")
+    .replace(/[^a-zα-ω]/g, "");
 
-  if (
-    answer === "κοκκινοτριανταφυλλο" ||
-    answer === "κοκκινατριανταφυλλα" ||
-    answer === "redrose" ||
-    answer === "redroses"
-  ) {
+  // Λέξεις-κλειδιά: αν η απάντηση περιέχει κάποια από αυτές, είναι σωστή
+  // (πιάνει άρθρα, πληθυντικούς, "ένα μπουκέτο κόκκινα τριαντάφυλλα" κ.λπ.)
+  const keywords = [
+    // Ελληνικά (μαζί με συνηθισμένα λάθη)
+    "τριανταφυλ", "τριανταφιλ", "τριαντφυλ", "τριανταφηλ",
+    "λουλουδ",
+    "ανθοδεσμ", "ανθοδεσμη", "μπουκετ",
+    // Αγγλικά (μαζί με συνηθισμένα λάθη)
+    "rose", "roze", "flower", "flowr", "bouquet", "boquet", "bouqet",
+    // Greeklish
+    "triantaf", "triadaf", "triandaf", "louloud", "loulud",
+    "anthodesm", "mpouket", "bouket"
+  ];
+
+  // Ρόδο / ρόδα: μόνο ακριβείς απαντήσεις (για να μη μετράει π.χ. "ροδάκινο")
+  const exactAnswers = [
+    "ροδο", "ροδα", "κοκκινοροδο", "κοκκιναροδα", "κοκινοροδο", "κοκιναροδα",
+    "τοροδο", "ταροδα", "εναροδο", "τακοκκιναροδα", "τοκοκκινοροδο",
+    "rodo", "roda", "kokkinorodo", "kokkinaroda", "kokinorodo", "kokinaroda"
+  ];
+
+  const isCorrect =
+    keywords.some(word => answer.includes(word)) ||
+    exactAnswers.includes(answer);
+
+  if (isCorrect) {
+
     input.style.borderColor = "#2f7d45";
     message.style.color = "#5fa873";
 
@@ -4834,9 +4863,6 @@ function checkRiddle1() {
       selectedLanguage === "gr"
         ? "Σωστά."
         : "Correct.";
-
-    // Τα κινητά επιτρέπουν ήχο μόνο μετά από άγγιγμα:
-    // "ξεκλειδώνουμε" εδώ τους ήχους του Event 02
 
     eventTimeout(() => {
       nextEvent();
