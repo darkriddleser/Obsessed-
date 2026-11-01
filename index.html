@@ -219,13 +219,15 @@ body {
   justify-content: center;
 }
 
-/* Βίντεο + κείμενο. Το βίντεο φαίνεται ολόκληρο (κάθετο), από άκρη σε άκρη στο κινητό.
-   Σε κοντές οθόνες μικραίνει ώστε να χωρά και το κουμπί από κάτω χωρίς scroll. */
+/* Το βίντεο της εισαγωγής: μικρό στο κέντρο, σαν να φαίνεται από μακριά,
+   και χάνεται απαλά στο σκοτάδι. Από κάτω χωρούν κείμενο και κουμπί χωρίς scroll.
+   INTRO_DISTANCE: όσο μικρότερο, τόσο πιο "μακριά" φαίνεται (σε % του πλάτους της οθόνης) */
 .intro-stage {
+  --intro-distance: 68vw;
   position: relative;
   flex-shrink: 0;
-  width: min(calc(100% + 48px), calc((100vh - 160px) * 0.624));
-  width: min(calc(100% + 48px), calc((100svh - 160px) * 0.624));
+  width: min(var(--intro-distance), calc((100vh - 320px) * 0.624));
+  width: min(var(--intro-distance), calc((100svh - 320px) * 0.624));
 }
 
 .video-frame {
@@ -241,9 +243,9 @@ body {
 
   flex-shrink: 1;
 
-  /* Απαλό σβήσιμο πάνω και κάτω: το βίντεο δεν έχει σκληρές άκρες */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 9%, #000 88%, transparent 100%);
-          mask-image: linear-gradient(to bottom, transparent 0, #000 9%, #000 88%, transparent 100%);
+  /* Οι άκρες σβήνουν ομαλά προς όλες τις πλευρές: το βίντεο "χάνεται" στο σκοτάδι */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%);
 }
 
 /* Κόκκος φιλμ και σκοτάδι στις γωνίες, όπως στις άλλες σκηνές του site */
@@ -625,19 +627,7 @@ body {
 @media (min-width: 768px) {
 
   .intro-stage {
-    width: min(440px, calc((100vh - 160px) * 0.624));
-  }
-
-  /* Στον υπολογιστή σβήνουν απαλά και τα πλάγια */
-  .intro-stage:not(.slides-mode) .video-frame {
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0, #000 9%, #000 88%, transparent 100%),
-      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-image:
-      linear-gradient(to bottom, transparent 0, #000 9%, #000 88%, transparent 100%),
-      linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
-    mask-composite: intersect;
+    --intro-distance: 300px;
   }
 
   .intro-stage.slides-mode {
@@ -3446,8 +3436,13 @@ html.final-lock body {
   transition: opacity 1.8s ease;
 }
 
+/* Λίγο θαμπό και απαλό, σαν ανάμνηση από μακριά */
 #introVideo.on {
-  opacity: 1;
+  opacity: .85;
+}
+
+#introVideo {
+  filter: blur(.5px) saturate(.9);
 }
 
 /* Το κουμπί "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ" εμφανίζεται μόλις τελειώσει η πρώτη λούπα του βίντεο */
@@ -3456,41 +3451,28 @@ html.final-lock body {
   transition: opacity 1.5s ease, visibility 1.5s ease;
 }
 
-/* Το κείμενο της εισαγωγής πάνω στο κάτω μέρος του βίντεο (στο σκοτεινό πάτωμα) */
-.intro-stage #introText {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
-  max-width: none;
-  margin: 0;
-  padding: 70px 22px 20px;
-  font-size: 16.5px;
-  line-height: 1.6;
-  background: linear-gradient(to bottom,
-    transparent 0%,
-    rgba(0,0,0,.55) 35%,
-    rgba(0,0,0,.88) 100%);
-  pointer-events: none;
+/* Το κείμενο της εισαγωγής κάτω από το βίντεο */
+#videoScreen #introText {
+  margin: 14px auto 0;
+  font-size: 17.5px;
+  line-height: 1.7;
 }
 
-/* Αν δεν υπάρχει βίντεο: οριζόντιο κάδρο για τις φωτογραφίες, κείμενο από κάτω */
+/* Αν δεν υπάρχει βίντεο: οριζόντιο κάδρο για τις φωτογραφίες */
 .intro-stage.slides-mode {
   width: calc(100% + 48px);
 }
 
 .intro-stage.slides-mode .video-frame {
   aspect-ratio: 16 / 9;
+  -webkit-mask-image: none;
+          mask-image: none;
 }
 
-.intro-stage.slides-mode #introText {
-  position: static;
-  padding: 0;
-  margin: 30px auto 12px;
-  font-size: 19px;
-  line-height: 1.75;
-  background: none;
+@media (min-width: 768px) {
+  .intro-stage.slides-mode {
+    width: min(760px, 90vw);
+  }
 }
 
 #startButton.intro-wait {
@@ -3805,11 +3787,11 @@ html.final-lock body {
 
   </div>
 
+  </div>
+
   <div
     id="introText"
     class="quote">
-  </div>
-
   </div>
 
   <button
