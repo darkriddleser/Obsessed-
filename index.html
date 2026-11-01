@@ -227,10 +227,11 @@ body {
 .video-frame {
   position: relative;
 
-  /* Κινηματογραφικό κάδρο 16:9, από άκρη σε άκρη στο κινητό */
-  width: calc(100% + 48px);
-  margin: 0 -24px;
-  aspect-ratio: 16 / 9;
+  /* Τετράγωνο κάδρο για το intro.mp4, από άκρη σε άκρη στο κινητό
+     (σε κοντές οθόνες μικραίνει για να χωρά και το κουμπί) */
+  width: min(calc(100% + 48px), 52svh);
+  margin: 0;
+  aspect-ratio: 1 / 1;
 
   background: #050505;
   border: 1px solid #351010;
@@ -597,7 +598,7 @@ body {
 @media (min-width: 768px) {
 
   .video-frame {
-    width: min(760px, 90vw);
+    width: min(520px, 90vw, 58vh);
     margin: 0;
   }
 
@@ -7545,7 +7546,7 @@ let introSlidesTimer = null;
 let introSlidesRunning = false;
 
 // Πόσο πιο γρήγορα παίζει η εισαγωγή (1 = κανονικά, 1.5 = μιάμιση φορά πιο γρήγορα)
-const INTRO_SPEED = 1.5;
+const INTRO_SPEED = 1.25;
 
 // Αν για κάποιο λόγο η πρώτη λούπα δεν τελειώσει (π.χ. κόλλησε το βίντεο),
 // το κουμπί εμφανίζεται έτσι κι αλλιώς μετά από τόσα δευτερόλεπτα
