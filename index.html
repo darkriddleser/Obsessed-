@@ -219,19 +219,26 @@ body {
       #000 100%
     );
 
-  padding-top: 35px;
-  padding-bottom: 100px;
+  padding-top: 16px;
+  padding-bottom: 72px;
   justify-content: center;
+}
+
+/* Βίντεο + κείμενο. Το βίντεο φαίνεται ολόκληρο (κάθετο), από άκρη σε άκρη στο κινητό.
+   Σε κοντές οθόνες μικραίνει ώστε να χωρά και το κουμπί από κάτω χωρίς scroll. */
+.intro-stage {
+  position: relative;
+  flex-shrink: 0;
+  width: min(calc(100% + 48px), calc((100vh - 160px) * 0.624));
+  width: min(calc(100% + 48px), calc((100svh - 160px) * 0.624));
 }
 
 .video-frame {
   position: relative;
 
-  /* Τετράγωνο κάδρο για το CTCAE9123.mp4, από άκρη σε άκρη στο κινητό
-     (σε κοντές οθόνες μικραίνει για να χωρά και το κουμπί) */
-  width: min(calc(100% + 48px), 52svh);
+  width: 100%;
   margin: 0;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 956 / 1532;
 
   background: #050505;
   border: 1px solid #351010;
@@ -597,9 +604,12 @@ body {
 
 @media (min-width: 768px) {
 
-  .video-frame {
-    width: min(520px, 90vw, 58vh);
-    margin: 0;
+  .intro-stage {
+    width: min(440px, calc((100vh - 160px) * 0.624));
+  }
+
+  .intro-stage.slides-mode {
+    width: min(760px, 90vw);
   }
 
   .quote {
@@ -3402,7 +3412,45 @@ html.final-lock body {
 
 /* Το κουμπί "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ" εμφανίζεται μόλις τελειώσει η πρώτη λούπα του βίντεο */
 #startButton {
+  margin-top: 18px;
   transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+/* Το κείμενο της εισαγωγής πάνω στο κάτω μέρος του βίντεο (στο σκοτεινό πάτωμα) */
+.intro-stage #introText {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  max-width: none;
+  margin: 0;
+  padding: 70px 22px 20px;
+  font-size: 16.5px;
+  line-height: 1.6;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(0,0,0,.55) 35%,
+    rgba(0,0,0,.88) 100%);
+  pointer-events: none;
+}
+
+/* Αν δεν υπάρχει βίντεο: οριζόντιο κάδρο για τις φωτογραφίες, κείμενο από κάτω */
+.intro-stage.slides-mode {
+  width: calc(100% + 48px);
+}
+
+.intro-stage.slides-mode .video-frame {
+  aspect-ratio: 16 / 9;
+}
+
+.intro-stage.slides-mode #introText {
+  position: static;
+  padding: 0;
+  margin: 30px auto 12px;
+  font-size: 19px;
+  line-height: 1.75;
+  background: none;
 }
 
 #startButton.intro-wait {
@@ -3696,12 +3744,19 @@ html.final-lock body {
 
 <div id="videoScreen" class="screen hidden">
 
+  <div id="introStage" class="intro-stage">
+
   <div class="video-frame">
 
-    <video id="introVideo" src="CTCAE9123.MOV" muted loop playsinline preload="auto"
-           disablepictureinpicture></video>
+    <!-- Το βίντεο της εισαγωγής, με τη δική του μουσική.
+         Δοκιμάζει πρώτα το CTCAE9123.mp4 (παίζει σε όλα τα κινητά)
+         και αν δεν υπάρχει, το CTCAE9123.MOV (παίζει σίγουρα μόνο σε iPhone / Safari) -->
+    <video id="introVideo" loop playsinline preload="auto" disablepictureinpicture>
+      <source src="CTCAE9123.mp4?v=3" type="video/mp4">
+      <source src="CTCAE9123.MOV?v=3">
+    </video>
 
-    <!-- Αν δεν υπάρχει το CTCAE9123.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
+    <!-- Αν δεν παίζει κανένα από τα δύο: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
     <div id="introSlides" class="intro-slides hidden">
       <img data-n="1" alt=""><img data-n="2" alt=""><img data-n="3" alt=""><img data-n="4" alt="">
       <img data-n="5" alt=""><img data-n="6" alt=""><img data-n="7" alt=""><img data-n="8" alt="">
@@ -3713,6 +3768,8 @@ html.final-lock body {
   <div
     id="introText"
     class="quote">
+  </div>
+
   </div>
 
   <button
@@ -4385,10 +4442,12 @@ document.addEventListener("visibilitychange", () => {
     if (keepAliveAudio) keepAliveAudio.pause();
     pausedElements = [...document.querySelectorAll("audio")].filter(a => !a.paused);
     pausedElements.forEach(a => a.pause());
+    document.getElementById("introVideo").pause();
     return;
   }
 
   wakeAudio();
+  syncIntroVideo();
   // <audio> που δεν ξαναξεκίνησαν μένουν στη λίστα για το επόμενο άγγιγμα
   const retry = [];
   pausedElements.forEach(a => a.play().catch(() => retry.push(a)));
@@ -4400,7 +4459,7 @@ document.addEventListener("visibilitychange", () => {
 
 window.addEventListener("pagehide", () => {
   if (audioCtx) audioCtx.suspend();
-  document.querySelectorAll("audio").forEach(a => a.pause());
+  document.querySelectorAll("audio, video").forEach(a => a.pause());
 });
 
 // Επιστροφή στη σελίδα από το ιστορικό του browser
@@ -4693,7 +4752,7 @@ function resetMedia() {
   // Σταματούν τα εφέ. Τα υπόβαθρα αλλάζουν ομαλά από το setBackground()
   stopAllSounds();
 
-  document.querySelectorAll("video").forEach(video => {
+  document.querySelectorAll("video:not(#introVideo)").forEach(video => {
     video.pause();
     try { video.currentTime = 0; } catch (e) {}
   });
@@ -7546,7 +7605,7 @@ let introSlidesTimer = null;
 let introSlidesRunning = false;
 
 // Πόσο πιο γρήγορα παίζει η εισαγωγή (1 = κανονικά, 1.5 = μιάμιση φορά πιο γρήγορα)
-const INTRO_SPEED = 1.25;
+const INTRO_SPEED = 1;   // με τη μουσική του βίντεο, κανονική ταχύτητα
 
 // Αν για κάποιο λόγο η πρώτη λούπα δεν τελειώσει (π.χ. κόλλησε το βίντεο),
 // το κουμπί εμφανίζεται έτσι κι αλλιώς μετά από τόσα δευτερόλεπτα
@@ -7709,6 +7768,11 @@ function startIntroSlides() {
   show();
 }
 
+// Πόσο δυνατά παίζει η μουσική του βίντεο (0 έως 1). Στο iPhone ισχύει πάντα 1.
+const INTRO_VOLUME = 1;
+
+let introFadingOut = false;
+
 function syncIntroVideo() {
 
   const video = document.getElementById("introVideo");
@@ -7717,14 +7781,53 @@ function syncIntroVideo() {
   const visible = visibleScreen() === "videoScreen";
 
   if (!visible) {
-    video.pause();
     stopIntroSlides();
+
+    // Η μουσική του βίντεο σβήνει ομαλά και μετά σταματά
+    if (!video.paused && !introFadingOut) {
+      introFadingOut = true;
+      rampElement(video, 0, 900, () => {
+        video.pause();
+        introFadingOut = false;
+      });
+      // Ασφάλεια για iPhone (εκεί η ένταση δεν αλλάζει): σταματά σίγουρα
+      setTimeout(() => {
+        if (visibleScreen() !== "videoScreen") video.pause();
+        introFadingOut = false;
+      }, 950);
+    }
+    return;
+  }
+
+  // Κανένα αρχείο δεν βρέθηκε (ίσως πριν φορτώσει ο κώδικας): φωτογραφίες
+  if (introVideoOK && video.networkState === 3) {
+    useIntroSlides();
     return;
   }
 
   if (introVideoOK) {
     applyIntroSpeed(video);
-    video.play().catch(() => {
+    clearInterval(elementRamps[video.id]);
+    introFadingOut = false;
+    video.volume = INTRO_VOLUME;
+    video.muted = false;
+    video.play().catch(error => {
+      // Ο browser δεν άφησε ήχο: παίζει χωρίς ήχο και ο ήχος ανοίγει με το επόμενο άγγιγμα
+      if (error && error.name === "NotAllowedError") {
+        video.muted = true;
+        video.play().catch(() => {});
+        showSoundHint();
+        const unmute = () => {
+          document.removeEventListener("touchend", unmute, true);
+          document.removeEventListener("click", unmute, true);
+          video.muted = false;
+          if (visibleScreen() === "videoScreen") video.play().catch(() => {});
+          hideSoundHint();
+        };
+        document.addEventListener("touchend", unmute, true);
+        document.addEventListener("click", unmute, true);
+        return;
+      }
       // Αν δεν μπορεί να παίξει, περνάμε στις φωτογραφίες
       if (video.error || video.networkState === 3) useIntroSlides();
     });
@@ -7734,12 +7837,20 @@ function syncIntroVideo() {
 }
 
 function useIntroSlides() {
+  if (!introVideoOK) return;
   introVideoOK = false;
-  document.getElementById("introVideo").classList.add("hidden");
-  if (visibleScreen() === "videoScreen") startIntroSlides();
+  const video = document.getElementById("introVideo");
+  video.pause();
+  video.classList.add("hidden");
+  document.getElementById("introStage").classList.add("slides-mode");
+  // Χωρίς βίντεο δεν υπάρχει η μουσική του: παίζει η μουσική της εισαγωγής (0.mp3)
+  syncBackground();
 }
 
 document.getElementById("introVideo").addEventListener("error", useIntroSlides);
+
+// Με πολλά <source>, το σφάλμα έρχεται από το τελευταίο: τότε κανένα αρχείο δεν έπαιξε
+document.querySelector("#introVideo source:last-of-type").addEventListener("error", useIntroSlides);
 
 // Ο browser μηδενίζει την ταχύτητα όταν φορτώνει το βίντεο: την ξαναβάζουμε
 document.getElementById("introVideo").addEventListener("loadedmetadata", e => applyIntroSpeed(e.target));
@@ -7766,6 +7877,9 @@ function syncBackground() {
   syncIntroVideo();
 
   let allowed = SCREEN_BACKGROUNDS[visibleScreen()] || [];
+
+  // Εισαγωγή: ακούγεται μόνο η μουσική του βίντεο
+  if (visibleScreen() === "videoScreen" && introVideoOK) allowed = [];
 
   if (document.getElementById("storyScreen5").classList.contains("final") &&
       !document.getElementById("storyScreen5").classList.contains("hidden")) {
@@ -7823,6 +7937,12 @@ if (new URLSearchParams(location.search).has("debug")) {
 
     const lines = [];
 
+    const iv = document.getElementById("introVideo");
+    lines.push("Βίντεο: " + decodeURIComponent(iv.currentSrc || iv.getAttribute("src")) +
+      (iv.error ? "  ⚠ ΔΕΝ ΒΡΕΘΗΚΕ / ΔΕΝ ΠΑΙΖΕΙ (κωδ. " + iv.error.code + ")"
+        : iv.readyState >= 2 ? "  ✔ παίζει " + iv.currentTime.toFixed(1) + "/" + (iv.duration || 0).toFixed(1) + "s"
+        : "  (φορτώνει...)") +
+      (introVideoOK ? "" : "  → δείχνει τις φωτογραφίες video1–8"));
     lines.push("Τρόπος: " + (USE_WEBAUDIO ? "Web Audio" : "<audio> (" + location.protocol + ")"));
     if (USE_WEBAUDIO) lines.push("Ήχος: " + (audioCtx ? audioCtx.state : "δεν ξεκίνησε ακόμα (πάτα γλώσσα)"));
     lines.push("Φορτωμένα: " + Object.keys(audioBuffers).length);
