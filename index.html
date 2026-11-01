@@ -219,15 +219,15 @@ body {
   justify-content: center;
 }
 
-/* Το βίντεο της εισαγωγής: μικρό στο κέντρο, σαν να φαίνεται από μακριά,
-   και χάνεται απαλά στο σκοτάδι. Από κάτω χωρούν κείμενο και κουμπί χωρίς scroll.
-   INTRO_DISTANCE: όσο μικρότερο, τόσο πιο "μακριά" φαίνεται (σε % του πλάτους της οθόνης) */
+/* Το βίντεο της εισαγωγής: κινηματογραφικό κάδρο 4:5 στο κέντρο, με αέρα γύρω του.
+   Από κάτω χωρούν κείμενο και κουμπί χωρίς scroll.
+   --intro-distance: όσο μικρότερο, τόσο πιο "μακριά" φαίνεται (πλάτος κάδρου) */
 .intro-stage {
-  --intro-distance: 68vw;
+  --intro-distance: 82vw;
   position: relative;
   flex-shrink: 0;
-  width: min(var(--intro-distance), calc((100vh - 320px) * 0.624));
-  width: min(var(--intro-distance), calc((100svh - 320px) * 0.624));
+  width: min(var(--intro-distance), calc((100vh - 330px) * 0.8));
+  width: min(var(--intro-distance), calc((100svh - 330px) * 0.8));
 }
 
 .video-frame {
@@ -235,7 +235,7 @@ body {
 
   width: 100%;
   margin: 0;
-  aspect-ratio: 956 / 1532;
+  aspect-ratio: 4 / 5;
 
   background: #000;
 
@@ -243,9 +243,15 @@ body {
 
   flex-shrink: 1;
 
-  /* Οι άκρες σβήνουν ομαλά προς όλες τις πλευρές: το βίντεο "χάνεται" στο σκοτάδι */
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%);
-          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%);
+  /* Διακριτικό σβήσιμο στις άκρες: καθαρό ορθογώνιο, χωρίς σκληρή γραμμή */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%),
+    linear-gradient(to right,  transparent 0, #000 5%, #000 95%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image:
+    linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%),
+    linear-gradient(to right,  transparent 0, #000 5%, #000 95%, transparent 100%);
+          mask-composite: intersect;
 }
 
 /* Κόκκος φιλμ και σκοτάδι στις γωνίες, όπως στις άλλες σκηνές του site */
@@ -3429,6 +3435,8 @@ html.final-lock body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Το κάθετο βίντεο κόβεται λίγο πάνω-κάτω ώστε να μένουν στο κάδρο οι φιγούρες */
+  object-position: 50% 38%;
   pointer-events: none;
 
   /* Εμφανίζεται σιγά σιγά από το μαύρο μόλις ξεκινήσει */
@@ -3436,13 +3444,8 @@ html.final-lock body {
   transition: opacity 1.8s ease;
 }
 
-/* Λίγο θαμπό και απαλό, σαν ανάμνηση από μακριά */
 #introVideo.on {
-  opacity: .85;
-}
-
-#introVideo {
-  filter: blur(.5px) saturate(.9);
+  opacity: .92;
 }
 
 /* Το κουμπί "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ" εμφανίζεται μόλις τελειώσει η πρώτη λούπα του βίντεο */
@@ -3451,11 +3454,27 @@ html.final-lock body {
   transition: opacity 1.5s ease, visibility 1.5s ease;
 }
 
-/* Το κείμενο της εισαγωγής κάτω από το βίντεο */
+/* Το κείμενο της εισαγωγής κάτω από το βίντεο, με λεπτή κόκκινη γραμμή από πάνω */
 #videoScreen #introText {
-  margin: 14px auto 0;
-  font-size: 17.5px;
+  max-width: 330px;
+  margin: 22px auto 0;
+  padding: 0 8px;
+  font-size: 17px;
   line-height: 1.7;
+  letter-spacing: .3px;
+}
+
+#videoScreen #introText::before {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin: 0 auto 18px;
+  background: linear-gradient(to right, transparent, rgba(170,30,30,.9), transparent);
+}
+
+@media (min-width: 768px) {
+  #videoScreen #introText { max-width: 420px; }
 }
 
 /* Αν δεν υπάρχει βίντεο: οριζόντιο κάδρο για τις φωτογραφίες */
