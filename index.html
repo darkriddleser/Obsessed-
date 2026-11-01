@@ -3111,7 +3111,7 @@ html.final-lock body {
 
 .stamp-received {
   right: 18px;
-  bottom: 62px;
+  bottom: 30px;
   font-size: 10px;
   transform: rotate(8deg);
 }
@@ -3904,10 +3904,10 @@ html.final-lock body {
         <div id="calendarPages" class="calendar-pages">
 
           <div id="calendarPage" class="calendar-page">
-            <div id="calendarMonth" class="calendar-month">ΙΑΝΟΥΑΡΙΟΣ</div>
-            <div id="calendarDay" class="calendar-day">27</div>
-            <div id="calendarWeekday" class="calendar-weekday">Σάββατο</div>
-            <div id="calendarYear" class="calendar-year">2018</div>
+            <div id="calendarMonth" class="calendar-month">ΜΑΡΤΙΟΣ</div>
+            <div id="calendarDay" class="calendar-day">13</div>
+            <div id="calendarWeekday" class="calendar-weekday">Τρίτη</div>
+            <div id="calendarYear" class="calendar-year">2007</div>
           </div>
 
           <!-- Το σκισμένο υπόλειμμα που μένει πάνω -->
@@ -5262,8 +5262,8 @@ function showHiddenEvidence() {
 // EVENT 04 - ΗΜΕΡΟΛΟΓΙΟ
 // =========================================
 
-const CALENDAR_START = new Date(2018, 0, 27);  // 27 Ιανουαρίου 2018
-const CALENDAR_END   = new Date(2019, 4, 16);  // 16 Μαΐου 2019
+const CALENDAR_START = new Date(2007, 2, 13);  // 13 Μαρτίου 2007 (η φωτιά)
+const CALENDAR_END   = new Date(2008, 4, 16);  // 16 Μαΐου 2008 (το άρθρο για τη Margaret Hollis)
 
 const monthsGR = ["ΙΑΝΟΥΑΡΙΟΣ","ΦΕΒΡΟΥΑΡΙΟΣ","ΜΑΡΤΙΟΣ","ΑΠΡΙΛΙΟΣ","ΜΑΪΟΣ","ΙΟΥΝΙΟΣ",
                   "ΙΟΥΛΙΟΣ","ΑΥΓΟΥΣΤΟΣ","ΣΕΠΤΕΜΒΡΙΟΣ","ΟΚΤΩΒΡΙΟΣ","ΝΟΕΜΒΡΙΟΣ","ΔΕΚΕΜΒΡΙΟΣ"];
@@ -5273,23 +5273,23 @@ const monthsEN = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
 const weekdaysGR = ["Κυριακή","Δευτέρα","Τρίτη","Τετάρτη","Πέμπτη","Παρασκευή","Σάββατο"];
 const weekdaysEN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-// Πένθιμες μέρες
+// Πένθιμες μέρες (με χρονολογική σειρά)
 const calendarMoments = [
-  { date: new Date(2018, 1, 14),
-    gr: "Αγόρασε κόκκινα τριαντάφυλλα, όπως κάθε χρόνο. Αυτή τη φορά τα άφησε σε έναν τάφο.",
-    en: "He bought red roses, like every year. This time he left them on a grave." },
-  { date: new Date(2018, 3, 3),
+  { date: new Date(2007, 3, 3),
     gr: "Το τηλέφωνο χτυπούσε. Δεν το σήκωσε.",
     en: "The phone kept ringing. He didn't answer." },
-  { date: new Date(2018, 7, 12),
+  { date: new Date(2007, 6, 14),           // ένας χρόνος από τον θάνατο της Karen
+    gr: "Ένας χρόνος.",
+    en: "One year." },
+  { date: new Date(2007, 7, 12),
     gr: "Δεν άλλαξε ποτέ τα σεντόνια. Μύριζαν ακόμα εκείνη.",
     en: "He never changed the sheets. They still smelled of her." },
-  { date: new Date(2018, 11, 25),
+  { date: new Date(2007, 11, 25),
     gr: "Κανένα φως στο σπίτι.",
     en: "No lights in the house." },
-  { date: new Date(2019, 0, 27),
-    gr: "Ένας χρόνος.",
-    en: "One year." }
+  { date: new Date(2008, 1, 14),
+    gr: "Αγόρασε κόκκινα τριαντάφυλλα, όπως κάθε χρόνο. Αυτή τη φορά τα άφησε σε έναν τάφο.",
+    en: "He bought red roses, like every year. This time he left them on a grave." }
 ];
 
 function sameDay(a, b) {
@@ -5588,7 +5588,7 @@ function deskText() {
       hint: "Άγγιξε τα αντικείμενα στο γραφείο.",
       closeTip: "Άγγιξε για να κλείσει.",
       flyerTip: "Άγγιξε το φυλλάδιο για να το γυρίσεις · έξω για να κλείσει.",
-      dateline: "ΠΕΜΠΤΗ 16 ΜΑΪΟΥ 2019",
+      dateline: "ΠΑΡΑΣΚΕΥΗ 16 ΜΑΪΟΥ 2008",
       headline: "ΕΠΕΣΤΡΕΨΕ ΜΕΤΑ ΑΠΟ 17 ΛΕΠΤΑ ΚΛΙΝΙΚΟΥ ΘΑΝΑΤΟΥ",
       article:
         "Η 34χρονη Margaret Hollis κηρύχθηκε νεκρή στις 04:10 τα ξημερώματα της Κυριακής, μετά από τροχαίο. " +
@@ -5598,7 +5598,7 @@ function deskText() {
         "<span class='henry-circle'>Madame Céleste Marchand</span>, από τη Νέα Ορλεάνη.",
       flyerTitle: "ΠΝΕΥΜΑΤΙΣΤΙΚΗ ΣΥΝΕΔΡΙΑ",
       flyerQuote: "«Οι νεκροί δεν φεύγουν ποτέ εντελώς.»",
-      flyerDetails: "ΠΑΡΑΣΚΕΥΗ 24 ΜΑΪΟΥ · 23:00<br>7 RAVENWOOD LANE<br>ΜΟΝΟ ΜΕ ΠΡΟΣΚΛΗΣΗ",
+      flyerDetails: "ΣΑΒΒΑΤΟ 24 ΜΑΪΟΥ · 23:00<br>7 RAVENWOOD LANE<br>ΜΟΝΟ ΜΕ ΠΡΟΣΚΛΗΣΗ",
       flyerBack:
         "24 Μαΐου — μετά τη συνεδρία<br><br>" +
         "Η Céleste μίλησε με τη φωνή της Karen. " +
@@ -5620,7 +5620,7 @@ function deskText() {
         "<span class='henry-ink'>Μια ζωή για μια ζωή.</span>",
       laptopTip: "Σύρε για να διαβάσεις · άγγιξε έξω για να κλείσει.",
       finalDate: "ΑΠΡΙΛΙΟΣ 2023",
-      finalHint: "Τέσσερα χρόνια αργότερα. Ο Henry δεν σταμάτησε ποτέ να ψάχνει. Άγγιξε τον υπολογιστή.",
+      finalHint: "Δεκαπέντε χρόνια αργότερα. Ο Henry δεν σταμάτησε ποτέ να ψάχνει. Άγγιξε τον υπολογιστή.",
       finalLine: "Elmore Street. Νέα Ορλεάνη.",
       lockLabel: "Κωδικός πρόσβασης: διάλεξε το σύμβολο",
       lockWrong: "Λάθος κωδικός.",
@@ -5633,7 +5633,7 @@ function deskText() {
     hint: "Touch the objects on the desk.",
     closeTip: "Tap to close.",
     flyerTip: "Tap the flyer to turn it over · outside to close.",
-    dateline: "THURSDAY, MAY 16, 2019",
+    dateline: "FRIDAY, MAY 16, 2008",
     headline: "WOMAN RETURNS AFTER 17 MINUTES OF CLINICAL DEATH",
     article:
       "Margaret Hollis, 34, was pronounced dead at 4:10 a.m. on Sunday following a car accident. " +
@@ -5643,7 +5643,7 @@ function deskText() {
       "<span class='henry-circle'>Madame Céleste Marchand</span>, of New Orleans.",
     flyerTitle: "A SPIRITUAL SÉANCE",
     flyerQuote: "“The dead never fully leave.”",
-    flyerDetails: "FRIDAY, MAY 24 · 11:00 PM<br>7 RAVENWOOD LANE<br>BY INVITATION ONLY",
+    flyerDetails: "SATURDAY, MAY 24 · 11:00 PM<br>7 RAVENWOOD LANE<br>BY INVITATION ONLY",
     flyerBack:
       "May 24 — after the séance<br><br>" +
       "Céleste spoke in Karen's voice. " +
@@ -5665,7 +5665,7 @@ function deskText() {
       "<span class='henry-ink'>A life for a life.</span>",
     laptopTip: "Scroll to read · tap outside to close.",
     finalDate: "APRIL 2023",
-    finalHint: "Four years later. Henry never stopped searching. Touch the computer.",
+    finalHint: "Fifteen years later. Henry never stopped searching. Touch the computer.",
     finalLine: "Elmore Street. New Orleans.",
     lockLabel: "Password: choose the symbol",
     lockWrong: "Wrong password.",
@@ -5737,7 +5737,7 @@ function openDeskItem(type) {
   const viewer = document.getElementById("deskViewer");
   const content = document.getElementById("deskViewerContent");
 
-  // Το 2019 ο υπολογιστής μένει κλειστός. Ανοίγει μόνο στην τελική σκηνή.
+  // Το 2008 ο υπολογιστής μένει κλειστός. Ανοίγει μόνο στην τελική σκηνή.
   if (type === "laptop" && !finalPhase) {
     tapGriefItem("laptop");
     return;
@@ -6093,7 +6093,7 @@ function researchText() {
 
   if (selectedLanguage === "gr") {
     return {
-      date: "ΙΟΥΝΙΟΣ 2019",
+      date: "ΙΟΥΝΙΟΣ 2008",
       title: "Πώς γυρίζουν οι νεκροί;",
       question: "Ποιο μονοπάτι δεν απέρριψε ο Henry; Άγγιξέ το στη σελίδα.",
       wrong: "Όχι. Αυτό το είχε ήδη απορρίψει.",
@@ -6114,7 +6114,7 @@ function researchText() {
   }
 
   return {
-    date: "JUNE 2019",
+    date: "JUNE 2008",
     title: "How do the dead come back?",
     question: "Which path did Henry not reject? Touch it on the page.",
     wrong: "No. He had already rejected that one.",
@@ -6838,13 +6838,13 @@ function buildHospitalDoc() {
       <span class="doc-clip"></span>
       <div class="doc-head">
         ${DOC_SEAL_HOSPITAL}
-        <div class="doc-agency">ST. MARY'S HOSPITAL<small>${t.dept}</small><small>ASHFORD COUNTY</small></div>
+        <div class="doc-agency">ST. MARY'S HOSPITAL<small>${t.dept}</small><small>LAFAYETTE, LOUISIANA</small></div>
       </div>
       <div class="doc-title">${t.title} <span class="doc-formno">FORM OB-27</span></div>
       <div class="doc-grid">
         ${docCell(t.patient, "KAREN JEFFERSON", true)}
         ${docCell(t.mrn, "0047-2291")}
-        ${docCell(t.admitted, "26/01/2018 · 22:40")}
+        ${docCell(t.admitted, "13/07/2006 · 22:40")}
         ${docCell(t.ward, t.wardV)}
         ${docCell(t.doctor, "DR. M. REYES")}
         ${docCell(t.kin, t.kinV, true)}
@@ -6869,7 +6869,7 @@ function buildHospitalDoc() {
         <div class="doc-sign"><div class="sig">M. Reyes</div><div class="line">${t.sign}</div></div>
         <div class="doc-sign"><div class="sig">L. Kowalski</div><div class="line">${t.nurse}</div></div>
       </div>
-      <div id="hospitalDeceasedStamp" class="doc-stamp stamp-deceased">${t.stamp}<small>27 JAN 2018</small></div>
+      <div id="hospitalDeceasedStamp" class="doc-stamp stamp-deceased">${t.stamp}<small>14 JUL 2006</small></div>
     </div>`;
 }
 
@@ -6883,9 +6883,9 @@ function buildStatementDoc() {
     address: "Διεύθυνση", relation: "Σχέση με το συμβάν", relationV: "Ιδιοκτήτης / πατέρας",
     section: "Δήλωση του καταθέτοντος",
     body:
-      "Γύρισα σπίτι αργά το βράδυ. Η γυναίκα μου είχε πεθάνει " +
-      "λίγες ώρες πριν. Το μωρό κοιμόταν στο δωμάτιό του.<br>" +
-      "Η φωτιά ξέσπασε ξαφνικά. Εξαπλώθηκε πολύ γρήγορα.<br>" +
+      "Η γυναίκα μου πέθανε πριν από οκτώ μήνες, στη γέννα.<br>" +
+      "Εκείνο το βράδυ κοιμόμασταν. Η φωτιά ξέσπασε ξαφνικά " +
+      "και εξαπλώθηκε πολύ γρήγορα.<br>" +
       "Προσπάθησα να φτάσω στο μωρό... <span class='ink-fade'>αλλά δεν μπόρεσα.</span>",
     signWitness: "Υπογραφή καταθέτοντος", signOfficer: "Αξιωματικός",
     received: "ΕΛΗΦΘΗ", tip: "Άγγιξε το έγγραφο για να συνεχίσεις."
@@ -6895,9 +6895,9 @@ function buildStatementDoc() {
     address: "Address", relation: "Relation to incident", relationV: "Homeowner / father",
     section: "Statement of witness",
     body:
-      "I came home late that night. My wife had died a few " +
-      "hours earlier. The baby was asleep in the nursery.<br>" +
-      "The fire started suddenly. It spread too quickly.<br>" +
+      "My wife died eight months ago, giving birth.<br>" +
+      "That night we were asleep. The fire started suddenly " +
+      "and spread too quickly.<br>" +
       "I tried to reach the baby... <span class='ink-fade'>but I couldn't.</span>",
     signWitness: "Signature of witness", signOfficer: "Officer",
     received: "RECEIVED", tip: "Tap the document to continue."
@@ -6908,14 +6908,14 @@ function buildStatementDoc() {
       <span class="doc-staple"></span>
       <div class="doc-head">
         ${DOC_SEAL_SHERIFF}
-        <div class="doc-agency">ASHFORD COUNTY<br>SHERIFF'S OFFICE<small>INVESTIGATIONS DIVISION</small></div>
+        <div class="doc-agency">LAFAYETTE PARISH<br>SHERIFF'S OFFICE<small>INVESTIGATIONS DIVISION</small></div>
       </div>
       <div class="doc-title">${t.title} <span class="doc-formno">FORM SO-114</span></div>
       <div class="doc-grid">
-        ${docCell(t.caseNo, "18-0127-0413")}
-        ${docCell(t.date, "28/01/2018 · 06:15")}
+        ${docCell(t.caseNo, "07-0313-0413")}
+        ${docCell(t.date, "14/03/2007 · 06:15")}
         ${docCell(t.name, "HENRY JEFFERSON", true)}
-        ${docCell(t.address, "14 WILLOW CREEK RD", true)}
+        ${docCell(t.address, "14 MILLS ST, LAFAYETTE, LA", true)}
         ${docCell(t.relation, t.relationV, true)}
       </div>
       <div class="doc-section">${t.section}</div>
@@ -6924,7 +6924,7 @@ function buildStatementDoc() {
         <div class="doc-sign"><div class="sig">Henry Jefferson</div><div class="line">${t.signWitness}</div></div>
         <div class="doc-sign"><div class="sig">R. Callahan</div><div class="line">${t.signOfficer} · #2231</div></div>
       </div>
-      <div class="doc-stamp stamp-received">${t.received}<small>28 JAN 2018</small></div>
+      <div class="doc-stamp stamp-received">${t.received}<small>14 MAR 2007</small></div>
     </div>
     <div class="doc-tip">${t.tip}</div>`;
 }
@@ -6937,32 +6937,32 @@ function buildReportDoc() {
     title: "ΑΝΑΦΟΡΑ ΣΥΜΒΑΝΤΟΣ",
     incident: "Αρ. συμβάντος", date: "Ημερομηνία", call: "Κλήση / άφιξη",
     type: "Τύπος συμβάντος", typeV: "Πυρκαγιά κατοικίας",
-    location: "Τοποθεσία", locationV: "Οικία Jefferson · 14 Willow Creek Rd",
+    location: "Τοποθεσία", locationV: "Οικία Jefferson · 14 Mills St, Lafayette, Λουιζιάνα",
     damage: "Ζημιές", damageV: "Ολική καταστροφή",
     cause: "Αιτία", causeV: "Υπό διερεύνηση",
     persons: "Άτομα που εμπλέκονται",
     p1: "JEFFERSON, HENRY · ενήλικας · ελαφρά εγκαύματα, αρνήθηκε μεταφορά",
-    p2: "JEFFERSON (νεογνό) · 0 ημερών · <b>δεν εντοπίστηκε</b>",
+    p2: "JEFFERSON (βρέφος) · 8 μηνών · <b>δεν εντοπίστηκε</b>",
     narrative: "Περιγραφή",
     narrativeV:
-      "Κατά την έρευνα του χώρου δεν εντοπίστηκε το νεογνό ούτε βρέθηκαν " +
+      "Κατά την έρευνα του χώρου δεν εντοπίστηκε το βρέφος ούτε βρέθηκαν " +
       "ανθρώπινα λείψανα που να αντιστοιχούν σε αυτό.",
-    missing: "ΑΓΝΟΟΥΜΕΝΟ", missingSmall: "ΚΑΤΑΣΤΑΣΗ ΝΕΟΓΝΟΥ",
+    missing: "ΑΓΝΟΟΥΜΕΝΟ", missingSmall: "ΚΑΤΑΣΤΑΣΗ ΒΡΕΦΟΥΣ",
     investigation: "ΥΠΟ ΔΙΕΡΕΥΝΗΣΗ",
     tip: "Άγγιξε το έγγραφο για να συνεχίσεις."
   } : {
     title: "INCIDENT REPORT",
     incident: "Incident no.", date: "Date", call: "Call / arrival",
     type: "Incident type", typeV: "Residential structure fire",
-    location: "Location", locationV: "Jefferson residence · 14 Willow Creek Rd",
+    location: "Location", locationV: "Jefferson residence · 14 Mills St, Lafayette, Louisiana",
     damage: "Damage", damageV: "Total loss",
     cause: "Cause", causeV: "Under investigation",
     persons: "Persons involved",
     p1: "JEFFERSON, HENRY · adult · minor burns, refused transport",
-    p2: "JEFFERSON (infant) · 0 days · <b>not located</b>",
+    p2: "JEFFERSON (infant) · 8 months · <b>not located</b>",
     narrative: "Narrative",
     narrativeV:
-      "During the search of the property, the newborn was not located, " +
+      "During the search of the property, the infant was not located, " +
       "nor were any human remains corresponding to the infant recovered.",
     missing: "MISSING", missingSmall: "INFANT STATUS",
     investigation: "UNDER INVESTIGATION",
@@ -6974,12 +6974,12 @@ function buildReportDoc() {
       <span class="doc-staple"></span>
       <div class="doc-head">
         ${DOC_SEAL_FIRE}
-        <div class="doc-agency">ASHFORD COUNTY<br>FIRE DEPARTMENT<small>JOINT REPORT · SHERIFF'S OFFICE</small></div>
+        <div class="doc-agency">LAFAYETTE<br>FIRE DEPARTMENT<small>JOINT REPORT · LAFAYETTE PARISH SHERIFF</small></div>
       </div>
       <div class="doc-title">${t.title} <span class="doc-formno">NFIRS-1</span></div>
       <div class="doc-grid">
-        ${docCell(t.incident, "18-00417")}
-        ${docCell(t.date, "27/01/2018")}
+        ${docCell(t.incident, "07-00417")}
+        ${docCell(t.date, "13/03/2007")}
         ${docCell(t.call, "23:52 / 00:09")}
         ${docCell(t.type, t.typeV)}
         ${docCell(t.location, t.locationV, true)}
