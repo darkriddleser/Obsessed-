@@ -3440,6 +3440,14 @@ html.final-lock body {
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+
+  /* Εμφανίζεται σιγά σιγά από το μαύρο μόλις ξεκινήσει */
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+
+#introVideo.on {
+  opacity: 1;
 }
 
 /* Το κουμπί "Η ΕΜΜΟΝΗ ΞΕΚΙΝΑΕΙ" εμφανίζεται μόλις τελειώσει η πρώτη λούπα του βίντεο */
@@ -3784,8 +3792,8 @@ html.final-lock body {
          Δοκιμάζει πρώτα το CTCAE9123.mp4 (παίζει σε όλα τα κινητά)
          και αν δεν υπάρχει, το CTCAE9123.MOV (παίζει σίγουρα μόνο σε iPhone / Safari) -->
     <video id="introVideo" loop playsinline preload="auto" disablepictureinpicture>
-      <source src="CTCAE9123.mp4?v=4" type="video/mp4">
-      <source src="CTCAE9123.MOV?v=4">
+      <source src="CTCAE9123.mp4?v=5" type="video/mp4">
+      <source src="CTCAE9123.MOV?v=5">
     </video>
 
     <!-- Αν δεν παίζει κανένα από τα δύο: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
@@ -7668,6 +7676,7 @@ function resetIntro() {
 
   const video = document.getElementById("introVideo");
   introLastTime = 0;
+  video.classList.remove("on");
   try { video.currentTime = 0; } catch (e) {}
 
   stopIntroSlides();
@@ -7841,8 +7850,15 @@ function syncIntroVideo() {
     applyIntroSpeed(video);
     clearInterval(elementRamps[video.id]);
     introFadingOut = false;
-    video.volume = INTRO_VOLUME;
     video.muted = false;
+
+    // Πρώτο ξεκίνημα: η μουσική ανεβαίνει σιγά σιγά (στο iPhone ξεκινά κατευθείαν)
+    if (video.currentTime < 0.5) {
+      video.volume = 0;
+      rampElement(video, INTRO_VOLUME, 1800);
+    } else {
+      video.volume = INTRO_VOLUME;
+    }
     video.play().catch(error => {
       // Ο browser δεν άφησε ήχο: παίζει χωρίς ήχο και ο ήχος ανοίγει με το επόμενο άγγιγμα
       if (error && error.name === "NotAllowedError") {
@@ -7883,6 +7899,9 @@ document.getElementById("introVideo").addEventListener("error", useIntroSlides);
 
 // Με πολλά <source>, το σφάλμα έρχεται από το τελευταίο: τότε κανένα αρχείο δεν έπαιξε
 document.querySelector("#introVideo source:last-of-type").addEventListener("error", useIntroSlides);
+
+// Μόλις αρχίσει πραγματικά να παίζει, η εικόνα βγαίνει σιγά σιγά από το μαύρο
+document.getElementById("introVideo").addEventListener("playing", e => e.target.classList.add("on"));
 
 // Ο browser μηδενίζει την ταχύτητα όταν φορτώνει το βίντεο: την ξαναβάζουμε
 document.getElementById("introVideo").addEventListener("loadedmetadata", e => applyIntroSpeed(e.target));
