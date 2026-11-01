@@ -227,7 +227,7 @@ body {
 .video-frame {
   position: relative;
 
-  /* Τετράγωνο κάδρο για το intro.mp4, από άκρη σε άκρη στο κινητό
+  /* Τετράγωνο κάδρο για το CTCAE9123.mp4, από άκρη σε άκρη στο κινητό
      (σε κοντές οθόνες μικραίνει για να χωρά και το κουμπί) */
   width: min(calc(100% + 48px), 52svh);
   margin: 0;
@@ -3698,10 +3698,10 @@ html.final-lock body {
 
   <div class="video-frame">
 
-    <video id="introVideo" src="intro.mp4" muted loop playsinline preload="auto"
+    <video id="introVideo" src="CTCAE9123.mp4" muted loop playsinline preload="auto"
            disablepictureinpicture></video>
 
-    <!-- Αν δεν υπάρχει το intro.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
+    <!-- Αν δεν υπάρχει το CTCAE9123.mp4: οι φωτογραφίες video1–video8 παίζουν σαν βίντεο -->
     <div id="introSlides" class="intro-slides hidden">
       <img data-n="1" alt=""><img data-n="2" alt=""><img data-n="3" alt=""><img data-n="4" alt="">
       <img data-n="5" alt=""><img data-n="6" alt=""><img data-n="7" alt=""><img data-n="8" alt="">
@@ -7537,7 +7537,7 @@ function setBackgroundVolume(name, volume, duration) {
 // Βρίσκει ποια οθόνη φαίνεται και βάζει το σωστό υπόβαθρο
 // =========================================
 // ΒΙΝΤΕΟ ΕΙΣΑΓΩΓΗΣ
-// Παίζει το intro.mp4. Αν λείπει ή δεν παίζει, οι φωτογραφίες
+// Παίζει το CTCAE9123.mp4. Αν λείπει ή δεν παίζει, οι φωτογραφίες
 // video1–video8 (.png ή .jpg) παίζουν με την ίδια ιστορία.
 // =========================================
 
